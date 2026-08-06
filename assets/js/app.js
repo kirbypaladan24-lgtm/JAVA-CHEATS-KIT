@@ -186,7 +186,7 @@ const App = (() => {
       `<div class="book-ref-intro">` +
         `<span class="book-icon">📖</span> ` +
         `<span class="book-ref-title">Introduction to Java Programming and Data Structures</span>` +
-        `<span class="book-ref-author"> — Y. Daniel Liang, 12th ed. (Pearson, 2020)</span>` +
+        `<span class="book-ref-author"> — 12th ed. (Pearson, 2020)</span>` +
       `</div>` +
       `<ul class="book-ref-list">${items}</ul>` +
       `<a href="#" data-related="liang-textbook-companion" class="book-ref-link">View full chapter index →</a>` +
