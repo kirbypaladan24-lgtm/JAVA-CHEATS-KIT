@@ -238,6 +238,35 @@ button { font-family: inherit; cursor: pointer; }
 [data-theme="dark"] .toggle-thumb { left: 21px; }
 .toggle-label { color: var(--text); }
 
+/* ---------- Mode toggle (Easy / Pro) ---------- */
+.mode-toggle {
+  display: flex; align-items: center; gap: 10px;
+  height: 40px;
+  border: var(--border-w) solid var(--border);
+  background: var(--bg-elev); color: var(--text);
+  padding: 0 12px;
+  box-shadow: 3px 3px 0 var(--border);
+  font-family: var(--font-pixel); font-size: 9px;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+.mode-toggle:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--border); }
+.mode-toggle:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--border); }
+.mode-toggle .toggle-track {
+  width: 40px; height: 20px;
+  background: var(--bg-code);
+  border: 2px solid var(--border);
+  position: relative; display: inline-block;
+}
+.mode-toggle .toggle-thumb {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: var(--accent-2, var(--accent));
+  top: 1px; left: 1px;
+  transition: left 0.12s steps(2, end);
+}
+[data-mode="pro"] .mode-toggle .toggle-thumb { left: 21px; }
+.mode-label { color: var(--text); }
+
 /* ---------- LAYOUT ---------- */
 .layout {
   display: grid;
@@ -527,6 +556,11 @@ table.info-table {
 /* The "Beginner-Friendly" badge in the topic meta */
 .topic-tag.tag-beginner {
   background: var(--green); color: #ffffff;
+  border-color: var(--border);
+}
+/* The "Pro Mode" badge — shown when Easy mode is off */
+.topic-tag.tag-pro {
+  background: var(--accent-2, #5836bf); color: #ffffff;
   border-color: var(--border);
 }
 
