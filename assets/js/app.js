@@ -11,6 +11,7 @@ const Store = {
   FAV: "jc.favs",
   REC: "jc.recent",
   THEME: "jc.theme",
+  MODE: "jc.mode",   // "easy" or "pro"
   getFavs() {
     try { return JSON.parse(localStorage.getItem(Store.FAV) || "[]"); }
     catch { return []; }
@@ -35,6 +36,8 @@ const Store = {
   },
   getTheme() { return localStorage.getItem(Store.THEME) || "dark"; },
   setTheme(t) { localStorage.setItem(Store.THEME, t); },
+  getMode() { return localStorage.getItem(Store.MODE) || "easy"; },
+  setMode(m) { localStorage.setItem(Store.MODE, m); },
 };
 
 /* ---------- Main App ---------- */
@@ -47,6 +50,11 @@ const App = (() => {
     document.documentElement.setAttribute("data-theme", Store.getTheme());
     updateToggleLabel();
     document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+
+    // Explanation mode (easy / pro)
+    document.documentElement.setAttribute("data-mode", Store.getMode());
+    updateModeLabel();
+    document.getElementById("modeToggle").addEventListener("click", toggleMode);
 
     // Drawer (favorites / recent)
     document.getElementById("favToggle").addEventListener("click", () => openDrawer("favs"));
@@ -124,6 +132,8 @@ const App = (() => {
 
   // ---------- Render a topic ----------
   function renderTopic(t) {
+    const mode = Store.getMode();   // "easy" or "pro"
+    const showBeginner = mode === "easy" && t.beginnerExplanation;
     return (
       `<div class="topic-header">` +
         `<h1>${escapeHtml(t.title)}</h1>` +
@@ -132,11 +142,11 @@ const App = (() => {
       `<div class="topic-meta">` +
         `<span class="topic-tag tag-cat">${escapeHtml(t.category)}</span>` +
         `<span class="topic-tag">Java</span>` +
-        `<span class="topic-tag tag-beginner">Beginner-Friendly ✓</span>` +
+        (showBeginner ? `<span class="topic-tag tag-beginner">Beginner-Friendly ✓</span>` : `<span class="topic-tag tag-pro">Pro Mode ✓</span>`) +
         (t.cpp ? `<span class="topic-tag">C++ equiv ✓</span>` : "") +
       `</div>` +
 
-      beginnerSection(t.beginnerExplanation) +
+      (showBeginner ? beginnerSection(t.beginnerExplanation) : "") +
       section("Description", `<p class="section-description">${escapeHtml(t.description)}</p>`) +
       (t.syntax ? section("Syntax", codeBlock(t.syntax, "java")) : "") +
       (t.parameters?.length ? section("Parameters / Keywords", paramTable(t.parameters)) : "") +
@@ -382,11 +392,15 @@ const App = (() => {
   // ---------- Home page ----------
   function renderHome() {
     const stats = computeStats();
+    const mode = Store.getMode();
+    const intro = mode === "easy"
+      ? "A fast, searchable single-page Java reference. Every topic starts with a plain-English explanation, so even if you've never programmed before, you can build intuition first. Pick a topic from the sidebar, hit <code>/</code> to search, or browse by category below."
+      : "A fast, searchable single-page Java reference — 107 topics, 988 methods, current to Java 21 LTS. Syntax, parameters, runnable examples, common pitfalls, and C++ equivalents. Pick a topic from the sidebar, hit <code>/</code> to search, or browse by category below.";
     return (
       `<div class="home-hero">` +
         `<img src="assets/icons/logo.png" alt="Java Cheats logo" class="home-logo" />` +
         `<h1>Java Cheats Kit</h1>` +
-        `<p>A fast, searchable single-page Java reference. Pick a topic from the sidebar, hit <code>/</code> to search, or browse by category below.</p>` +
+        `<p>${intro}</p>` +
         `<div class="home-stats">` +
           `<div class="home-stat"><div class="num">${stats.topics}</div><div class="lbl">Topics</div></div>` +
           `<div class="home-stat"><div class="num">${stats.cats}</div><div class="lbl">Categories</div></div>` +
@@ -538,6 +552,22 @@ const App = (() => {
     const theme = document.documentElement.getAttribute("data-theme") || "dark";
     const label = document.querySelector(".toggle-label");
     if (label) label.textContent = theme === "dark" ? "DARK" : "LIGHT";
+  }
+
+  // ---------- Explanation mode (easy / pro) ----------
+  function toggleMode() {
+    const cur = document.documentElement.getAttribute("data-mode") || "easy";
+    const next = cur === "easy" ? "pro" : "easy";
+    document.documentElement.setAttribute("data-mode", next);
+    Store.setMode(next);
+    updateModeLabel();
+    // Re-render the current topic so the explanation section swaps instantly
+    if (currentKey) loadTopic(currentKey);
+  }
+  function updateModeLabel() {
+    const mode = document.documentElement.getAttribute("data-mode") || "easy";
+    const label = document.querySelector(".mode-label");
+    if (label) label.textContent = mode === "easy" ? "EASY" : "PRO";
   }
 
   // ---------- Scroll spy (highlight section heading in view) ----------
