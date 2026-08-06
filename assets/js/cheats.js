@@ -30,7 +30,7 @@ Why does it matter? Every app on your phone, every website, every video game —
     ],
     title: "Java Basics",
     category: "Basics",
-    description: "Java is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. It follows the Write Once, Run Anywhere (WORA) principle — compiled Java bytecode runs on any JVM without recompilation. A Java program is organized into classes, and execution begins from the main() method.",
+    description: "Java is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. It follows the Write Once, Run Anywhere (WORA) principle — compiled Java bytecode runs on any JVM without recompilation. A Java program is organized into classes, and execution begins from the main() method. The current long-term support (LTS) releases are Java 21 (Sept 2023) and Java 25 (Sept 2025); new features like records, sealed classes, pattern matching, and virtual threads ship in every 6-month non-LTS release.",
     syntax: `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, Java!");
@@ -48,10 +48,12 @@ Why does it matter? Every app on your phone, every website, every video game —
     public static void main(String[] args) {
         System.out.println("Hello, Java!");
         System.out.println("Java version: " + System.getProperty("java.version"));
+        // Java 21 LTS is the current long-term support release.
+        // Java 25 (Sept 2025) is the latest LTS — check your installed version.
     }
 }`,
     output: `Hello, Java!
-Java version: 17.0.8`,
+Java version: 21.0.5`,
     commonMistakes: [
       "Filename must match the public class name (Main.java for class Main).",
       "Forgetting String[] args in the main signature — JVM will not find the entry point.",
