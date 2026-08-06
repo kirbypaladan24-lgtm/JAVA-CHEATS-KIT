@@ -102,6 +102,24 @@ button { font-family: inherit; cursor: pointer; }
   border: var(--border-w) solid var(--border);
   box-shadow: 3px 3px 0 var(--border);
 }
+/* Logo image version (replaces text brand-mark) */
+.brand-mark-img {
+  width: 40px; height: 40px;
+  border: var(--border-w) solid var(--border);
+  box-shadow: 3px 3px 0 var(--border);
+  image-rendering: pixelated;            /* keep pixel-art crisp */
+  image-rendering: -moz-crisp-edges;
+  object-fit: cover;
+  background: var(--bg);
+}
+.brand:hover .brand-mark-img {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--border);
+}
+.brand:active .brand-mark-img {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--border);
+}
 .brand-text { display: flex; flex-direction: column; line-height: 1; gap: 5px; }
 .brand-name { font-family: var(--font-pixel); font-size: 11px; color: var(--text); }
 .brand-author {
@@ -594,6 +612,17 @@ table.info-table {
   border: var(--border-w) solid var(--border);
   box-shadow: var(--shadow);
   margin-bottom: 24px;
+}
+.home-logo {
+  width: 120px; height: 120px;
+  margin: 0 auto 16px;
+  display: block;
+  border: var(--border-w) solid var(--border);
+  box-shadow: 5px 5px 0 var(--border);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  object-fit: cover;
+  background: var(--bg);
 }
 .home-hero h1 {
   font-family: var(--font-pixel); font-size: 28px; margin: 0 0 12px;
