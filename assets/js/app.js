@@ -385,7 +385,7 @@ const App = (() => {
     return (
       `<div class="home-hero">` +
         `<img src="assets/icons/logo.png" alt="Java Cheats logo" class="home-logo" />` +
-        `<h1>Java Cheats</h1>` +
+        `<h1>Java Cheats Kit</h1>` +
         `<p>A fast, searchable single-page Java reference. Pick a topic from the sidebar, hit <code>/</code> to search, or browse by category below.</p>` +
         `<div class="home-stats">` +
           `<div class="home-stat"><div class="num">${stats.topics}</div><div class="lbl">Topics</div></div>` +
