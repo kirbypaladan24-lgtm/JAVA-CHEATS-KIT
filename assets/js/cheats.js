@@ -9,7 +9,7 @@
 const cheats = {
   /* ============================================================ HOME */
   home: {
-    title: "Java Cheats Kit",
+    title: "Java Cheats",
     category: "Home",
     description: "A fast, searchable single-page Java reference. Every topic follows the same layout — description, syntax, parameters, example, output, common mistakes, and the C++ equivalent. Click any topic in the sidebar or search to jump instantly.",
     isHome: true,
@@ -4272,7 +4272,7 @@ How to use it: open the book to a chapter (say, Chapter 11 on Inheritance). Open
 The book has 44 chapters organized into five parts: Fundamentals of Programming (Ch 1-7), Object-Oriented Programming (Ch 9-13), GUI Programming (Ch 14-17), Data Structures and Algorithms (Ch 18-30), and Advanced Topics (Ch 31-44, available online). It also has 10 appendices covering keywords, ASCII, operator precedence, modifiers, floating-point, number systems, bitwise operations, regex, enums, and Big-O notation.
 
 This companion is an INDEX only — it lists chapter numbers, titles, and page numbers (which are facts). It does NOT reproduce the book's prose, code, or exercises (which are copyrighted). Use the book for depth, examples, and exercises; use this cheat sheet for quick syntax lookup.`,
-    title: "Textbook Companion",
+    title: "Liang Textbook Companion",
     category: "Reference",
     description: "A companion index for Y. Daniel Liang's \"Introduction to Java Programming and Data Structures, Comprehensive Version\" (12th Edition, Pearson, 2020, ISBN 978-0-13-6520238). This topic maps every chapter and appendix in the 1,200+ page textbook to the matching topic on this cheats site, so you can use the two side by side. The book is organized into five parts: Fundamentals of Programming, Object-Oriented Programming, GUI Programming, Data Structures and Algorithms, and Advanced Topics. Chapters 31–44 are available from the companion website. Use this index to jump from a book chapter to the corresponding quick reference on this site.",
     syntax: `Book: Introduction to Java Programming and Data Structures
