@@ -186,7 +186,7 @@ const App = (() => {
       `<div class="book-ref-intro">` +
         `<span class="book-icon">📖</span> ` +
         `<span class="book-ref-title">Introduction to Java Programming and Data Structures</span>` +
-        `<span class="book-ref-author"> — 12th ed. (Pearson, 2020)</span>` +
+        `<span class="book-ref-author"> — Y. Daniel Liang, 12th ed. (Pearson, 2020)</span>` +
       `</div>` +
       `<ul class="book-ref-list">${items}</ul>` +
       `<a href="#" data-related="liang-textbook-companion" class="book-ref-link">View full chapter index →</a>` +
@@ -384,7 +384,8 @@ const App = (() => {
     const stats = computeStats();
     return (
       `<div class="home-hero">` +
-        `<h1>Java Cheats Kit</h1>` +
+        `<img src="assets/icons/logo.png" alt="Java Cheats logo" class="home-logo" />` +
+        `<h1>Java Cheats</h1>` +
         `<p>A fast, searchable single-page Java reference. Pick a topic from the sidebar, hit <code>/</code> to search, or browse by category below.</p>` +
         `<div class="home-stats">` +
           `<div class="home-stat"><div class="num">${stats.topics}</div><div class="lbl">Topics</div></div>` +
