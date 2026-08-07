@@ -49,6 +49,23 @@ const Store = {
     Store.setMode(next);
     return next;
   },
+
+  // Quiz scores: { topicKey: { correct: 3, total: 3, answered: true } }
+  QUIZ: "jc.quiz",
+  getQuizScores() {
+    try { return JSON.parse(localStorage.getItem(Store.QUIZ) || "{}"); }
+    catch { return {}; }
+  },
+  setQuizScore(key, correct, total) {
+    const scores = Store.getQuizScores();
+    scores[key] = { correct, total, answered: true, ts: Date.now() };
+    localStorage.setItem(Store.QUIZ, JSON.stringify(scores));
+  },
+  clearQuizScore(key) {
+    const scores = Store.getQuizScores();
+    delete scores[key];
+    localStorage.setItem(Store.QUIZ, JSON.stringify(scores));
+  },
 };
 
 /* ---------- Main App ---------- */
@@ -125,6 +142,7 @@ const App = (() => {
 
     wireCodeBlocks(content);
     wireFavButton(content, key);
+    wireQuiz(key, cheats[key]);
 
     content.querySelectorAll("a[data-related]").forEach(a =>
       a.addEventListener("click", e => { e.preventDefault(); loadTopic(a.dataset.related); })
@@ -134,6 +152,31 @@ const App = (() => {
 
     Navigation.refreshFavStars();
     updateFavBadge();
+  }
+
+  // ---------- Examples section ----------
+  // If a topic has an `examples` array (each item: {label, code, output}),
+  // render each as its own labeled sub-section with its own code + output
+  // blocks. Otherwise fall back to the single example/output fields.
+  function examplesSection(t) {
+    if (Array.isArray(t.examples) && t.examples.length) {
+      let inner = "";
+      t.examples.forEach((ex) => {
+        inner += `<div class="example-group">`;
+        if (ex.label) {
+          inner += `<h3 class="example-label">${escapeHtml(ex.label)}</h3>`;
+        }
+        if (ex.code)   inner += codeBlock(ex.code, "java");
+        if (ex.output) inner += `<div class="example-output-label">Output</div>` + codeBlock(ex.output, "text");
+        inner += `</div>`;
+      });
+      return section("Examples", inner);
+    }
+    // Fallback: single example + output
+    return (
+      (t.example ? section("Example", codeBlock(t.example, "java")) : "") +
+      (t.output  ? section("Output",  codeBlock(t.output,  "text")) : "")
+    );
   }
 
   // ---------- Mode-aware topic render dispatcher ----------
@@ -162,15 +205,15 @@ const App = (() => {
       // Show a quick-reference syntax hint if available
       (t.syntax ? section("Quick Syntax", codeBlock(t.syntax, "java")) : "") +
 
-      // Real example with output
-      (t.example ? section("Example", codeBlock(t.example, "java")) : "") +
-      (t.output  ? section("Output",  codeBlock(t.output,  "text")) : "") +
+      // Examples (supports multiple labeled examples OR a single example)
+      examplesSection(t) +
 
       // Common mistakes are especially useful for beginners
       (t.commonMistakes?.length ? section("Common Mistakes", mistakeList(t.commonMistakes)) : "") +
 
       // Let them keep exploring
       (t.related?.length ? section("Related Topics", relatedList(t.related)) : "") +
+      quizSection(currentKey, t) +
 
       // Nudge to full mode
       `<div class="mode-nudge">` +
@@ -198,11 +241,11 @@ const App = (() => {
       (t.parameters?.length ? section("Parameters / Keywords", paramTable(t.parameters)) : "") +
       (t.returnValue ? section("Return Value",      `<p>${escapeHtml(t.returnValue)}</p>`)  : "") +
       (t.methods?.length    ? section("Methods",    methodList(t.methods))        : "") +
-      (t.example     ? section("Example",           codeBlock(t.example, "java")) : "") +
-      (t.output      ? section("Output",            codeBlock(t.output,  "text")) : "") +
+      examplesSection(t) +
       (t.commonMistakes?.length ? section("Common Mistakes", mistakeList(t.commonMistakes)) : "") +
       (t.cpp         ? section("Equivalent in C++", codeBlock(t.cpp, "cpp"))      : "") +
       (t.related?.length    ? section("Related Topics",  relatedList(t.related))  : "") +
+      quizSection(currentKey, t) +
       bookRefSection(currentKey)
     );
   }
@@ -222,6 +265,166 @@ const App = (() => {
       `<div class="beginner-body">${paragraphs}</div>` +
       `</section>`
     );
+  }
+
+  // ---------- Quiz section (self-test) ----------
+  // Renders interactive quiz questions for topics that have a `quiz` array.
+  // Each quiz item: { question, options: [...], answer: index, explanation }
+  // If a topic has more than 5 questions, 5 are randomly selected each render.
+  // User selects answers, clicks "Check Answers", sees score + explanations.
+  // Score is saved to localStorage.
+  //
+  // We track which questions were selected in `currentQuiz` so the Check button
+  // knows which ones to grade (the data indices may not be 0..4 if shuffled).
+  let currentQuiz = null;  // { key, questions: [...selected question objects...] }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function quizSection(key, t) {
+    if (!t.quiz || !t.quiz.length) return "";
+    const score = Store.getQuizScores()[key];
+    const answered = score && score.answered;
+
+    // Select up to 5 questions, shuffled if there are more
+    const MAX_Q = 5;
+    let questions;
+    if (t.quiz.length <= MAX_Q) {
+      questions = shuffle(t.quiz);  // shuffle order even if all fit
+    } else {
+      questions = shuffle(t.quiz).slice(0, MAX_Q);  // pick 5 random
+    }
+    // Also shuffle the options within each question (and adjust answer index)
+    questions = questions.map(q => {
+      const indexed = q.options.map((opt, i) => ({ opt, isAnswer: i === q.answer }));
+      const shuffled = shuffle(indexed);
+      return {
+        question: q.question,
+        options: shuffled.map(x => x.opt),
+        answer: shuffled.findIndex(x => x.isAnswer),
+        explanation: q.explanation,
+      };
+    });
+
+    // Remember the selected questions so wireQuiz can grade them
+    currentQuiz = { key, questions };
+
+    let html = `<section class="section quiz-section">`;
+    html += `<h2>Quiz <span class="quiz-subtitle">— Test Yourself (${questions.length} questions)</span></h2>`;
+
+    if (answered) {
+      const pct = Math.round((score.correct / score.total) * 100);
+      const grade = pct === 100 ? "PERFECT!" : pct >= 60 ? "PASSED" : "KEEP PRACTICING";
+      html += `<div class="quiz-result quiz-result-${pct >= 60 ? 'pass' : 'fail'}">`;
+      html += `<div class="quiz-score">Score: ${score.correct}/${score.total} (${pct}%)</div>`;
+      html += `<div class="quiz-grade">${grade}</div>`;
+      html += `<button class="quiz-retake-btn" id="quizRetake">↻ Retake Quiz</button>`;
+      html += `</div>`;
+    }
+
+    html += `<div class="quiz-body" id="quizBody">`;
+    questions.forEach((q, qi) => {
+      html += `<div class="quiz-question" data-q="${qi}">`;
+      html += `<div class="quiz-q-text"><span class="quiz-q-num">Q${qi+1}.</span> ${escapeHtml(q.question)}</div>`;
+      html += `<div class="quiz-options">`;
+      q.options.forEach((opt, oi) => {
+        html += `<label class="quiz-option" data-q="${qi}" data-o="${oi}">`;
+        html += `<input type="radio" name="quiz-q${qi}" value="${oi}" ${answered ? 'disabled' : ''}>`;
+        html += `<span class="quiz-option-text">${escapeHtml(opt)}</span>`;
+        html += `</label>`;
+      });
+      html += `</div>`;
+      html += `<div class="quiz-explanation" id="quiz-explain-${qi}" hidden>`;
+      html += `<strong>Explanation:</strong> ${escapeHtml(q.explanation)}`;
+      html += `</div>`;
+      html += `</div>`;
+    });
+    html += `</div>`;
+
+    if (!answered) {
+      html += `<button class="quiz-check-btn" id="quizCheck">Check Answers</button>`;
+    }
+
+    html += `</section>`;
+    return html;
+  }
+
+  // ---------- Wire quiz interactions (called after render) ----------
+  function wireQuiz(key, t) {
+    if (!t.quiz || !t.quiz.length) return;
+    // Use the questions that were actually displayed (shuffled subset)
+    const questions = currentQuiz?.questions || t.quiz;
+    const checkBtn = document.getElementById("quizCheck");
+    const retakeBtn = document.getElementById("quizRetake");
+
+    if (checkBtn) {
+      checkBtn.addEventListener("click", () => {
+        let correct = 0;
+        questions.forEach((q, qi) => {
+          const selected = document.querySelector(`input[name="quiz-q${qi}"]:checked`);
+          const selectedIdx = selected ? parseInt(selected.value, 10) : -1;
+          const isCorrect = selectedIdx === q.answer;
+
+          // Mark each option as correct/incorrect
+          document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach((label) => {
+            const oi = parseInt(label.dataset.o, 10);
+            label.classList.add("locked");
+            if (oi === q.answer) label.classList.add("correct");
+            if (oi === selectedIdx && !isCorrect) label.classList.add("wrong");
+          });
+
+          // Show explanation
+          const explain = document.getElementById(`quiz-explain-${qi}`);
+          if (explain) {
+            explain.hidden = false;
+            explain.classList.add(isCorrect ? "explain-correct" : "explain-wrong");
+          }
+
+          if (isCorrect) correct++;
+        });
+
+        Store.setQuizScore(key, correct, questions.length);
+        updateQuizBadge();
+        toast(`Quiz: ${correct}/${questions.length} correct`);
+
+        // Replace the check button with the result display
+        checkBtn.remove();
+        const score = Store.getQuizScores()[key];
+        const pct = Math.round((score.correct / score.total) * 100);
+        const grade = pct === 100 ? "PERFECT!" : pct >= 60 ? "PASSED" : "KEEP PRACTICING";
+        const resultDiv = document.createElement("div");
+        resultDiv.className = `quiz-result quiz-result-${pct >= 60 ? 'pass' : 'fail'}`;
+        resultDiv.innerHTML = `<div class="quiz-score">Score: ${score.correct}/${score.total} (${pct}%)</div>` +
+                              `<div class="quiz-grade">${grade}</div>` +
+                              `<button class="quiz-retake-btn" id="quizRetake">↻ Retake Quiz</button>`;
+        const quizBody = document.getElementById("quizBody");
+        quizBody.parentNode.insertBefore(resultDiv, quizBody);
+        // Wire the new retake button
+        document.getElementById("quizRetake")?.addEventListener("click", () => {
+          Store.clearQuizScore(key);
+          loadTopic(key); // re-render with fresh random questions
+        });
+      });
+    }
+
+    if (retakeBtn) {
+      retakeBtn.addEventListener("click", () => {
+        Store.clearQuizScore(key);
+        loadTopic(key); // re-render
+      });
+    }
+  }
+
+  function updateQuizBadge() {
+    const scores = Store.getQuizScores();
+    const count = Object.keys(scores).filter(k => scores[k]?.answered).length;
+    // Could add a badge to the sidebar or topbar if desired
   }
 
   // ---------- Book Reference footer ----------
