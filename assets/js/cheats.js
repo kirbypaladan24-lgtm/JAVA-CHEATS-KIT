@@ -287,30 +287,42 @@ public void play() {
       ["final", "Keyword to make a variable a constant — can only be assigned once"],
     ],
     returnValue: "A variable holds a value of its declared type. Reading an uninitialized local variable is a compile error; instance/static fields default to 0, 0.0, false, or null.",
-    example: `public class Main {
-    static int totalPlayers = 0;   // static
-    int id;                        // instance, defaults to 0
-
+    examples: [
+      {
+        label: "1. Declare and initialize",
+        code: `public class Main {
     public static void main(String[] args) {
-        int level = 1;             // local
-        final double PI = 3.14159; // constant
-
-        Main a = new Main();
-        Main b = new Main();
-        a.id = 101;
-        b.id = 102;
-        Main.totalPlayers = 2;
-
-        System.out.println("Player A id: " + a.id);
-        System.out.println("Player B id: " + b.id);
-        System.out.println("Total: " + Main.totalPlayers);
+        int age = 19;
+        double price = 49.99;
+        String name = "Ana";
+        System.out.println(name + " is " + age);
+    }
+}`,
+        output: `Ana is 19`,
+      },
+      {
+        label: "2. final — constant (can't be reassigned)",
+        code: `public class Main {
+    public static void main(String[] args) {
+        final double PI = 3.14159;
         System.out.println("PI = " + PI);
     }
 }`,
-    output: `Player A id: 101
-Player B id: 102
-Total: 2
-PI = 3.14159`,
+        output: `PI = 3.14159`,
+      },
+      {
+        label: "3. var — let Java infer the type",
+        code: `public class Main {
+    public static void main(String[] args) {
+        var name = "Ana";      // String
+        var age = 19;          // int
+        var list = new java.util.ArrayList<String>();
+        System.out.println(name + " is " + age);
+    }
+}`,
+        output: `Ana is 19`,
+      },
+    ],
     commonMistakes: [
       "Using a local variable before assigning it — Java requires definite assignment.",
       "Trying to reassign a final variable — compile error.",
@@ -411,32 +423,89 @@ condition ? valueIfTrue : valueIfFalse`,
       ["?: (ternary)", "If condition is true, returns first value, otherwise second"],
     ],
     returnValue: "Arithmetic operators return numeric values. Relational and logical operators return boolean. The ternary returns one of two values based on the condition.",
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. Arithmetic — +, -, *, /, %, ++, --",
+        code: `public class Main {
     public static void main(String[] args) {
         int a = 10, b = 3;
 
-        System.out.println("a + b = " + (a + b));
-        System.out.println("a / b = " + (a / b));     // integer division
-        System.out.println("a % b = " + (a % b));     // remainder
-
-        boolean adult = a >= 18;
-        System.out.println("Adult? " + adult);
-
-        String mood = (a > b) ? "happy" : "sad";
-        System.out.println("Mood: " + mood);
+        System.out.println("a + b = " + (a + b));   // 13
+        System.out.println("a / b = " + (a / b));   // 3  (integer division)
+        System.out.println("a % b = " + (a % b));   // 1  (remainder)
 
         int x = 5;
         System.out.println("x++ : " + (x++));  // prints 5, x becomes 6
         System.out.println("++x : " + (++x));  // x becomes 7, prints 7
     }
 }`,
-    output: `a + b = 13
+        output: `a + b = 13
 a / b = 3
 a % b = 1
-Adult? false
-Mood: happy
 x++ : 5
 ++x : 7`,
+      },
+      {
+        label: "2. Comparison — ==, !=, >, <, >=, <=",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int a = 10, b = 3;
+
+        System.out.println("a == b ? " + (a == b));  // false
+        System.out.println("a > b  ? " + (a > b));   // true
+        System.out.println("a <= 10? " + (a <= 10)); // true
+
+        boolean adult = a >= 18;
+        System.out.println("Adult? " + adult);       // false
+    }
+}`,
+        output: `a == b ? false
+a > b  ? true
+a <= 10? true
+Adult? false`,
+      },
+      {
+        label: "3. Logical — &&, ||, !",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int age = 19;
+        boolean hasId = true;
+
+        // && (AND) — both must be true
+        boolean canEnter = age >= 18 && hasId;
+        System.out.println("Can enter? " + canEnter);   // true
+
+        // || (OR) — either can be true
+        boolean discount = age < 13 || age >= 65;
+        System.out.println("Discount? " + discount);    // false
+
+        // ! (NOT) — flips the boolean
+        System.out.println("No ID? " + !hasId);         // false
+    }
+}`,
+        output: `Can enter? true
+Discount? false
+No ID? false`,
+      },
+      {
+        label: "4. Ternary — condition ? valueIfTrue : valueIfFalse",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int a = 10, b = 3;
+
+        // One-line if/else
+        String mood = (a > b) ? "happy" : "sad";
+        System.out.println("Mood: " + mood);   // happy
+
+        // Assign the larger of two values
+        int max = (a > b) ? a : b;
+        System.out.println("Max: " + max);     // 10
+    }
+}`,
+        output: `Mood: happy
+Max: 10`,
+      },
+    ],
     commonMistakes: [
       "Using = (assignment) instead of == (comparison) inside if conditions.",
       "Integer division: 5 / 2 gives 2, not 2.5 — cast one operand to double first.",
@@ -737,31 +806,43 @@ Why does it matter? When you want to show numbers nicely (like prices with 2 dec
       ["flag ,", "Use grouping separators"],
     ],
     returnValue: "printf returns a PrintStream (System.out), not a String. To get a formatted String without printing, use String.format(format, args...).",
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. %d, %f, %s — basic format specifiers",
+        code: `public class Main {
     public static void main(String[] args) {
-        String name = "Ana";
-        int age = 19;
-        double gpa = 3.857;
-
-        System.out.printf("Name: %s%n", name);
-        System.out.printf("Age: %d (hex %x)%n", age, age);
-        System.out.printf("GPA: %.2f%n", gpa);
-        System.out.printf("Salary: $%,.2f%n", 1_250_000.0);
-        System.out.printf("|%-10s|%10s|%n", "left", "right");
-        System.out.printf("Padded: %05d%n", 42);
-
-        // String.format builds a String instead of printing
-        String card = String.format("[%s | %d | %.1f]", name, age, gpa);
-        System.out.println(card);
+        System.out.printf("Name: %s%n", "Ana");
+        System.out.printf("Age: %d%n", 19);
+        System.out.printf("GPA: %f%n", 3.857);
     }
 }`,
-    output: `Name: Ana
-Age: 19 (hex 13)
-GPA: 3.86
-Salary: $1,250,000.00
-|left      |     right|
-Padded: 00042
-[Ana | 19 | 3.9]`,
+        output: `Name: Ana
+Age: 19
+GPA: 3.857000`,
+      },
+      {
+        label: "2. %.2f — decimal precision",
+        code: `public class Main {
+    public static void main(String[] args) {
+        System.out.printf("GPA: %.2f%n", 3.857);
+        System.out.printf("Salary: $%,.2f%n", 1_250_000.0);
+    }
+}`,
+        output: `GPA: 3.86
+Salary: $1,250,000.00`,
+      },
+      {
+        label: "3. Width and alignment",
+        code: `public class Main {
+    public static void main(String[] args) {
+        System.out.printf("|%-10s|%10s|%n", "left", "right");
+        System.out.printf("Padded: %05d%n", 42);
+    }
+}`,
+        output: `|left      |     right|
+Padded: 00042`,
+      },
+    ],
     commonMistakes: [
       "Using \\n instead of %n — \\n works but %n is platform-correct (\\r\\n on Windows).",
       "Mismatching specifier and argument type — %d with a double throws IllegalFormatConversionException.",
@@ -863,40 +944,59 @@ sb.append("a").append("b").reverse();`,
       ["start, end", "substring bounds — start inclusive, end exclusive"],
     ],
     returnValue: "Most String methods return a new String (since Strings are immutable). equals() returns boolean. compareTo() returns negative, zero, or positive int.",
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. length, charAt, substring",
+        code: `public class Main {
     public static void main(String[] args) {
-        String s = "  Hello, Java!  ";
-
-        System.out.println(s.length());            // 16
-        System.out.println(s.strip());             // "Hello, Java!"
-        System.out.println(s.toUpperCase());       // "  HELLO, JAVA!  "
-        System.out.println(s.substring(2, 7));     // "Hello"
-
-        String[] parts = "a,b,c".split(",");
-        for (String p : parts) System.out.println(p);
-
-        // Mutable: StringBuilder for fast concatenation in loops
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 3; i++) sb.append(i);
-        System.out.println(sb);                    // "012"
-
-        // Equality: == compares references, .equals compares values
-        String a = "java";
-        String b = new String("java");
-        System.out.println(a == b);                // false
-        System.out.println(a.equals(b));           // true
+        String s = "Hello, Java!";
+        System.out.println("Length: " + s.length());
+        System.out.println("Char at 7: " + s.charAt(7));
+        System.out.println("Substring: " + s.substring(7, 11));
     }
 }`,
-    output: `16
-Hello, Java!
-  HELLO, JAVA!
-Hello
-a
-b
-c
-012
-false
+        output: `Length: 12
+Char at 7: J
+Substring: Java`,
+      },
+      {
+        label: "2. equals vs ==",
+        code: `public class Main {
+    public static void main(String[] args) {
+        String a = "Java";
+        String b = new String("Java");
+        System.out.println(a == b);           // false — different objects
+        System.out.println(a.equals(b));      // true — same content
+    }
+}`,
+        output: `false
 true`,
+      },
+      {
+        label: "3. split and replace",
+        code: `public class Main {
+    public static void main(String[] args) {
+        String[] parts = "a,b,c,d".split(",");
+        for (String p : parts) System.out.print(p + " ");
+        System.out.println();
+        System.out.println("hello".replace("l", "L"));
+    }
+}`,
+        output: `a b c d 
+heLLo`,
+      },
+      {
+        label: "4. StringBuilder for fast concatenation",
+        code: `public class Main {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 3; i++) sb.append(i);
+        System.out.println(sb);
+    }
+}`,
+        output: `012`,
+      },
+    ],
     commonMistakes: [
       "Using == to compare Strings — compares references, not values. Always use .equals().",
       "Calling s.replace(\"x\",\"y\") and ignoring the return value — Strings are immutable, the original is unchanged.",
@@ -1023,36 +1123,49 @@ Math.random()   // double in [0.0, 1.0)`,
       ["r", "Angle in radians for trig functions — use toRadians(deg) first"],
     ],
     returnValue: "All Math methods return numeric values. round() returns long; floor/ceil return double; abs/max/min return the same type as the widest argument.",
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. abs, max, min, round",
+        code: `public class Main {
     public static void main(String[] args) {
-        System.out.println(Math.abs(-7));         // 7
-        System.out.println(Math.max(3, 9));       // 9
-        System.out.println(Math.min(3, 9));       // 3
-        System.out.println(Math.round(3.5));      // 4
-        System.out.println(Math.round(3.4));      // 3
-        System.out.println(Math.floor(3.9));      // 3.0
-        System.out.println(Math.ceil(3.1));       // 4.0
-        System.out.println(Math.pow(2, 10));      // 1024.0
-        System.out.println(Math.sqrt(144));       // 12.0
-        System.out.println(Math.hypot(3, 4));     // 5.0
-        System.out.println(Math.log(Math.E));     // 1.0
-        System.out.println(Math.toDegrees(Math.PI)); // 180.0
-        System.out.println(Math.random());        // e.g. 0.4813...
+        System.out.println(Math.abs(-7));
+        System.out.println(Math.max(3, 9));
+        System.out.println(Math.min(3, 9));
+        System.out.println(Math.round(3.6));
     }
 }`,
-    output: `7
+        output: `7
 9
 3
-4
-3
-3.0
-4.0
-1024.0
+4`,
+      },
+      {
+        label: "2. pow, sqrt, hypot",
+        code: `public class Main {
+    public static void main(String[] args) {
+        System.out.println(Math.pow(2, 10));
+        System.out.println(Math.sqrt(144));
+        System.out.println(Math.hypot(3, 4));
+    }
+}`,
+        output: `1024.0
 12.0
-5.0
+5.0`,
+      },
+      {
+        label: "3. Trig (radians!) and constants",
+        code: `public class Main {
+    public static void main(String[] args) {
+        System.out.println(Math.toRadians(180));
+        System.out.println(Math.sin(Math.PI / 2));  // sin(90°) = 1
+        System.out.println("PI = " + Math.PI);
+    }
+}`,
+        output: `3.141592653589793
 1.0
-180.0
-0.4813759 (varies)`,
+PI = 3.141592653589793`,
+      },
+    ],
     commonMistakes: [
       "Passing degrees to sin/cos/tan — they expect radians. Use Math.toRadians(deg).",
       "Using Math.round() and expecting a double — it returns long (or int for float).",
@@ -1284,41 +1397,49 @@ System.out.println(Arrays.toString(a));`,
       ["key", "Value to search for in binarySearch (array must be sorted)"],
     ],
     returnValue: "a[i] returns the element at index i. length is an int field. Arrays.* methods return new arrays or ints as documented. Array access is O(1); sort is O(n log n).",
-    example: `import java.util.Arrays;
-
+    examples: [
+      {
+        label: "1. Create and access",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 1, 9};
+        System.out.println("Length: " + a.length);
+        System.out.println("First: " + a[0]);
+        System.out.println("Last: " + a[a.length - 1]);
+    }
+}`,
+        output: `Length: 5
+First: 5
+Last: 9`,
+      },
+      {
+        label: "2. Sort and binarySearch",
+        code: `import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
-        int[] scores = {88, 72, 95, 60, 81};
-
-        System.out.println("Length: " + scores.length);
-        System.out.println("First: " + scores[0]);
-
-        Arrays.sort(scores);
-        System.out.println("Sorted: " + Arrays.toString(scores));
-
-        int idx = Arrays.binarySearch(scores, 81);
-        System.out.println("Index of 81: " + idx);
-
-        int[] top3 = Arrays.copyOfRange(scores, scores.length - 3, scores.length);
-        System.out.println("Top 3: " + Arrays.toString(top3));
-
-        // 2D array
-        int[][] grid = {{1, 2}, {3, 4}};
-        System.out.println(Arrays.deepToString(grid));
-
-        // Enhanced for loop
+        int[] a = {5, 2, 8, 1, 9, 3};
+        Arrays.sort(a);
+        System.out.println("Sorted: " + Arrays.toString(a));
+        int idx = Arrays.binarySearch(a, 8);
+        System.out.println("Index of 8: " + idx);
+    }
+}`,
+        output: `Sorted: [1, 2, 3, 5, 8, 9]
+Index of 8: 4`,
+      },
+      {
+        label: "3. Enhanced for-each loop",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int[] a = {10, 20, 30};
         int sum = 0;
-        for (int s : scores) sum += s;
+        for (int x : a) sum += x;
         System.out.println("Sum: " + sum);
     }
 }`,
-    output: `Length: 5
-First: 88
-Sorted: [60, 72, 81, 88, 95]
-Index of 81: 2
-Top 3: [81, 88, 95]
-[[1, 2], [3, 4]]
-Sum: 396`,
+        output: `Sum: 60`,
+      },
+    ],
     commonMistakes: [
       "Using a.length() — length is a field on arrays, not a method. Use a.length.",
       "Accessing a[a.length] — off-by-one. Last valid index is a.length - 1.",
@@ -1418,46 +1539,45 @@ int sum(int... nums) {
       ["throws", "Declares checked exceptions the method may throw"],
     ],
     returnValue: "A method with returnType T returns a value of type T via `return value;`. A void method returns nothing (bare `return;` exits early). Methods that don't return on all paths are a compile error.",
-    example: `public class Main {
-
-    // Static method, returns int
-    static int square(int n) {
-        return n * n;
+    examples: [
+      {
+        label: "1. Define and call a method",
+        code: `public class Main {
+    static int square(int n) { return n * n; }
+    public static void main(String[] args) {
+        System.out.println(square(5));
     }
-
-    // Overloaded: same name, different params
-    static double square(double n) {
-        return n * n;
+}`,
+        output: `25`,
+      },
+      {
+        label: "2. Overloading — same name, different params",
+        code: `public class Main {
+    static int add(int a, int b) { return a + b; }
+    static double add(double a, double b) { return a + b; }
+    public static void main(String[] args) {
+        System.out.println(add(2, 3));
+        System.out.println(add(2.5, 3.5));
     }
-
-    // Varargs
+}`,
+        output: `5
+6.0`,
+      },
+      {
+        label: "3. Varargs — variable number of arguments",
+        code: `public class Main {
     static int sum(int... nums) {
         int total = 0;
         for (int n : nums) total += n;
         return total;
     }
-
-    // Pass-by-value: changes to primitive don't propagate
-    static void bump(int x) {
-        x++;
-        System.out.println("inside: " + x);
-    }
-
     public static void main(String[] args) {
-        System.out.println(square(5));       // 25
-        System.out.println(square(2.5));     // 6.25
-        System.out.println(sum(1, 2, 3, 4)); // 10
-
-        int v = 10;
-        bump(v);
-        System.out.println("after: " + v);   // still 10
+        System.out.println(sum(1, 2, 3, 4));
     }
 }`,
-    output: `25
-6.25
-10
-inside: 11
-after: 10`,
+        output: `10`,
+      },
+    ],
     commonMistakes: [
       "Forgetting `return` in a non-void method on some branch — compile error: missing return statement.",
       "Confusing pass-by-value with pass-by-reference — Java is always pass-by-value; for objects, the reference is passed by value.",
@@ -1564,47 +1684,76 @@ for (int i = 0; i < 3; i++) {
       ["label", "Optional name followed by colon, used with break/continue to target an outer loop"],
     ],
     returnValue: "Loops don't return values. They repeat the body while the condition is true. An empty for(;;) is an infinite loop.",
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. for loop — when you know how many times to repeat",
+        code: `public class Main {
     public static void main(String[] args) {
-        // 1. Classic for
+        // Count from 0 to 2
         for (int i = 0; i < 3; i++) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
-
-        // 2. while
-        int n = 5;
-        while (n > 0) {
-            System.out.print(n-- + " ");
-        }
-        System.out.println();
-
-        // 3. do-while (runs at least once)
-        int k = 0;
-        do {
-            System.out.print(k++ + " ");
-        } while (k < 3);
-        System.out.println();
-
-        // 4. Enhanced for-each
-        int[] arr = {10, 20, 30};
-        for (int x : arr) System.out.print(x + " ");
-        System.out.println();
-
-        // 5. break + continue
-        for (int i = 0; i < 10; i++) {
-            if (i % 2 == 0) continue;
-            if (i == 7) break;
             System.out.print(i + " ");
         }
         System.out.println();
     }
 }`,
-    output: `0 1 2
-5 4 3 2 1
-0 1 2
-10 20 30
-1 3 5`,
+        output: `0 1 2 `,
+      },
+      {
+        label: "2. while loop — repeat while a condition is true",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int n = 5;
+        while (n > 0) {
+            System.out.print(n + " ");
+            n--;
+        }
+        System.out.println();
+    }
+}`,
+        output: `5 4 3 2 1 `,
+      },
+      {
+        label: "3. do-while loop — runs at least once, then checks",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int k = 0;
+        do {
+            System.out.print(k + " ");
+            k++;
+        } while (k < 3);
+        System.out.println();
+    }
+}`,
+        output: `0 1 2 `,
+      },
+      {
+        label: "4. Enhanced for-each — walk through an array or collection",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int[] arr = {10, 20, 30};
+        for (int x : arr) {
+            System.out.print(x + " ");
+        }
+        System.out.println();
+    }
+}`,
+        output: `10 20 30 `,
+      },
+      {
+        label: "5. break and continue — control the loop mid-flight",
+        code: `public class Main {
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            if (i % 2 == 0) continue;  // skip even numbers
+            if (i == 7) break;         // stop at 7
+            System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+}`,
+        output: `1 3 5 `,
+      },
+    ],
     commonMistakes: [
       "Infinite loop: forgetting the update step in for, or never changing the condition in while.",
       "Off-by-one: using <= when you mean <, or vice versa.",
@@ -1709,22 +1858,64 @@ String name = switch (day) {
       ["break", "Exits the switch in classic form; arrow labels don't need it"],
     ],
     returnValue: "if/else statements don't return a value. The ternary returns one of two values. Modern switch expressions return a value of the case branch type.",
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. if / else if / else — multi-way branch",
+        code: `public class Main {
     public static void main(String[] args) {
         int score = 85;
 
-        // if-else if-else
         if (score >= 90)      System.out.println("A");
         else if (score >= 80) System.out.println("B");
         else if (score >= 70) System.out.println("C");
         else                  System.out.println("F");
+    }
+}`,
+        output: `B`,
+      },
+      {
+        label: "2. Ternary operator — one-line if/else",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int score = 85;
 
-        // Ternary
+        // condition ? valueIfTrue : valueIfFalse
         String pass = score >= 75 ? "PASS" : "FAIL";
         System.out.println(pass);
 
-        // Modern switch expression on a String
+        // Nested ternary (use sparingly — readability suffers)
+        String grade = score >= 90 ? "A" : score >= 80 ? "B" : "C";
+        System.out.println(grade);
+    }
+}`,
+        output: `PASS
+B`,
+      },
+      {
+        label: "3. Classic switch — fall-through (needs break)",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int day = 3;
+
+        switch (day) {
+            case 1: System.out.println("Monday");    break;
+            case 2: System.out.println("Tuesday");   break;
+            case 3: System.out.println("Wednesday"); break;
+            case 4: System.out.println("Thursday");  break;
+            case 5: System.out.println("Friday");    break;
+            default: System.out.println("Weekend");
+        }
+    }
+}`,
+        output: `Wednesday`,
+      },
+      {
+        label: "4. Modern switch expression (Java 14+) — no fall-through",
+        code: `public class Main {
+    public static void main(String[] args) {
         String day = "WED";
+
+        // Arrow form returns a value directly, no break needed
         int dayNum = switch (day) {
             case "MON" -> 1;
             case "TUE" -> 2;
@@ -1735,9 +1926,9 @@ String name = switch (day) {
         System.out.println("Day #: " + dayNum);
     }
 }`,
-    output: `B
-PASS
-Day #: 3`,
+        output: `Day #: 3`,
+      },
+    ],
     commonMistakes: [
       "Using = (assignment) instead of == (comparison) inside if.",
       "Forgetting break in classic switch — execution falls through to the next case.",
@@ -2045,35 +2236,51 @@ Box clone = (Box) original.clone();  // if Cloneable`,
       ["this", "Inside a method, the reference to the current object"],
     ],
     returnValue: "new returns a reference to the heap-allocated object. Methods called on the object return whatever their declared return type is.",
-    example: `public class Book {
-    String title;
-    int pages;
-
-    public Book(String t, int p) { title = t; pages = p; }
-    public String toString()     { return title + " (" + pages + "p)"; }
-}
-
-class Main {
+    examples: [
+      {
+        label: "1. Create and use an object",
+        code: `public class Main {
+    static class Book {
+        String title; int pages;
+        Book(String t, int p) { title = t; pages = p; }
+    }
     public static void main(String[] args) {
         Book a = new Book("Java Basics", 300);
-        Book b = a;                       // same object, two references
-        b.title = "Advanced Java";
-
-        System.out.println(a);            // sees the change — same instance
-        System.out.println(a == b);       // true
-
-        Book c = new Book("Java Basics", 300);
-        System.out.println(a == c);       // false — different instances
-        System.out.println(a.title.equals(c.title)); // true — value match
-
-        a = null;                         // drop reference
-        // System.gc();                   // hint, not a command
+        System.out.println(a.title + " — " + a.pages + "p");
     }
 }`,
-    output: `Advanced Java (300p)
-true
-false
+        output: `Java Basics — 300p`,
+      },
+      {
+        label: "2. Reference assignment doesn't copy",
+        code: `public class Main {
+    static class Box { String value; }
+    public static void main(String[] args) {
+        Box a = new Box(); a.value = "A";
+        Box b = a;          // b points to the SAME object
+        b.value = "B";
+        System.out.println(a.value);  // "B" — same object
+    }
+}`,
+        output: `B`,
+      },
+      {
+        label: "3. == vs .equals()",
+        code: `public class Main {
+    static class Book {
+        String title;
+        Book(String t) { title = t; }
+    }
+    public static void main(String[] args) {
+        Book a = new Book("Java"); Book b = new Book("Java");
+        System.out.println(a == b);            // false — different objects
+        System.out.println(a.title.equals(b.title));  // true — same content
+    }
+}`,
+        output: `false
 true`,
+      },
+    ],
     commonMistakes: [
       "Assuming Book b = a; copies the object — it only copies the reference. Both still point to the same instance.",
       "Dereferencing null — throws NullPointerException. Always null-check when a value might be unset.",
@@ -2119,34 +2326,36 @@ Why does it matter? Imagine if anyone in your city could walk into your house an
       ["private", "Accessible only within the same class (not even subclasses)"],
     ],
     returnValue: "Access modifiers don't affect return values — they control who can call the method or read the field.",
-    example: `// File: bank/Account.java
-package bank;
-public class Account {
-    public    String owner;
-    private   double balance;
-    protected int    id;
-              String internalNote;  // package-private
-
-    public Account(String o, double b) { owner = o; balance = b; id = nextId(); }
-
-    public double getBalance() { return balance; }   // controlled access
-    private static int nextId() { return (int)(Math.random()*10000); }
-}
-
-// File: Main.java
-import bank.Account;
-class Main {
-    public static void main(String[] args) {
-        Account acc = new Account("Ana", 100.0);
-        System.out.println(acc.owner);          // OK: public
-        System.out.println(acc.getBalance());   // OK: public getter
-        // acc.balance;                         // ERROR: private
-        // acc.id;                              // ERROR: protected, not subclass, different pkg
-        // acc.internalNote;                    // ERROR: package-private, different pkg
-    }
+    examples: [
+      {
+        label: "1. public — accessible from anywhere",
+        code: `public class Main {
+    public String name = "Ana";  // anyone can access
+    public void greet() { System.out.println("Hi!"); }
 }`,
-    output: `Ana
-100.0`,
+      },
+      {
+        label: "2. private — only within this class",
+        code: `public class Main {
+    private String password = "secret";  // only this class can see it
+    private void audit() { /* internal only */ }
+}`,
+      },
+      {
+        label: "3. protected — package + subclasses",
+        code: `public class Main {
+    protected int id;  // same package + subclasses anywhere
+    protected void logTxn() { /* for subclasses */ }
+}`,
+      },
+      {
+        label: "4. package-private (no modifier) — same package only",
+        code: `public class Main {
+    String note;  // only classes in the same package can access
+    void helper() { /* package-private method */ }
+}`,
+      },
+    ],
     commonMistakes: [
       "Forgetting that the default (no modifier) is package-private, not private.",
       "Making fields public just to skip writing getters — breaks encapsulation.",
@@ -2859,24 +3068,30 @@ public class Main {
       ["default package", "No package statement — class lives in the unnamed package; can't be imported from named packages"],
     ],
     returnValue: "Packages don't return anything — they are a namespace mechanism. The package name maps directly to a directory path on disk (com/example/util/Logger.java).",
-    example: `// File: animals/Animal.java
-package animals;
-public class Animal {
-    public String name() { return "Animal"; }
-}
+    examples: [
+      {
+        label: "1. Declare a package (first line of the file)",
+        code: `// File: com/example/util/Logger.java
+package com.example.util;
 
-// File: Main.java (default package)
-import animals.Animal;
-import animals.*;             // alternative: whole package
+public class Logger {
+    public void log(String msg) { System.out.println(msg); }
+}`,
+      },
+      {
+        label: "2. Import a class from another package",
+        code: `// File: Main.java (default package)
+import com.example.util.Logger;
 import static java.lang.System.out;
 
-class Main {
+public class Main {
     public static void main(String[] args) {
-        Animal a = new Animal();
-        out.println(a.name());     // static import of System.out
+        Logger log = new Logger();
+        out.println("hello");  // static import of System.out
     }
 }`,
-    output: `Animal`,
+      },
+    ],
     commonMistakes: [
       "File path doesn't match the package — com.example.Foo must live in com/example/Foo.java or the compiler won't find it.",
       "Putting import statements before the package declaration — package must come first.",
@@ -2952,46 +3167,47 @@ map.forEach((k, v) -> System.out.println(k + "=" + v));`,
       ["Comparator", "Optional ordering for TreeSet/TreeMap or Collections.sort"],
     ],
     returnValue: "add() returns boolean (false if rejected, e.g., duplicate in a Set). put() returns the previous value for the key (or null). get() returns the value or null. Iterator.next() returns the next element.",
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. List — ordered, indexed",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        // List
-        List<String> langs = new ArrayList<>(List.of("Java", "Python", "C++"));
-        langs.add("Go");
-        System.out.println("List: " + langs);
-        System.out.println("Get 0: " + langs.get(0));
-
-        // Set — dedupe
-        Set<Integer> nums = new HashSet<>(List.of(1, 2, 2, 3, 3, 3));
-        System.out.println("Set: " + nums);
-
-        // Map
-        Map<String, Integer> ages = new HashMap<>();
-        ages.put("Ana", 19);
-        ages.put("Bob", 21);
-        ages.forEach((k, v) -> System.out.println(k + " -> " + v));
-        System.out.println("Ana's age: " + ages.get("Ana"));
-
-        // Deque as stack
-        Deque<String> stack = new ArrayDeque<>();
-        stack.push("first");
-        stack.push("second");
-        System.out.println("Pop: " + stack.pop());
-
-        // Sort
-        Collections.sort(langs);
-        System.out.println("Sorted: " + langs);
+        List<String> list = new ArrayList<>(List.of("Java", "Python", "C++"));
+        list.add("Go");
+        System.out.println("List: " + list);
+        System.out.println("Get 0: " + list.get(0));
     }
 }`,
-    output: `List: [Java, Python, C++, Go]
-Get 0: Java
-Set: [1, 2, 3]
-Ana -> 19
-Bob -> 21
-Ana's age: 19
-Pop: second
-Sorted: [C++, Go, Java, Python]`,
+        output: `List: [Java, Python, C++, Go]
+Get 0: Java`,
+      },
+      {
+        label: "2. Set — no duplicates",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Set<Integer> set = new HashSet<>(List.of(1, 2, 2, 3, 3, 3));
+        System.out.println("Set: " + set);
+        System.out.println("Contains 2? " + set.contains(2));
+    }
+}`,
+        output: `Set: [1, 2, 3]
+Contains 2? true`,
+      },
+      {
+        label: "3. Map — key→value",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<String, Integer> ages = new HashMap<>();
+        ages.put("Ana", 19); ages.put("Bob", 21);
+        System.out.println("Ana: " + ages.get("Ana"));
+    }
+}`,
+        output: `Ana: 19`,
+      },
+    ],
     commonMistakes: [
       "Using new ArrayList<>() with a capacity assumption and being surprised when add still resizes — capacity is just a hint.",
       "Modifying a collection while iterating with a for-each — ConcurrentModificationException. Use Iterator.remove() or removeIf().",
@@ -3252,56 +3468,52 @@ String line = br.readLine();`,
       ["Charset", "Defaults to UTF-8 — pass explicitly for legacy files"],
     ],
     returnValue: "readString returns String. readAllLines returns List<String>. readAllBytes returns byte[]. lines/list/walk return Stream<Path> that must be closed in try-with-resources. writeString returns the Path written.",
-    example: `import java.nio.file.*;
-import java.io.IOException;
-import java.util.stream.*;
-
+    examples: [
+      {
+        label: "1. Write and read a text file",
+        code: `import java.nio.file.*;
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Path dir  = Path.of("demo");
-        Path file = dir.resolve("note.txt");
-
-        Files.createDirectories(dir);
-        Files.writeString(file, "Line 1\\nLine 2\\nLine 3\\n");
-
-        // Read back
-        String all = Files.readString(file);
-        System.out.println("--- readString ---");
-        System.out.print(all);
-
-        // Read lines as a list
-        System.out.println("--- readAllLines ---");
-        Files.readAllLines(file).forEach(System.out::println);
-
-        // Filter lines lazily
-        System.out.println("--- lines().filter ---");
-        try (Stream<String> s = Files.lines(file)) {
-            s.filter(l -> l.contains("2")).forEach(System.out::println);
-        }
-
-        // Walk directory
-        System.out.println("--- walk ---");
-        try (Stream<Path> w = Files.walk(dir)) {
-            w.forEach(System.out::println);
-        }
-
-        Files.deleteIfExists(file);
-        Files.deleteIfExists(dir);
+    public static void main(String[] args) throws Exception {
+        Path file = Path.of("demo.txt");
+        Files.writeString(file, "Hello, file I/O!");
+        System.out.println(Files.readString(file));
+        Files.delete(file);
     }
 }`,
-    output: `--- readString ---
-Line 1
+        output: `Hello, file I/O!`,
+      },
+      {
+        label: "2. Read all lines into a list",
+        code: `import java.nio.file.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Path file = Files.createTempFile("demo", ".txt");
+        Files.writeString(file, "Line 1\\nLine 2\\nLine 3");
+        List<String> lines = Files.readAllLines(file);
+        for (String l : lines) System.out.println(l);
+    }
+}`,
+        output: `Line 1
 Line 2
-Line 3
---- readAllLines ---
-Line 1
-Line 2
-Line 3
---- lines().filter ---
-Line 2
---- walk ---
-demo
-demo/note.txt`,
+Line 3`,
+      },
+      {
+        label: "3. Stream lines lazily (for large files)",
+        code: `import java.nio.file.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Path file = Files.createTempFile("demo", ".txt");
+        Files.writeString(file, "apple\\nbanana\\ncherry\\ndate");
+        try (var lines = Files.lines(file)) {
+            lines.filter(l -> l.startsWith("a"))
+                 .forEach(System.out::println);
+        }
+    }
+}`,
+        output: `apple`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to close Files.lines() / Files.walk() streams — they hold open file handles. Use try-with-resources.",
       "Using java.io.File for new code — prefer java.nio.file.Path / Files.",
@@ -3377,44 +3589,47 @@ long daysBetween = ChronoUnit.DAYS.between(d1, d2);`,
       ["Duration vs Period", "Duration = hours/min/sec (exact), Period = years/months/days (calendar-aware)"],
     ],
     returnValue: "All java.time types are immutable — arithmetic methods return new instances. now()/of() return the type. format() returns String. parse() returns the type. between() returns a long or a Duration/Period.",
-    example: `import java.time.*;
-import java.time.format.*;
-import java.time.temporal.ChronoUnit;
-
+    examples: [
+      {
+        label: "1. Current date and time",
+        code: `import java.time.*;
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Today: " + LocalDate.now());
+        System.out.println("Now: " + LocalTime.now());
+        System.out.println("DateTime: " + LocalDateTime.now());
+    }
+}`,
+        output: `Today: 2026-08-07
+Now: 10:30:45.123
+DateTime: 2026-08-07T10:30:45.123`,
+      },
+      {
+        label: "2. Arithmetic (returns new instance)",
+        code: `import java.time.*;
 public class Main {
     public static void main(String[] args) {
         LocalDate today = LocalDate.now();
-        LocalDate newYear = LocalDate.of(2026, 1, 1);
-
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
-        System.out.println("Today:    " + today.format(fmt));
-        System.out.println("New Year: " + newYear.format(fmt));
-
-        long days = ChronoUnit.DAYS.between(today, newYear);
-        System.out.println("Days to New Year: " + days);
-
-        LocalTime meeting = LocalTime.of(14, 30);
-        LocalTime end     = meeting.plusHours(1).plusMinutes(15);
-        System.out.println("Meeting ends: " + end);
-
-        ZonedDateTime here = ZonedDateTime.now(ZoneId.of("Asia/Manila"));
-        ZonedDateTime utc  = here.withZoneSameInstant(ZoneId.of("UTC"));
-        System.out.println("Here: " + here);
-        System.out.println("UTC : " + utc);
-
-        // Parse + arithmetic
-        LocalDate dob = LocalDate.parse("2000-05-15");
-        Period age = Period.between(dob, today);
-        System.out.printf("Age: %d years %d months%n", age.getYears(), age.getMonths());
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate nextWeek = today.plusWeeks(1);
+        System.out.println("Tomorrow: " + tomorrow);
     }
 }`,
-    output: `Today:    Aug 6, 2026
-New Year: Jan 1, 2026
-Days to New Year: 148
-Meeting ends: 15:45
-Here: 2026-08-06T...+08:00[Asia/Manila]
-UTC : 2026-08-06T...Z[UTC]
-Age: 26 years 2 months`,
+        output: `Tomorrow: 2026-08-08`,
+      },
+      {
+        label: "3. Format with DateTimeFormatter",
+        code: `import java.time.*;
+import java.time.format.*;
+public class Main {
+    public static void main(String[] args) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
+        System.out.println(LocalDate.now().format(fmt));
+    }
+}`,
+        output: `Aug 7, 2026`,
+      },
+    ],
     commonMistakes: [
       "Using the old Date / Calendar — they are mutable, months are 0-indexed in Calendar, and thread-unsafe. Use java.time.",
       "Forgetting that plus/minus return a new instance — LocalDate d = today.plusDays(1); doesn't change today.",
@@ -3479,40 +3694,47 @@ String s = name.get();`,
       ["<T, K, V>", "Multiple type parameters"],
     ],
     returnValue: "Generic classes/methods work with the declared type parameter. Because of erasure, you can't say new T() or new T[] at runtime — generics are a compile-time feature.",
-    example: `import java.util.*;
-
-public class Main {
-    // Generic method
-    public static <T> List<T> reverse(List<T> in) {
-        List<T> out = new ArrayList<>(in);
-        Collections.reverse(out);
-        return out;
+    examples: [
+      {
+        label: "1. Generic class",
+        code: `public class Main {
+    static class Box<T> {
+        T value;
+        void set(T v) { value = v; }
+        T get() { return value; }
     }
-
-    // Bounded — T must be Comparable
-    public static <T extends Comparable<T>> T max(List<T> l) {
-        T best = l.get(0);
-        for (T x : l) if (x.compareTo(best) > 0) best = x;
-        return best;
-    }
-
-    // PECS example
-    public static double sum(List<? extends Number> nums) {
-        double s = 0;
-        for (Number n : nums) s += n.doubleValue();
-        return s;
-    }
-
     public static void main(String[] args) {
-        List<String> names = List.of("Ana", "Bob", "Cy");
-        System.out.println(reverse(names));
-        System.out.println(max(List.of(3, 9, 1, 7)));
-        System.out.println(sum(List.of(1, 2.5, 3)));   // List<Number>-ish
+        Box<String> name = new Box<>();
+        name.set("Ana");
+        System.out.println(name.get());
     }
 }`,
-    output: `[Cy, Bob, Ana]
-9
-6.5`,
+        output: `Ana`,
+      },
+      {
+        label: "2. Generic method",
+        code: `public class Main {
+    static <T> T first(java.util.List<T> list) { return list.get(0); }
+    public static void main(String[] args) {
+        var names = java.util.List.of("Ana", "Bob");
+        System.out.println(first(names));
+    }
+}`,
+        output: `Ana`,
+      },
+      {
+        label: "3. Bounded type parameter",
+        code: `public class Main {
+    static <T extends Number> double sum(T a, T b) { return a.doubleValue() + b.doubleValue(); }
+    public static void main(String[] args) {
+        System.out.println(sum(1, 2));
+        System.out.println(sum(1.5, 2.5));
+    }
+}`,
+        output: `3.0
+4.0`,
+      },
+    ],
     commonMistakes: [
       "Trying new T() or new T[] — erasure means T isn't known at runtime. Pass a Class<T> or Supplier<T>.",
       "Mixing List<Integer> and List<Number> — they're not related even though Integer extends Number. Use <? extends Number> for read-only.",
@@ -3779,43 +4001,41 @@ http.sendAsync(req, HttpResponse.BodyHandlers.ofString())
       ["timeout", "Connect or request Duration; throws HttpTimeoutException on expiry"],
     ],
     returnValue: "Socket I/O methods return bytes or -1 at end of stream. HttpClient.send() returns HttpResponse<T> — statusCode() is the HTTP code, body() is the deserialized body.",
-    example: `import java.net.*;
+    examples: [
+      {
+        label: "1. HTTP GET with HttpClient (Java 11+)",
+        code: `import java.net.*;
 import java.net.http.*;
-import java.time.Duration;
-
 public class Main {
     public static void main(String[] args) throws Exception {
-        HttpClient http = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(5))
-            .build();
-
+        HttpClient http = HttpClient.newHttpClient();
         HttpRequest req = HttpRequest.newBuilder()
             .uri(URI.create("https://httpbin.org/get"))
-            .header("Accept", "application/json")
-            .timeout(Duration.ofSeconds(5))
             .GET().build();
-
         HttpResponse<String> resp = http.send(req, HttpResponse.BodyHandlers.ofString());
         System.out.println("Status: " + resp.statusCode());
-        System.out.println("First 120 chars:");
-        System.out.println(resp.body().substring(0, Math.min(120, resp.body().length())));
-
-        // Async example
+    }
+}`,
+        output: `Status: 200`,
+      },
+      {
+        label: "2. Async HTTP request",
+        code: `import java.net.*;
+import java.net.http.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        HttpClient http = HttpClient.newHttpClient();
+        HttpRequest req = HttpRequest.newBuilder()
+            .uri(URI.create("https://httpbin.org/get")).build();
         http.sendAsync(req, HttpResponse.BodyHandlers.ofString())
             .thenApply(HttpResponse::statusCode)
             .thenAccept(code -> System.out.println("Async status: " + code))
             .join();
     }
 }`,
-    output: `Status: 200
-First 120 chars:
-{
-  "args": {}, 
-  "headers": {
-    "Accept": "application/json", 
-    "Content-Length": "0", 
-    "Host": "httpbin.org"
-Async status: 200`,
+        output: `Async status: 200`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to set a timeout — a hung server will block forever.",
       "Using the legacy HttpURLConnection for new code — HttpClient is cleaner, supports HTTP/2 and async.",
@@ -3894,42 +4114,42 @@ try (Connection con = DriverManager.getConnection(url, "user", "pass")) {
       ["autoCommit", "Default true; set false for multi-statement transactions"],
     ],
     returnValue: "executeQuery() returns a ResultSet (cursor before first row). executeUpdate() returns the number of affected rows. rs.getXxx() returns the column value (0 / null if SQL NULL — use wasNull() to distinguish).",
-    example: `import java.sql.*;
-
+    examples: [
+      {
+        label: "1. Connect and query",
+        code: `import java.sql.*;
 public class Main {
-    public static void main(String[] args) throws SQLException {
-        String url = "jdbc:h2:mem:test";      // in-memory H2 database
-        try (Connection con = DriverManager.getConnection(url, "sa", "")) {
-
-            // Create a table
-            try (Statement st = con.createStatement()) {
-                st.execute("CREATE TABLE users (id INT AUTO_INCREMENT, name VARCHAR(50), age INT)");
-            }
-
-            // Insert with parameters — safe from injection
-            try (PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO users(name, age) VALUES (?, ?)")) {
-                ps.setString(1, "Ana");  ps.setInt(2, 19); ps.executeUpdate();
-                ps.setString(1, "Bob");  ps.setInt(2, 21); ps.executeUpdate();
-                ps.setString(1, "Cy");   ps.setInt(2, 17); ps.executeUpdate();
-            }
-
-            // Query
-            try (PreparedStatement ps = con.prepareStatement(
-                    "SELECT id, name, age FROM users WHERE age >= ? ORDER BY name")) {
-                ps.setInt(1, 18);
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        System.out.printf("%d  %-4s  %d%n",
-                            rs.getInt("id"), rs.getString("name"), rs.getInt("age"));
-                    }
-                }
+    public static void main(String[] args) throws Exception {
+        try (Connection con = DriverManager.getConnection("jdbc:h2:mem:test", "sa", "");
+             PreparedStatement ps = con.prepareStatement("SELECT 1 AS result")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) System.out.println("Result: " + rs.getInt("result"));
             }
         }
     }
 }`,
-    output: `1  Ana   19
-2  Bob   21`,
+        output: `Result: 1`,
+      },
+      {
+        label: "2. Insert with parameters (safe from SQL injection)",
+        code: `import java.sql.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        try (Connection con = DriverManager.getConnection("jdbc:h2:mem:test", "sa", "")) {
+            try (Statement st = con.createStatement()) {
+                st.execute("CREATE TABLE users (id INT, name VARCHAR(50))");
+            }
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO users VALUES (?, ?)")) {
+                ps.setInt(1, 1); ps.setString(2, "Ana"); ps.executeUpdate();
+                ps.setInt(1, 2); ps.setString(2, "Bob"); ps.executeUpdate();
+            }
+            System.out.println("Inserted 2 rows");
+        }
+    }
+}`,
+        output: `Inserted 2 rows`,
+      },
+    ],
     commonMistakes: [
       "Concatenating user input into SQL — SQL injection. ALWAYS use PreparedStatement with ? placeholders.",
       "Forgetting try-with-resources — connections leak and the pool exhausts.",
@@ -4088,8 +4308,10 @@ java -cp .:lib/gson.jar Main`,
       ["JDK version", "Most examples target Java 21+ LTS; current LTS is Java 25 (Sept 2025)"],
     ],
     returnValue: "These are runnable programs — each has a main() entry point and prints to the console. Modify and rerun to experiment.",
-    example: `// Example 1 — FizzBuzz
-public class FizzBuzz {
+    examples: [
+      {
+        label: "1. FizzBuzz",
+        code: `public class Main {
     public static void main(String[] args) {
         for (int i = 1; i <= 15; i++) {
             if (i % 15 == 0)      System.out.println("FizzBuzz");
@@ -4098,156 +4320,8 @@ public class FizzBuzz {
             else                  System.out.println(i);
         }
     }
-}
-
-// Example 2 — Reverse a string
-class Reverse {
-    public static void main(String[] args) {
-        String s = "Java";
-        String r = new StringBuilder(s).reverse().toString();
-        System.out.println(r);                       // avaJ
-    }
-}
-
-// Example 3 — Check prime
-class Prime {
-    static boolean isPrime(int n) {
-        if (n < 2) return false;
-        for (int i = 2; (long) i * i <= n; i++)
-            if (n % i == 0) return false;
-        return true;
-    }
-    public static void main(String[] args) {
-        for (int n = 2; n <= 20; n++)
-            if (isPrime(n)) System.out.print(n + " ");
-        System.out.println();
-    }
-}
-
-// Example 4 — Read file, count word frequencies
-class WordCount {
-    public static void main(String[] args) throws java.io.IOException {
-        var path = java.nio.file.Path.of("input.txt");
-        var freq = new java.util.HashMap<String, Integer>();
-        try (var lines = java.nio.file.Files.lines(path)) {
-            lines.flatMap(l -> java.util.Arrays.stream(l.split("\\W+")))
-                 .filter(w -> !w.isEmpty())
-                 .forEach(w -> freq.merge(w, 1, Integer::sum));
-        }
-        freq.entrySet().stream()
-            .sorted((a, b) -> b.getValue() - a.getValue())
-            .limit(5)
-            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
-    }
-}
-
-// Example 5 — Binary search (iterative)
-class BinarySearch {
-    static int search(int[] arr, int target) {
-        int lo = 0, hi = arr.length - 1;
-        while (lo <= hi) {
-            int mid = lo + (hi - lo) / 2;   // avoids int overflow vs (lo+hi)/2
-            if      (arr[mid] == target) return mid;
-            else if (arr[mid] <  target) lo = mid + 1;
-            else                          hi = mid - 1;
-        }
-        return -1; // not found
-    }
-    public static void main(String[] args) {
-        int[] arr = {1, 3, 5, 7, 9, 11, 15, 23};
-        System.out.println(search(arr, 11));  // 5
-        System.out.println(search(arr, 6));   // -1
-    }
-}
-
-// Example 6 — Mini bank account (OOP + exceptions)
-class BankAccount {
-    private final String owner;
-    private double balance;
-
-    BankAccount(String owner, double initial) {
-        if (initial < 0) throw new IllegalArgumentException("Initial balance cannot be negative");
-        this.owner = owner; this.balance = initial;
-    }
-    void deposit(double amount) {
-        if (amount <= 0) throw new IllegalArgumentException("Deposit must be positive");
-        balance += amount;
-    }
-    void withdraw(double amount) {
-        if (amount > balance)
-            throw new IllegalArgumentException("Insufficient funds: have $" + balance);
-        balance -= amount;
-    }
-    @Override public String toString() {
-        return owner + ": $" + String.format("%.2f", balance);
-    }
-
-    public static void main(String[] args) {
-        var acc = new BankAccount("Ana", 1000.0);
-        acc.deposit(500.0);
-        acc.withdraw(200.0);
-        System.out.println(acc); // Ana: $1300.00
-        try { acc.withdraw(2000.0); }
-        catch (IllegalArgumentException e) { System.out.println("Error: " + e.getMessage()); }
-    }
-}
-
-// Example 7 — Fibonacci via Stream (modern Java)
-import java.util.stream.*;
-class FibStream {
-    public static void main(String[] args) {
-        // Infinite Fibonacci stream — take first 10
-        Stream.iterate(new long[]{0, 1}, f -> new long[]{f[1], f[0] + f[1]})
-              .limit(10)
-              .map(f -> f[0])
-              .forEach(n -> System.out.print(n + " "));
-        System.out.println();  // 0 1 1 2 3 5 8 13 21 34
-    }
-}
-
-// Example 8 — Anagram check (Streams + sorted)
-class Anagram {
-    static boolean isAnagram(String a, String b) {
-        return a.chars().sorted().toArray().equals(
-                   b.chars().sorted().toArray())   // arrays can't use .equals, use:
-               ? true : java.util.Arrays.equals(
-                   a.chars().sorted().toArray(),
-                   b.chars().sorted().toArray());
-    }
-    // Cleaner version:
-    static boolean anagram(String a, String b) {
-        char[] ca = a.toLowerCase().toCharArray();
-        char[] cb = b.toLowerCase().toCharArray();
-        java.util.Arrays.sort(ca);
-        java.util.Arrays.sort(cb);
-        return java.util.Arrays.equals(ca, cb);
-    }
-    public static void main(String[] args) {
-        System.out.println(anagram("listen", "silent")); // true
-        System.out.println(anagram("hello",  "world"));  // false
-        System.out.println(anagram("Triangle", "Integral")); // true
-    }
-}
-
-// Example 9 — Generic Pair record + Comparable
-record Pair<A extends Comparable<A>, B>(A first, B second)
-    implements Comparable<Pair<A, B>> {
-    @Override public int compareTo(Pair<A, B> other) {
-        return this.first.compareTo(other.first);
-    }
-}
-class PairDemo {
-    public static void main(String[] args) {
-        var pairs = new java.util.ArrayList<Pair<Integer, String>>();
-        pairs.add(new Pair<>(3, "three"));
-        pairs.add(new Pair<>(1, "one"));
-        pairs.add(new Pair<>(2, "two"));
-        java.util.Collections.sort(pairs);
-        pairs.forEach(p -> System.out.println(p.first() + " = " + p.second()));
-    }
 }`,
-    output: `// FizzBuzz output:
-1
+        output: `1
 2
 Fizz
 4
@@ -4261,20 +4335,58 @@ Buzz
 Fizz
 13
 14
-FizzBuzz
-
-// Reverse output:
-avaJ
-
-// Prime output:
-2 3 5 7 11 13 17 19
-
-// WordCount output (depends on input.txt):
-the: 14
-java: 9
-and: 7
-to: 6
-in: 5`,
+FizzBuzz`,
+      },
+      {
+        label: "2. Reverse a string",
+        code: `public class Main {
+    public static void main(String[] args) {
+        String s = "Java";
+        String r = new StringBuilder(s).reverse().toString();
+        System.out.println(r);
+    }
+}`,
+        output: `avaJ`,
+      },
+      {
+        label: "3. Check prime",
+        code: `public class Main {
+    static boolean isPrime(int n) {
+        if (n < 2) return false;
+        for (int i = 2; (long) i * i <= n; i++)
+            if (n % i == 0) return false;
+        return true;
+    }
+    public static void main(String[] args) {
+        for (int n = 2; n <= 20; n++)
+            if (isPrime(n)) System.out.print(n + " ");
+        System.out.println();
+    }
+}`,
+        output: `2 3 5 7 11 13 17 19 `,
+      },
+      {
+        label: "4. Word frequency count",
+        code: `import java.util.*;
+import java.nio.file.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        String text = "the cat sat on the mat";
+        Map<String, Integer> freq = new HashMap<>();
+        for (String w : text.split("\\\\W+"))
+            freq.merge(w, 1, Integer::sum);
+        freq.entrySet().stream()
+            .sorted((a, b) -> b.getValue() - a.getValue())
+            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
+    }
+}`,
+        output: `the: 2
+cat: 1
+sat: 1
+on: 1
+mat: 1`,
+      },
+    ],
     commonMistakes: [
       "Naming the file differently from the public class — javac Main.java requires class Main.",
       "Forgetting that String is immutable — calling s.reverse() doesn't exist and s.toUpperCase() doesn't change s.",
@@ -4345,55 +4457,58 @@ Character.toUpperCase('a')`,
       ["cache", "Integer caches -128..127; Byte/Short/Long cache -128..127; Character caches 0..127"],
     ],
     returnValue: "valueOf returns the wrapper type. xxxValue returns the primitive. parseXxx returns the primitive. toString returns String. All wrappers are immutable.",
-    example: `import java.util.*;
-
-public class Main {
+    examples: [
+      {
+        label: "1. Autoboxing — primitive to wrapper",
+        code: `public class Main {
     public static void main(String[] args) {
-        // Autoboxing in collections
-        List<Integer> nums = new ArrayList<>();
-        nums.add(1);    // autoboxes int -> Integer
-        nums.add(2);
-        nums.add(3);
-        int sum = 0;
-        for (Integer n : nums) sum += n;   // unboxes Integer -> int
-        System.out.println("Sum: " + sum);
-
-        // Parsing
-        int age = Integer.parseInt("19");
-        double pi = Double.parseDouble("3.14159");
-        boolean flag = Boolean.parseBoolean("true");
-        System.out.printf("age=%d, pi=%.2f, flag=%b%n", age, pi, flag);
-
-        // Integer cache surprise
-        Integer a = 100;     // cached
-        Integer b = 100;     // same cached instance
-        System.out.println(a == b);         // true
-
-        Integer c = 200;     // outside cache
-        Integer d = 200;     // different instances
-        System.out.println(c == d);         // false!
-        System.out.println(c.equals(d));    // true — always use equals
-
-        // Character helpers
-        System.out.println(Character.isDigit('5'));      // true
-        System.out.println(Character.isLetter('A'));     // true
-        System.out.println(Character.toUpperCase('a'));  // A
-
-        // Constants and conversions
-        System.out.println(Integer.MAX_VALUE);           // 2147483647
-        System.out.println(Integer.toBinaryString(10));  // 1010
+        Integer wrapped = 42;   // autoboxes int -> Integer
+        int primitive = wrapped; // unboxes Integer -> int
+        System.out.println(wrapped + ", " + primitive);
     }
 }`,
-    output: `Sum: 6
-age=19, pi=3.14, flag=true
+        output: `42, 42`,
+      },
+      {
+        label: "2. Parsing strings to numbers",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int n = Integer.parseInt("42");
+        double d = Double.parseDouble("3.14");
+        System.out.println("n=" + n + ", d=" + d);
+    }
+}`,
+        output: `n=42, d=3.14`,
+      },
+      {
+        label: "3. Character helpers",
+        code: `public class Main {
+    public static void main(String[] args) {
+        System.out.println(Character.isDigit('5'));
+        System.out.println(Character.isLetter('A'));
+        System.out.println(Character.toUpperCase('a'));
+    }
+}`,
+        output: `true
 true
+A`,
+      },
+      {
+        label: "4. Integer cache surprise — use .equals()",
+        code: `public class Main {
+    public static void main(String[] args) {
+        Integer a = 100, b = 100;   // cached (-128..127)
+        System.out.println(a == b);          // true
+        Integer c = 200, d = 200;   // outside cache
+        System.out.println(c == d);          // false!
+        System.out.println(c.equals(d));     // true — always use .equals()
+    }
+}`,
+        output: `true
 false
-true
-true
-true
-A
-2147483647
-1010`,
+true`,
+      },
+    ],
     commonMistakes: [
       "Comparing wrappers with == — works for cached values (-128..127 for Integer) but breaks for larger values. Always use .equals().",
       "Unboxing a null wrapper — NullPointerException. List<Integer> with null element, auto-unboxing throws.",
@@ -4459,54 +4574,43 @@ String s = "" + 42;`,
       ["upcast", "Subclass to Parent — implicit, always safe"],
     ],
     returnValue: "Casting returns the value in the new type. Numeric narrowing truncates (toward zero) or overflows silently. Object downcasts return the same reference with a different compile-time type, or throw ClassCastException.",
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. Widening — automatic, no data loss",
+        code: `public class Main {
     public static void main(String[] args) {
-        // Widening — automatic
         int i = 42;
-        long l = i;
-        double d = l;
-        System.out.println("int=" + i + " long=" + l + " double=" + d);
-
-        // Narrowing — explicit, loses data
-        double price = 19.99;
-        int rounded = (int) price;        // 19 — truncates
-        System.out.println("rounded: " + rounded);
-
-        // Overflow on narrowing
-        long big = 3_000_000_000L;
-        int truncated = (int) big;        // wraps around
-        System.out.println("overflow: " + truncated);   // -1294967296
-
-        // Object casting
-        Object obj = "Java";
-        String s = (String) obj;          // OK — obj actually is a String
-        System.out.println(s.length());   // 4
-
-        // Safe instanceof pattern (Java 16+)
-        Object[] items = {"hello", 42, "world", 3.14};
-        for (Object o : items) {
-            if (o instanceof String str) {
-                System.out.println("String of length " + str.length());
-            } else {
-                System.out.println("Not a string: " + o.getClass().getSimpleName());
-            }
-        }
-
-        // String <-> primitive
-        int n = Integer.parseInt("100");
-        String text = String.valueOf(n);
-        System.out.println("n=" + n + ", text=" + text);
+        long l = i;        // int -> long (automatic)
+        double d = l;      // long -> double (automatic)
+        System.out.println(i + " -> " + l + " -> " + d);
     }
 }`,
-    output: `int=42 long=42 double=42.0
-rounded: 19
-overflow: -1294967296
-4
-String of length 5
-Not a string: Integer
-String of length 5
-Not a string: Double
-n=100, text=100`,
+        output: `42 -> 42 -> 42.0`,
+      },
+      {
+        label: "2. Narrowing — explicit cast, may lose data",
+        code: `public class Main {
+    public static void main(String[] args) {
+        double price = 19.99;
+        int rounded = (int) price;  // truncates toward zero
+        System.out.println(price + " -> " + rounded);
+    }
+}`,
+        output: `19.99 -> 19`,
+      },
+      {
+        label: "3. Object casting (downcast)",
+        code: `public class Main {
+    public static void main(String[] args) {
+        Object obj = "Hello, Java";
+        if (obj instanceof String s) {
+            System.out.println("Length: " + s.length());
+        }
+    }
+}`,
+        output: `Length: 11`,
+      },
+    ],
     commonMistakes: [
       "Casting a sibling type — (String) someObject where someObject is actually an Integer throws ClassCastException at runtime.",
       "Trusting the cast compiles — for primitives, casting between unrelated types (boolean to int) is a compile error; for objects, the compiler only checks the type hierarchy, not the actual runtime type.",
@@ -4564,51 +4668,61 @@ int factorial(int n, int acc) {
       ["max depth", "JVM default stack is ~512KB-1MB, allowing ~10,000 frames (varies)"],
     ],
     returnValue: "A recursive method returns whatever its base case returns, or what the recursive call returns (often combined with current-step work).",
-    example: `public class Main {
-    // Classic factorial
+    examples: [
+      {
+        label: "1. Factorial — n! = n × (n-1)!",
+        code: `public class Main {
     static int factorial(int n) {
-        if (n <= 1) return 1;            // base case
-        return n * factorial(n - 1);     // recursive
+        if (n <= 1) return 1;       // base case
+        return n * factorial(n - 1); // recursive case
     }
-
-    // Fibonacci — naive (exponential, slow)
+    public static void main(String[] args) {
+        System.out.println("5! = " + factorial(5));
+    }
+}`,
+        output: `5! = 120`,
+      },
+      {
+        label: "2. Fibonacci — naive (exponential)",
+        code: `public class Main {
     static int fib(int n) {
         if (n < 2) return n;
         return fib(n - 1) + fib(n - 2);
     }
-
-    // Sum of digits
+    public static void main(String[] args) {
+        for (int i = 0; i <= 10; i++) System.out.print(fib(i) + " ");
+        System.out.println();
+    }
+}`,
+        output: `0 1 1 2 3 5 8 13 21 34 55 `,
+      },
+      {
+        label: "3. Sum of digits",
+        code: `public class Main {
     static int sumDigits(int n) {
         if (n == 0) return 0;
         return n % 10 + sumDigits(n / 10);
     }
-
-    // Power
-    static double power(double base, int exp) {
-        if (exp == 0) return 1;
-        if (exp < 0)  return 1 / power(base, -exp);
-        return base * power(base, exp - 1);
+    public static void main(String[] args) {
+        System.out.println("Sum of 1234: " + sumDigits(1234));
     }
-
-    // Reverse a string
+}`,
+        output: `Sum of 1234: 10`,
+      },
+      {
+        label: "4. Reverse a string",
+        code: `public class Main {
     static String reverse(String s) {
         if (s.isEmpty()) return s;
         return reverse(s.substring(1)) + s.charAt(0);
     }
-
     public static void main(String[] args) {
-        System.out.println("5! = " + factorial(5));        // 120
-        System.out.println("fib(10) = " + fib(10));        // 55
-        System.out.println("sumDigits(1234) = " + sumDigits(1234));  // 10
-        System.out.println("2^10 = " + power(2, 10));      // 1024.0
-        System.out.println("reverse(Java) = " + reverse("Java"));    // avaJ
+        System.out.println("Reverse of Java: " + reverse("Java"));
     }
 }`,
-    output: `5! = 120
-fib(10) = 55
-sumDigits(1234) = 10
-2^10 = 1024.0
-reverse(Java) = avaJ`,
+        output: `Reverse of Java: avaJ`,
+      },
+    ],
     commonMistakes: [
       "Forgetting the base case — infinite recursion leads to StackOverflowError.",
       "Not making progress toward the base case — same error even with a base case if the input doesn't shrink.",
@@ -4812,59 +4926,50 @@ public enum Planet {
       ["fields/methods", "Optional — make the enum carry data and behavior"],
     ],
     returnValue: "Enum constants are singleton instances of the enum class. values() returns E[]. valueOf returns E. name() and toString() return String. ordinal() returns int.",
-    example: `enum Status {
-    PENDING,
-    IN_PROGRESS,
-    COMPLETED,
-    FAILED;
-
-    public boolean isTerminal() {
-        return this == COMPLETED || this == FAILED;
-    }
-}
-
-enum Coin {
-    PENNY(1), NICKEL(5), DIME(10), QUARTER(25);
-
-    private final int cents;
-    Coin(int c) { this.cents = c; }
-    public int getCents() { return cents; }
-}
-
-class Main {
+    examples: [
+      {
+        label: "1. Basic enum with switch",
+        code: `public class Main {
+    enum Day { MON, TUE, WED, THU, FRI, SAT, SUN }
     public static void main(String[] args) {
-        Status s = Status.IN_PROGRESS;
-        System.out.println(s);                 // IN_PROGRESS
-        System.out.println(s.ordinal());       // 1
-        System.out.println(s.isTerminal());    // false
-
-        // Iterate all
-        for (Status st : Status.values()) {
-            System.out.println(st + " terminal? " + st.isTerminal());
-        }
-
-        // valueOf from string
-        Status fromStr = Status.valueOf("COMPLETED");
-        System.out.println(fromStr);           // COMPLETED
-
-        // Switch on enum (no qualifier needed in cases)
-        Coin coin = Coin.QUARTER;
-        switch (coin) {
-            case PENNY   -> System.out.println("Lucky!");
-            case QUARTER -> System.out.println("25 cents");
-            default      -> System.out.println(coin.getCents() + " cents");
-        }
+        Day d = Day.WED;
+        String type = switch (d) {
+            case MON, TUE, WED, THU, FRI -> "Weekday";
+            case SAT, SUN -> "Weekend";
+        };
+        System.out.println(d + " is a " + type);
     }
 }`,
-    output: `IN_PROGRESS
-1
-false
-PENDING terminal? false
-IN_PROGRESS terminal? false
-COMPLETED terminal? true
-FAILED terminal? true
-COMPLETED
-25 cents`,
+        output: `WED is a Weekday`,
+      },
+      {
+        label: "2. Enum with fields and methods",
+        code: `public class Main {
+    enum Coin {
+        PENNY(1), NICKEL(5), DIME(10), QUARTER(25);
+        final int cents;
+        Coin(int c) { cents = c; }
+    }
+    public static void main(String[] args) {
+        System.out.println("Quarter = " + Coin.QUARTER.cents + " cents");
+    }
+}`,
+        output: `Quarter = 25 cents`,
+      },
+      {
+        label: "3. Iterate all enum values",
+        code: `public class Main {
+    enum Status { PENDING, ACTIVE, CLOSED }
+    public static void main(String[] args) {
+        for (Status s : Status.values()) System.out.print(s + " ");
+        System.out.println();
+        System.out.println(Status.valueOf("ACTIVE"));
+    }
+}`,
+        output: `PENDING ACTIVE CLOSED 
+ACTIVE`,
+      },
+    ],
     commonMistakes: [
       "Relying on ordinal() for logic — if someone reorders the constants, your code breaks. Add an explicit field instead.",
       "Forgetting the semicolon after the last constant when the enum has fields/methods — compile error.",
@@ -4967,57 +5072,58 @@ while (m.find()) {
       ["replacement", "Replace string — $1, $2 refer to capture groups"],
     ],
     returnValue: "Pattern.compile returns a Pattern. matcher.matches/find return boolean. matcher.group returns the matched String. String.matches returns boolean. String.split returns String[].",
-    example: `import java.util.regex.*;
-
+    examples: [
+      {
+        label: "1. Find all integers in a string",
+        code: `import java.util.regex.*;
 public class Main {
     public static void main(String[] args) {
-        // Find all integers in a string
-        Pattern p = Pattern.compile("\\\\d+");
-        Matcher m = p.matcher("I have 3 cats, 2 dogs, and 1 fish");
-        while (m.find()) {
-            System.out.println("Found: " + m.group() + " at index " + m.start());
-        }
-
-        // Validate email
-        String email = "ana@example.com";
-        boolean valid = email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$");
-        System.out.println("Valid email? " + valid);
-
-        // Capture groups
-        Pattern dateP = Pattern.compile("(\\\\d{4})-(\\\\d{2})-(\\\\d{2})");
-        Matcher dm = dateP.matcher("Date: 2025-08-06");
-        if (dm.find()) {
-            System.out.println("Year: " + dm.group(1));   // 2025
-            System.out.println("Month: " + dm.group(2));  // 08
-            System.out.println("Day: " + dm.group(3));    // 06
-        }
-
-        // Replace with capture groups
-        String swapped = "2025-08-06".replaceAll("(\\\\d{4})-(\\\\d{2})-(\\\\d{2})", "$3/$2/$1");
-        System.out.println(swapped);    // 06/08/2025
-
-        // Split
-        String[] parts = "apple,banana;cherry|date".split("[,;|]");
-        for (String s : parts) System.out.println(s);
-
-        // Case-insensitive
-        Pattern ci = Pattern.compile("hello", Pattern.CASE_INSENSITIVE);
-        System.out.println(ci.matcher("HELLO world").find());   // true
+        Matcher m = Pattern.compile("\\\\d+").matcher("I have 3 cats and 2 dogs");
+        while (m.find()) System.out.println("Found: " + m.group());
     }
 }`,
-    output: `Found: 3 at index 7
-Found: 2 at index 14
-Found: 1 at index 26
-Valid email? true
-Year: 2025
+        output: `Found: 3
+Found: 2`,
+      },
+      {
+        label: "2. Validate an email",
+        code: `public class Main {
+    public static void main(String[] args) {
+        String email = "ana@example.com";
+        boolean valid = email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$");
+        System.out.println("Valid? " + valid);
+    }
+}`,
+        output: `Valid? true`,
+      },
+      {
+        label: "3. Capture groups",
+        code: `import java.util.regex.*;
+public class Main {
+    public static void main(String[] args) {
+        Matcher m = Pattern.compile("(\\\\d{4})-(\\\\d{2})-(\\\\d{2})").matcher("Date: 2025-08-06");
+        if (m.find()) {
+            System.out.println("Year: " + m.group(1));
+            System.out.println("Month: " + m.group(2));
+            System.out.println("Day: " + m.group(3));
+        }
+    }
+}`,
+        output: `Year: 2025
 Month: 08
-Day: 06
-06/08/2025
-apple
-banana
-cherry
-date
-true`,
+Day: 06`,
+      },
+      {
+        label: "4. Replace with capture groups",
+        code: `public class Main {
+    public static void main(String[] args) {
+        String swapped = "2025-08-06".replaceAll("(\\\\d{4})-(\\\\d{2})-(\\\\d{2})", "$3/$2/$1");
+        System.out.println(swapped);
+    }
+}`,
+        output: `06/08/2025`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to double backslashes in Java string literals — \"\\\\d\" for regex \\d, not \"\\d\".",
       "Recompiling the same regex in a loop — compile once with Pattern.compile, reuse the Pattern.",
@@ -5075,42 +5181,52 @@ Supplier<List<String>> factory = ArrayList::new;`,
       ["method reference", "Shorthand: ClassName::methodName or instance::method"],
     ],
     returnValue: "A lambda evaluates to an instance of its target functional interface. If the body is a single expression, it's returned automatically. In block form, you must use an explicit return.",
-    example: `import java.util.*;
-import java.util.function.*;
-
+    examples: [
+      {
+        label: "1. Assign to a functional interface",
+        code: `import java.util.function.*;
 public class Main {
     public static void main(String[] args) {
-        // Lambda assigned to functional interfaces
         Runnable greet = () -> System.out.println("Hello!");
-        greet.run();
-
         Predicate<Integer> isEven = n -> n % 2 == 0;
-        System.out.println(isEven.test(4));   // true
-
-        Function<String, Integer> length = String::length;   // method reference
-        System.out.println(length.apply("Java")); // 4
-
-        // Used inline with collections
-        List<String> names = List.of("Ana", "Bob", "Cy");
-        names.forEach(n -> System.out.println(n));
-        names.stream()
-             .filter(n -> n.startsWith("A"))
-             .forEach(System.out::println);
-
-        // Sort with lambda comparator
-        List<Integer> nums = new ArrayList<>(List.of(3, 1, 4, 1, 5));
-        nums.sort((a, b) -> b - a);   // descending
-        System.out.println(nums);
+        greet.run();
+        System.out.println(isEven.test(4));
     }
 }`,
-    output: `Hello!
-true
-4
-Ana
-Bob
-Cy
-Ana
-[5, 4, 3, 1, 1]`,
+        output: `Hello!
+true`,
+      },
+      {
+        label: "2. Use with collections (forEach, sort)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<String> names = new ArrayList<>(List.of("Bob", "Ana", "Cy"));
+        names.forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        names.sort((a, b) -> a.compareTo(b));
+        System.out.println("Sorted: " + names);
+    }
+}`,
+        output: `Bob Ana Cy 
+Sorted: [Ana, Bob, Cy]`,
+      },
+      {
+        label: "3. Method reference shorthand",
+        code: `import java.util.*;
+import java.util.function.*;
+public class Main {
+    public static void main(String[] args) {
+        Function<String, Integer> length1 = s -> s.length();
+        Function<String, Integer> length2 = String::length;  // method reference
+        System.out.println(length1.apply("Java"));
+        System.out.println(length2.apply("Java"));
+    }
+}`,
+        output: `4
+4`,
+      },
+    ],
     commonMistakes: [
       "Trying to assign a lambda to a non-functional interface (more than one abstract method) — compile error.",
       "Forgetting that single-expression lambdas auto-return; using return inside them is a syntax error.",
@@ -5231,56 +5347,47 @@ Key gotcha: streams are single-use. Once you call a terminal operation, the stre
       ["Collector", "Gathers elements — Collectors.toList(), toSet(), joining(), groupingBy()"],
     ],
     returnValue: "Intermediate ops return a new Stream (lazy). Terminal ops return a value, Optional, collection, or void. The stream is consumed after a terminal op — it can't be reused.",
-    example: `import java.util.*;
+    examples: [
+      {
+        label: "1. filter and map",
+        code: `import java.util.*;
 import java.util.stream.*;
-
 public class Main {
     public static void main(String[] args) {
-        List<Integer> nums = List.of(5, 2, 8, 1, 9, 3, 7, 4, 6);
-
-        // Filter even, sort, collect
-        // .toList() — Java 16+ shorthand for unmodifiable list
-        List<Integer> evens = nums.stream()
+        List<Integer> result = Stream.of(1, 2, 3, 4, 5)
             .filter(n -> n % 2 == 0)
-            .sorted()
+            .map(n -> n * 10)
             .toList();
-        System.out.println("Evens: " + evens);
-
-        // Map to squares
-        List<Integer> squares = nums.stream()
-            .map(n -> n * n)
-            .toList();
-        System.out.println("Squares: " + squares);
-
-        // Reduce — sum
-        int sum = nums.stream().reduce(0, Integer::sum);
-        System.out.println("Sum: " + sum);
-
-        // Stats
-        int max = nums.stream().max(Integer::compareTo).orElse(-1);
-        long count = nums.stream().count();
-        System.out.println("Max: " + max + ", Count: " + count);
-
-        // Strings
-        List<String> names = List.of("Ana", "Bob", "Cy", "Dave");
-        String joined = names.stream()
-            .filter(s -> s.length() <= 3)
-            .map(String::toUpperCase)
-            .collect(Collectors.joining(", "));
-        System.out.println("Joined: " + joined);
-
-        // Grouping
-        Map<Integer, List<String>> byLen = names.stream()
-            .collect(Collectors.groupingBy(String::length));
-        System.out.println("By length: " + byLen);
+        System.out.println(result);
     }
 }`,
-    output: `Evens: [2, 4, 6, 8]
-Squares: [25, 4, 64, 1, 81, 9, 49, 16, 36]
-Sum: 45
-Max: 9, Count: 9
-Joined: ANA, BOB, CY
-By length: {3=[Ana, Bob], 2=[Cy], 4=[Dave]}`,
+        output: `[20, 40]`,
+      },
+      {
+        label: "2. reduce — combine into one",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        int sum = List.of(1, 2, 3, 4, 5).stream().reduce(0, Integer::sum);
+        System.out.println("Sum: " + sum);
+    }
+}`,
+        output: `Sum: 15`,
+      },
+      {
+        label: "3. collect with Collectors.joining",
+        code: `import java.util.*;
+import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        String joined = Stream.of("a", "b", "c")
+            .collect(Collectors.joining(", "));
+        System.out.println(joined);
+    }
+}`,
+        output: `a, b, c`,
+      },
+    ],
     commonMistakes: [
       "Forgetting that streams are single-use — calling a terminal op twice throws IllegalStateException. Generate a new stream.",
       "Confusing intermediate (lazy) and terminal (eager) ops — nothing runs until a terminal op is called.",
@@ -5382,38 +5489,52 @@ obj.toString();`,
       ["components", "Final fields — auto-generated, accessed via obj.fieldName()"],
     ],
     returnValue: "Records auto-generate: a canonical constructor, accessor methods (obj.fieldName()), equals(), hashCode(), and toString(). The record itself cannot be subclassed (implicitly final).",
-    example: `public record Point(int x, int y) {
-    // Compact constructor with validation
-    public Point {
-        if (x < 0 || y < 0) throw new IllegalArgumentException("negative");
-    }
-    public double distanceFromOrigin() {
-        return Math.hypot(x, y);
-    }
-}
-
-public record Person(String name, int age, String email) {}
-
-class Main {
+    examples: [
+      {
+        label: "1. Define and use a record",
+        code: `public class Main {
+    record Point(int x, int y) {}
     public static void main(String[] args) {
-        Point p1 = new Point(3, 4);
-        Point p2 = new Point(3, 4);
-        System.out.println(p1.x());              // 3 — accessor
-        System.out.println(p1.y());              // 4
-        System.out.println(p1.distanceFromOrigin()); // 5.0
-        System.out.println(p1.equals(p2));       // true — value equality
-        System.out.println(p1);                  // Point[x=3, y=4]
-
-        Person ana = new Person("Ana", 19, "ana@x.com");
-        System.out.println(ana.name());          // Ana
+        Point p = new Point(3, 4);
+        System.out.println(p.x());      // accessor (not getX())
+        System.out.println(p.y());
+        System.out.println(p);          // toString
     }
 }`,
-    output: `3
+        output: `3
 4
-5.0
-true
-Point[x=3, y=4]
-Ana`,
+Point[x=3, y=4]`,
+      },
+      {
+        label: "2. Compact constructor for validation",
+        code: `public class Main {
+    record Range(int lo, int hi) {
+        public Range {
+            if (lo > hi) throw new IllegalArgumentException("lo > hi");
+        }
+    }
+    public static void main(String[] args) {
+        Range r = new Range(1, 10);
+        System.out.println(r);
+    }
+}`,
+        output: `Range[lo=1, hi=10]`,
+      },
+      {
+        label: "3. Value equality (auto-generated equals)",
+        code: `public class Main {
+    record Point(int x, int y) {}
+    public static void main(String[] args) {
+        Point a = new Point(3, 4);
+        Point b = new Point(3, 4);
+        System.out.println(a.equals(b));   // true — value equality
+        System.out.println(a == b);        // false — different instances
+    }
+}`,
+        output: `true
+false`,
+      },
+    ],
     commonMistakes: [
       "Using getX() instead of x() — records use field-name accessors, not JavaBean naming.",
       "Trying to extend a record — records are implicitly final, can't be subclassed.",
@@ -5522,45 +5643,47 @@ opt.flatMap(v -> parse(v));      // Optional<...>`,
       ["Function / Predicate", "Lambda for map/filter transformations"],
     ],
     returnValue: "of/ofNullable/empty return Optional<T>. map/filter/flatMap return Optional. orElse/orElseGet return T. orElseThrow returns T or throws.",
-    example: `import java.util.Optional;
-import java.util.Map;
-
+    examples: [
+      {
+        label: "1. of, ofNullable, and orElse",
+        code: `import java.util.*;
 public class Main {
-    static Optional<String> findName(String key) {
-        var db = Map.of("a", "Ana", "b", "Bob");
-        return Optional.ofNullable(db.get(key));
-    }
-
     public static void main(String[] args) {
-        // Safe unwrap with fallback
-        String name = findName("a").orElse("Unknown");
-        System.out.println(name);            // Ana
-
-        String missing = findName("z").orElse("Unknown");
-        System.out.println(missing);         // Unknown
-
-        // Transform if present
-        Optional<Integer> len = findName("a").map(String::length);
-        System.out.println(len.orElse(-1));  // 3
-
-        // Filter
-        Optional<String> longName = findName("a").filter(s -> s.length() > 2);
-        System.out.println(longName.isPresent());  // true
-
-        // Side effect if present
-        findName("b").ifPresent(n -> System.out.println("Found: " + n));
-
-        // Throw if missing
-        String required = findName("a").orElseThrow();
-        System.out.println("Required: " + required);
+        Optional<String> present = Optional.of("hello");
+        Optional<String> empty = Optional.empty();
+        System.out.println(present.orElse("default"));
+        System.out.println(empty.orElse("default"));
     }
 }`,
-    output: `Ana
-Unknown
-3
-true
-Found: Bob
-Required: Ana`,
+        output: `hello
+default`,
+      },
+      {
+        label: "2. ifPresent and map",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Optional<String> name = Optional.of("Ana");
+        name.ifPresent(n -> System.out.println("Hi " + n));
+        Optional<Integer> length = name.map(String::length);
+        System.out.println("Length: " + length.orElse(-1));
+    }
+}`,
+        output: `Hi Ana
+Length: 3`,
+      },
+      {
+        label: "3. orElseThrow — safe unwrap or exception",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Optional<String> opt = Optional.of("found");
+        System.out.println(opt.orElseThrow());
+    }
+}`,
+        output: `found`,
+      },
+    ],
     commonMistakes: [
       "Calling get() without checking isPresent() — throws NoSuchElementException. Prefer orElse/orElseThrow.",
       "Using Optional as a field or parameter type — it's designed for return types only. Fields don't serialize, and params add overhead.",
@@ -6036,34 +6159,40 @@ A 'static block' runs once when the class is loaded — useful for complex initi
       "ClassName.method() — how to call a static method",
       "ClassName.field — how to access a static field",
     ],
-    example: `public class Main {
-    static int instances = 0;
-    static final String APP_NAME = "MyApp";
-
-    static {
-        System.out.println(APP_NAME + " loaded");
-    }
-
-    static int doubleIt(int n) { return n * 2; }
-
-    public Main() { instances++; }
-
+    examples: [
+      {
+        label: "1. Static field — shared across all instances",
+        code: `public class Main {
+    static int count = 0;
+    public Main() { count++; }
     public static void main(String[] args) {
-        System.out.println("Double 5: " + Main.doubleIt(5));
-
-        new Main();
-        new Main();
-        new Main();
-        System.out.println("Instances created: " + Main.instances);
-
-        // Static import — use static members without class name
-        // import static java.lang.Math.*;
-        // double r = sqrt(16);  // instead of Math.sqrt(16)
+        new Main(); new Main(); new Main();
+        System.out.println("Instances: " + Main.count);
     }
 }`,
-    output: `MyApp loaded
-Double 5: 10
-Instances created: 3`,
+        output: `Instances: 3`,
+      },
+      {
+        label: "2. Static method — callable without an instance",
+        code: `public class Main {
+    static int square(int n) { return n * n; }
+    public static void main(String[] args) {
+        System.out.println(Main.square(5));
+    }
+}`,
+        output: `25`,
+      },
+      {
+        label: "3. Static final — constant",
+        code: `public class Main {
+    static final double PI = 3.14159;
+    public static void main(String[] args) {
+        System.out.println("PI = " + PI);
+    }
+}`,
+        output: `PI = 3.14159`,
+      },
+    ],
     commonMistakes: [
       "Calling an instance method or field from a static method — 'this' doesn't exist in static context. The main method is static, so it can only directly access static members.",
       "Using static excessively — makes code hard to test and creates hidden global state. Prefer instance members unless you have a clear reason for static.",
@@ -6216,55 +6345,72 @@ Also note: equals() must be reflexive (a.equals(a) is true), symmetric (a.equals
       "notify() / notifyAll() — wake up waiting threads",
       "finalize() — deprecated, called by GC before reclamation (avoid)",
     ],
-    example: `import java.util.*;
-
-public class Player {
-    private String name;
-    private int score;
-
-    public Player(String name, int score) {
-        this.name = name;
-        this.score = score;
+    examples: [
+      {
+        label: "1. toString() — readable output",
+        code: `public class Main {
+    static class Player {
+        String name; int score;
+        Player(String n, int s) { name = n; score = s; }
+        @Override
+        public String toString() { return "Player[" + name + ", " + score + "]"; }
     }
-
-    @Override
-    public String toString() {
-        return "Player[name=" + name + ", score=" + score + "]";
+    public static void main(String[] args) {
+        Player p = new Player("Ana", 75);
+        System.out.println(p);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Player p)) return false;
-        return score == p.score && name.equals(p.name);
+}`,
+        output: `Player[Ana, 75]`,
+      },
+      {
+        label: "2. equals() — logical equality",
+        code: `public class Main {
+    static class Player {
+        String name; int score;
+        Player(String n, int s) { name = n; score = s; }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Player p)) return false;
+            return score == p.score && name.equals(p.name);
+        }
+        @Override
+        public int hashCode() { return java.util.Objects.hash(name, score); }
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, score);
-    }
-
     public static void main(String[] args) {
         Player a = new Player("Ana", 75);
         Player b = new Player("Ana", 75);
-        Player c = new Player("Bob", 80);
-
-        System.out.println(a);              // toString()
-        System.out.println(a.equals(b));    // true — same content
-        System.out.println(a.equals(c));    // false — different content
-        System.out.println(a == b);         // false — different objects
-
-        // hashCode matters for HashSet/HashMap
-        Set<Player> set = new HashSet<>();
-        set.add(a);
-        System.out.println(set.contains(b)); // true — equals+hashCode work
+        System.out.println(a.equals(b));   // true
+        System.out.println(a == b);        // false
     }
 }`,
-    output: `Player[name=Ana, score=75]
-true
-false
-false
-true`,
+        output: `true
+false`,
+      },
+      {
+        label: "3. hashCode() — needed for HashMap/HashSet",
+        code: `import java.util.*;
+public class Main {
+    static class Player {
+        String name; int score;
+        Player(String n, int s) { name = n; score = s; }
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Player p)) return false;
+            return score == p.score && name.equals(p.name);
+        }
+        @Override
+        public int hashCode() { return Objects.hash(name, score); }
+    }
+    public static void main(String[] args) {
+        Set<Player> set = new HashSet<>();
+        set.add(new Player("Ana", 75));
+        System.out.println(set.contains(new Player("Ana", 75)));  // true
+    }
+}`,
+        output: `true`,
+      },
+    ],
     commonMistakes: [
       "Overriding equals() but not hashCode() — HashSet/HashMap break because equal objects end up in different hash buckets.",
       "equals() not handling null or wrong type — must check 'if (!(o instanceof Player)) return false;' first.",
@@ -6333,47 +6479,62 @@ A 'local class' is declared inside a method and only exists within that method �
       "Outer.this — from inner class, reference the enclosing outer instance",
       "new Interface() { ... } — anonymous class implementing an interface",
     ],
-    example: `import java.util.*;
-
-public class LinkedList<E> {
-    private Node head;
-    private int size = 0;
-
-    // Inner class — each Node belongs to a list
-    private class Node {
-        E data;
-        Node next;
-        Node(E data) { this.data = data; }
+    examples: [
+      {
+        label: "1. Static nested class — no outer instance needed",
+        code: `public class Main {
+    static class StaticNested {
+        void show() { System.out.println("static nested"); }
     }
-
-    // Static nested — Iterator doesn't need list instance at compile time,
-    // but here we make it inner so it can access head/size
-    public class ListIterator implements Iterator<E> {
-        private Node current = head;
-        public boolean hasNext() { return current != null; }
-        public E next() {
-            E data = current.data;
-            current = current.next;
-            return data;
-        }
-    }
-
-    public void add(E item) {
-        Node node = new Node(item);
-        node.next = head;
-        head = node;
-        size++;
-    }
-
     public static void main(String[] args) {
-        var list = new LinkedList<String>();
-        list.add("c"); list.add("b"); list.add("a");
-
-        var it = list.new ListIterator();
-        while (it.hasNext()) System.out.print(it.next() + " ");
+        new StaticNested().show();
     }
 }`,
-    output: `a b c `,
+        output: `static nested`,
+      },
+      {
+        label: "2. Inner class — has access to outer instance",
+        code: `public class Main {
+    private int x = 10;
+    class Inner {
+        void show() { System.out.println("inner, x=" + x); }
+    }
+    public static void main(String[] args) {
+        Main outer = new Main();
+        outer.new Inner().show();
+    }
+}`,
+        output: `inner, x=10`,
+      },
+      {
+        label: "3. Anonymous class — implement interface inline",
+        code: `public class Main {
+    public static void main(String[] args) {
+        Runnable r = new Runnable() {
+            public void run() { System.out.println("running"); }
+        };
+        r.run();
+    }
+}`,
+        output: `running`,
+      },
+      {
+        label: "4. Anonymous vs lambda (prefer lambda)",
+        code: `public class Main {
+    public static void main(String[] args) {
+        // Verbose: anonymous class
+        Runnable r1 = new Runnable() { public void run() { System.out.println("anon"); } };
+
+        // Clean: lambda (Java 8+)
+        Runnable r2 = () -> System.out.println("lambda");
+
+        r1.run(); r2.run();
+    }
+}`,
+        output: `anon
+lambda`,
+      },
+    ],
     commonMistakes: [
       "Forgetting that inner classes hold a hidden reference to the outer instance — this can cause memory leaks if the outer is large and the inner outlives it.",
       "Trying to instantiate an inner class as 'new Inner()' from a static context — must use 'outer.new Inner()'.",
@@ -6534,52 +6695,39 @@ int idx = list.indexOf("a");    // -1 if not found`,
       "subList(from, to) — view of elements from 'from' (incl) to 'to' (excl)",
       "toArray() — convert to Object[] or typed array",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Add, get, set, remove",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        List<String> fruits = new ArrayList<>();
-        fruits.add("apple");
-        fruits.add("banana");
-        fruits.add("cherry");
-
-        System.out.println("Size: " + fruits.size());
-        System.out.println("First: " + fruits.get(0));
-        System.out.println("Has banana? " + fruits.contains("banana"));
-
-        // Insert at index
-        fruits.add(1, "blueberry");
-        System.out.println("After insert: " + fruits);
-
-        // Replace
-        fruits.set(0, "AVOCADO");
-        System.out.println("After set: " + fruits);
-
-        // Remove
+        List<String> fruits = new ArrayList<>(List.of("apple", "banana", "cherry"));
+        fruits.add("date");
+        System.out.println("Get 0: " + fruits.get(0));
+        fruits.set(1, "blueberry");
         fruits.remove("cherry");
-        System.out.println("After remove: " + fruits);
-
-        // Iterate
-        for (String f : fruits) System.out.print(f + " ");
-        System.out.println();
-
-        // Sort
-        Collections.sort(fruits);
-        System.out.println("Sorted: " + fruits);
-
-        // Convert to array
-        String[] arr = fruits.toArray(new String[0]);
-        System.out.println("Array length: " + arr.length);
+        System.out.println(fruits);
     }
 }`,
-    output: `Size: 3
-First: apple
-Has banana? true
-After insert: [apple, blueberry, banana, cherry]
-After set: [AVOCADO, blueberry, banana, cherry]
-After remove: [AVOCADO, blueberry, banana]
-AVOCADO blueberry banana 
-Sorted: [AVOCADO, banana, blueberry]`,
+        output: `Get 0: apple
+[apple, blueberry, date]`,
+      },
+      {
+        label: "2. Sort and search",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> nums = new ArrayList<>(List.of(5, 2, 8, 1, 9));
+        Collections.sort(nums);
+        System.out.println("Sorted: " + nums);
+        int idx = Collections.binarySearch(nums, 8);
+        System.out.println("Index of 8: " + idx);
+    }
+}`,
+        output: `Sorted: [1, 2, 5, 8, 9]
+Index of 8: 3`,
+      },
+    ],
     commonMistakes: [
       "Using remove(Object) when you meant remove(int) — list.remove(1) removes the element at index 1, but list.remove(Integer.valueOf(1)) removes the Integer 1.",
       "Modifying the list while iterating with a for-each — ConcurrentModificationException. Use iterator.remove() or removeIf().",
@@ -6682,46 +6830,51 @@ queue.poll();              // remove from front`,
       "peek() — look at first element without removing",
       "size() — O(1)",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Add at both ends (fast)",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
         LinkedList<String> list = new LinkedList<>();
-        list.add("B");
-        list.add("C");
-        list.addFirst("A");     // O(1) — would be O(n) in ArrayList
+        list.addFirst("B");
+        list.addLast("C");
+        list.addFirst("A");
         list.addLast("D");
-        System.out.println("List: " + list);
-
-        // Stack operations
-        list.push("Z");         // adds to front
-        System.out.println("After push: " + list);
-        System.out.println("Pop: " + list.pop());
-        System.out.println("After pop: " + list);
-
-        // Queue operations
-        System.out.println("Peek: " + list.peek());    // look at front
-        System.out.println("Poll: " + list.poll());    // remove front
-        System.out.println("After poll: " + list);
-
-        // Random access is SLOW — O(n)
-        System.out.println("Index 1: " + list.get(1));
-
-        // Ends are fast
-        System.out.println("First: " + list.getFirst());
-        System.out.println("Last: " + list.getLast());
+        System.out.println(list);
     }
 }`,
-    output: `List: [A, B, C, D]
-After push: [Z, A, B, C, D]
-Pop: Z
-After pop: [A, B, C, D]
-Peek: A
-Poll: A
-After poll: [B, C, D]
-Index 1: C
-First: B
-Last: D`,
+        output: `[A, B, C, D]`,
+      },
+      {
+        label: "2. Use as a stack (push/pop)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        LinkedList<String> stack = new LinkedList<>();
+        stack.push("a"); stack.push("b"); stack.push("c");
+        System.out.println("Pop: " + stack.pop());
+        System.out.println("Pop: " + stack.pop());
+    }
+}`,
+        output: `Pop: c
+Pop: b`,
+      },
+      {
+        label: "3. Use as a queue (offer/poll)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        LinkedList<String> q = new LinkedList<>();
+        q.offer("first"); q.offer("second"); q.offer("third");
+        System.out.println("Poll: " + q.poll());
+        System.out.println("Poll: " + q.poll());
+    }
+}`,
+        output: `Poll: first
+Poll: second`,
+      },
+    ],
     commonMistakes: [
       "Using get(index) in a loop — O(n²) total. Use an iterator or for-each instead.",
       "Choosing LinkedList for 'performance' when ArrayList is actually faster — cache locality matters more than Big-O for small/medium lists.",
@@ -6799,54 +6952,48 @@ for (Map.Entry<String, Integer> e : map.entrySet()) {
       "merge(key, value, remappingFunction) — combine old and new values",
       "compute(key, remappingFunction) — compute a new value from the old",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. put, get, and getOrDefault",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Map<String, Integer> ages = new HashMap<>();
-        ages.put("Ana", 19);
-        ages.put("Bob", 21);
-        ages.put("Cy", 19);
-
+        ages.put("Ana", 19); ages.put("Bob", 21);
         System.out.println("Ana: " + ages.get("Ana"));
-        System.out.println("Unknown: " + ages.get("Zoe"));           // null
-        System.out.println("Default: " + ages.getOrDefault("Zoe", 0));
-
-        // put returns old value
-        Integer old = ages.put("Ana", 20);
-        System.out.println("Old Ana: " + old + ", new: " + ages.get("Ana"));
-
-        // putIfAbsent — doesn't overwrite
-        ages.putIfAbsent("Ana", 99);
-        System.out.println("Ana still: " + ages.get("Ana"));   // 20
-
-        // Iterate
-        ages.forEach((k, v) -> System.out.println(k + " -> " + v));
-
-        // Count occurrences with merge
-        Map<String, Integer> wordCount = new HashMap<>();
-        for (String w : new String[]{"a", "b", "a", "c", "b", "a"}) {
-            wordCount.merge(w, 1, Integer::sum);
-        }
-        System.out.println("Word counts: " + wordCount);
-
-        // Keys, values, entries
-        System.out.println("Keys: " + ages.keySet());
-        System.out.println("Values: " + ages.values());
-        System.out.println("Size: " + ages.size());
+        System.out.println("Missing: " + ages.getOrDefault("Cy", 0));
     }
 }`,
-    output: `Ana: 19
-Unknown: null
-Default: 0
-Old Ana: 19, new: 20
-Ana -> 20
-Bob -> 21
-Cy -> 19
-Word counts: {a=3, b=2, c=1}
-Keys: [Ana, Bob, Cy]
-Values: [20, 21, 19]
-Size: 3`,
+        output: `Ana: 19
+Missing: 0`,
+      },
+      {
+        label: "2. Iterate entries",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<String, Integer> ages = new HashMap<>();
+        ages.put("Ana", 19); ages.put("Bob", 21);
+        ages.forEach((k, v) -> System.out.println(k + " -> " + v));
+    }
+}`,
+        output: `Ana -> 19
+Bob -> 21`,
+      },
+      {
+        label: "3. merge — atomic increment (word count)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<String, Integer> counts = new HashMap<>();
+        for (String w : "a b a c b a".split(" "))
+            counts.merge(w, 1, Integer::sum);
+        System.out.println(counts);
+    }
+}`,
+        output: `{a=3, b=2, c=1}`,
+      },
+    ],
     commonMistakes: [
       "Using a mutable object as a key and then changing its fields — the entry becomes unfindable because hashCode changed.",
       "Forgetting that get() returns null for missing keys — use getOrDefault() or containsKey() to distinguish 'absent' from 'value is null'.",
@@ -6951,51 +7098,41 @@ String last  = ((TreeMap<String,Integer>)map).lastKey();`,
       "pollFirstEntry() / pollLastEntry() — remove and return first/last entry",
       "keySet() / values() / entrySet() — all in sorted order",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Sorted keys",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
         TreeMap<String, Integer> prices = new TreeMap<>();
-        prices.put("banana", 2);
-        prices.put("apple", 5);
-        prices.put("cherry", 10);
-        prices.put("date", 7);
-
-        // Keys are sorted!
-        System.out.println("All: " + prices);
-        System.out.println("First: " + prices.firstKey());
-        System.out.println("Last: " + prices.lastKey());
-
-        // Range queries
+        prices.put("cherry", 10); prices.put("apple", 5); prices.put("banana", 2);
+        System.out.println("Sorted: " + prices);
+        System.out.println("First key: " + prices.firstKey());
+        System.out.println("Last key: " + prices.lastKey());
+    }
+}`,
+        output: `Sorted: {apple=5, banana=2, cherry=10}
+First key: apple
+Last key: cherry`,
+      },
+      {
+        label: "2. Range queries",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        TreeMap<String, Integer> prices = new TreeMap<>();
+        prices.put("apple", 5); prices.put("banana", 2);
+        prices.put("cherry", 10); prices.put("date", 7);
         System.out.println("a-c: " + prices.subMap("a", "d"));
         System.out.println("Before d: " + prices.headMap("d"));
         System.out.println("From d: " + prices.tailMap("d"));
-
-        // Nearest keys
-        System.out.println("Higher than 'banana': " + prices.higherKey("banana"));
-        System.out.println("Floor of 'blueberry': " + prices.floorKey("blueberry"));
-        System.out.println("Ceiling of 'blueberry': " + prices.ceilingKey("blueberry"));
-
-        // Poll (remove + return)
-        System.out.println("Poll first: " + prices.pollFirstEntry());
-
-        // Reverse order
-        TreeMap<String, Integer> rev = new TreeMap<>(Collections.reverseOrder());
-        rev.putAll(prices);
-        System.out.println("Reversed: " + rev);
     }
 }`,
-    output: `All: {apple=5, banana=2, cherry=10, date=7}
-First: apple
-Last: date
-a-c: {apple=5, banana=2, cherry=10}
+        output: `a-c: {apple=5, banana=2, cherry=10}
 Before d: {apple=5, banana=2, cherry=10}
-From d: {date=7}
-Higher than 'banana': cherry
-Floor of 'blueberry': banana
-Ceiling of 'blueberry': cherry
-Poll first: apple=5
-Reversed: {date=7, cherry=10, banana=2}`,
+From d: {date=7}`,
+      },
+    ],
     commonMistakes: [
       "Using TreeMap when you don't need sorted keys — HashMap is faster (O(1) vs O(log n)).",
       "Putting a null key — throws NullPointerException. HashMap allows one null key; TreeMap does not.",
@@ -7063,54 +7200,56 @@ List<String> unique = new ArrayList<>(new HashSet<>(listWithDups));`,
       "removeAll(coll) — difference (remove elements in coll)",
       "containsAll(coll) — true if all elements present",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Basic add and contains",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Set<String> fruits = new HashSet<>();
-        fruits.add("apple");
-        fruits.add("banana");
-        fruits.add("cherry");
-
-        // Duplicate — silently ignored
-        boolean added = fruits.add("apple");
-        System.out.println("Added apple again? " + added);  // false
-        System.out.println("Size: " + fruits.size());        // 3
-
-        // Contains — O(1)
+        fruits.add("apple"); fruits.add("banana"); fruits.add("cherry");
         System.out.println("Has banana? " + fruits.contains("banana"));
-
-        // Remove duplicates from a list
-        List<String> list = List.of("a", "b", "a", "c", "b", "d");
-        Set<String> unique = new HashSet<>(list);
-        System.out.println("Unique: " + unique);
-        System.out.println("Unique count: " + unique.size());
-
-        // Set operations
-        Set<String> a = new HashSet<>(List.of("x", "y", "z"));
-        Set<String> b = new HashSet<>(List.of("y", "z", "w"));
-
-        Set<String> union = new HashSet<>(a); union.addAll(b);
-        Set<String> inter = new HashSet<>(a); inter.retainAll(b);
-        Set<String> diff  = new HashSet<>(a); diff.removeAll(b);
-        System.out.println("Union: " + union);     // [x, y, z, w]
-        System.out.println("Intersection: " + inter); // [y, z]
-        System.out.println("Difference: " + diff);   // [x]
-
-        // Null is allowed (once)
-        fruits.add(null);
-        System.out.println("Has null? " + fruits.contains(null));
+        boolean added = fruits.add("apple");  // duplicate — ignored
+        System.out.println("Added apple again? " + added);
     }
 }`,
-    output: `Added apple again? false
-Size: 3
-Has banana? true
-Unique: [a, b, c, d]
-Unique count: 4
-Union: [x, y, z, w]
-Intersection: [y, z]
-Difference: [x]
-Has null? true`,
+        output: `Has banana? true
+Added apple again? false`,
+      },
+      {
+        label: "2. Remove duplicates from a list",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = List.of("a", "b", "a", "c", "b", "d");
+        Set<String> unique = new HashSet<>(list);
+        System.out.println("Original: " + list);
+        System.out.println("Unique: " + unique);
+    }
+}`,
+        output: `Original: [a, b, a, c, b, d]
+Unique: [a, b, c, d]`,
+      },
+      {
+        label: "3. Set operations — union, intersection, difference",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Set<Integer> a = new HashSet<>(List.of(1, 2, 3));
+        Set<Integer> b = new HashSet<>(List.of(2, 3, 4));
+        Set<Integer> union = new HashSet<>(a); union.addAll(b);
+        Set<Integer> inter = new HashSet<>(a); inter.retainAll(b);
+        Set<Integer> diff  = new HashSet<>(a); diff.removeAll(b);
+        System.out.println("Union: " + union);
+        System.out.println("Intersection: " + inter);
+        System.out.println("Difference: " + diff);
+    }
+}`,
+        output: `Union: [1, 2, 3, 4]
+Intersection: [2, 3]
+Difference: [1]`,
+      },
+    ],
     commonMistakes: [
       "Relying on iteration order — HashSet has no order. Use LinkedHashSet for insertion order, TreeSet for sorted.",
       "Modifying an element's fields after adding it — the set can no longer find it (hashCode changed).",
@@ -7177,54 +7316,56 @@ Integer higher = ts.higher(3);  // 5 — smallest > 3`,
       "pollFirst() / pollLast() — remove and return first/last",
       "descendingSet() — reverse-order view",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Sorted iteration",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        TreeSet<Integer> scores = new TreeSet<>();
-        scores.add(85);
-        scores.add(92);
-        scores.add(78);
-        scores.add(95);
-        scores.add(88);
-
-        // Sorted iteration
-        System.out.println("All: " + scores);
-        System.out.println("First: " + scores.first());
-        System.out.println("Last: " + scores.last());
-
-        // Navigation
-        System.out.println("Higher than 88: " + scores.higher(88));
-        System.out.println("Lower than 88: " + scores.lower(88));
-        System.out.println("Floor of 90: " + scores.floor(90));
-        System.out.println("Ceiling of 90: " + scores.ceiling(90));
-
-        // Range queries
-        System.out.println("80-90: " + scores.subSet(80, 91));
-        System.out.println("Before 85: " + scores.headSet(85));
-        System.out.println("From 88: " + scores.tailSet(88));
-
-        // Poll
-        System.out.println("Poll first: " + scores.pollFirst());
-        System.out.println("After poll: " + scores);
-
-        // Descending
-        System.out.println("Descending: " + scores.descendingSet());
+        TreeSet<Integer> set = new TreeSet<>();
+        set.add(50); set.add(20); set.add(80); set.add(10); set.add(30);
+        System.out.println("Sorted: " + set);
+        System.out.println("First: " + set.first());
+        System.out.println("Last: " + set.last());
     }
 }`,
-    output: `All: [78, 85, 88, 92, 95]
-First: 78
-Last: 95
-Higher than 88: 92
-Lower than 88: 85
-Floor of 90: 88
-Ceiling of 90: 92
-80-90: [85, 88]
-Before 85: [78]
-From 88: [88, 92, 95]
-Poll first: 78
-After poll: [85, 88, 92, 95]
-Descending: [95, 92, 88, 85]`,
+        output: `Sorted: [10, 20, 30, 50, 80]
+First: 10
+Last: 80`,
+      },
+      {
+        label: "2. Navigation — higher, lower, floor, ceiling",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        TreeSet<Integer> set = new TreeSet<>(Set.of(10, 20, 30, 50, 80));
+        System.out.println("Higher than 30: " + set.higher(30));
+        System.out.println("Lower than 30: " + set.lower(30));
+        System.out.println("Floor of 35: " + set.floor(35));
+        System.out.println("Ceiling of 35: " + set.ceiling(35));
+    }
+}`,
+        output: `Higher than 30: 50
+Lower than 30: 20
+Floor of 35: 30
+Ceiling of 35: 50`,
+      },
+      {
+        label: "3. Range queries — subSet, headSet, tailSet",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        TreeSet<Integer> set = new TreeSet<>(Set.of(10, 20, 30, 50, 80));
+        System.out.println("20-70: " + set.subSet(20, 70));
+        System.out.println("Before 30: " + set.headSet(30));
+        System.out.println("From 30: " + set.tailSet(30));
+    }
+}`,
+        output: `20-70: [20, 30, 50]
+Before 30: [10, 20]
+From 30: [30, 50, 80]`,
+      },
+    ],
     commonMistakes: [
       "Adding null — throws NullPointerException. HashSet allows null; TreeSet does not.",
       "Using TreeSet when HashSet would do — TreeSet is slower (O(log n) vs O(1)). Only use it when you need sorting.",
@@ -7289,52 +7430,50 @@ int smallest = pq.poll(); // remove and return front (1)`,
       "clear() — remove all",
       "contains(o) — true if present (O(n))",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Min-heap — smallest comes out first",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        // Min-heap — smallest comes out first
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-        minHeap.offer(5);
-        minHeap.offer(1);
-        minHeap.offer(3);
-        minHeap.offer(8);
-        minHeap.offer(2);
-
-        System.out.println("Peek: " + minHeap.peek());  // 1
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        pq.offer(5); pq.offer(1); pq.offer(3); pq.offer(8); pq.offer(2);
+        System.out.println("Peek: " + pq.peek());
         System.out.print("Poll order: ");
-        while (!minHeap.isEmpty()) System.out.print(minHeap.poll() + " ");
-        System.out.println();
-
-        // Max-heap — largest first
-        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
-        maxHeap.addAll(List.of(5, 1, 3, 8, 2));
-        System.out.print("Max-heap order: ");
-        while (!maxHeap.isEmpty()) System.out.print(maxHeap.poll() + " ");
-        System.out.println();
-
-        // Top 3 largest from a stream
-        int[] data = {7, 2, 9, 1, 5, 8, 3, 6, 4};
-        PriorityQueue<Integer> topK = new PriorityQueue<>(); // min-heap of size 3
-        for (int n : data) {
-            topK.offer(n);
-            if (topK.size() > 3) topK.poll(); // evict smallest
-        }
-        System.out.println("Top 3: " + topK);
-
-        // Custom priority — shortest strings first
-        PriorityQueue<String> byLen = new PriorityQueue<>(Comparator.comparingInt(String::length));
-        byLen.addAll(List.of("banana", "kiwi", "apple", "fig"));
-        System.out.print("By length: ");
-        while (!byLen.isEmpty()) System.out.print(byLen.poll() + " ");
+        while (!pq.isEmpty()) System.out.print(pq.poll() + " ");
         System.out.println();
     }
 }`,
-    output: `Peek: 1
-Poll order: 1 2 3 5 8 
-Max-heap order: 8 5 3 2 1 
-Top 3: [7, 8, 9]
-By length: fig kiwi apple banana `,
+        output: `Peek: 1
+Poll order: 1 2 3 5 8 `,
+      },
+      {
+        label: "2. Custom priority — shortest strings first",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        PriorityQueue<String> pq = new PriorityQueue<>(Comparator.comparingInt(String::length));
+        pq.offer("banana"); pq.offer("fig"); pq.offer("kiwi"); pq.offer("apple");
+        while (!pq.isEmpty()) System.out.print(pq.poll() + " ");
+        System.out.println();
+    }
+}`,
+        output: `fig kiwi apple banana `,
+      },
+      {
+        label: "3. Max-heap — largest first",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        pq.addAll(List.of(5, 1, 3, 8, 2));
+        while (!pq.isEmpty()) System.out.print(pq.poll() + " ");
+        System.out.println();
+    }
+}`,
+        output: `8 5 3 2 1 `,
+      },
+    ],
     commonMistakes: [
       "Iterating with a for-each and expecting priority order — the iterator does NOT return elements sorted. Use poll() in a loop instead.",
       "Using PriorityQueue as a regular queue (FIFO) — it's NOT FIFO. Elements come out by priority, not insertion order. Use LinkedList or ArrayDeque for FIFO.",
@@ -7402,54 +7541,60 @@ deque.removeLast();`,
       "getFirst() / getLast() — look (throws if empty)",
       "size() / isEmpty() / clear()",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Stack usage (LIFO) with ArrayDeque",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        // Stack — LIFO (like undo history)
-        Deque<String> undo = new ArrayDeque<>();
-        undo.push("type A");
-        undo.push("type B");
-        undo.push("type C");
-        System.out.println("Top: " + undo.peek());   // C
-        System.out.println("Undo: " + undo.pop());    // C
-        System.out.println("Undo: " + undo.pop());    // B
-        System.out.println("Remaining: " + undo);     // [type A]
-
-        // Queue — FIFO (like a print queue)
-        Deque<String> printQueue = new ArrayDeque<>();
-        printQueue.offer("doc1.pdf");
-        printQueue.offer("doc2.pdf");
-        printQueue.offer("doc3.pdf");
-        System.out.println("\\nNext to print: " + printQueue.peek());  // doc1
-        System.out.println("Printing: " + printQueue.poll());           // doc1
-        System.out.println("Printing: " + printQueue.poll());           // doc2
-
-        // Bracket matching with a stack
-        String code = "{[()]}";
-        Deque<Character> brackets = new ArrayDeque<>();
-        boolean balanced = true;
-        for (char c : code.toCharArray()) {
-            if ("{[(".indexOf(c) >= 0) brackets.push(c);
-            else if ("}])".indexOf(c) >= 0) {
-                if (brackets.isEmpty()) { balanced = false; break; }
-                char open = brackets.pop();
-                if (open != "{[(".charAt("}])".indexOf(c))) { balanced = false; break; }
-            }
-        }
-        System.out.println("\\nBrackets balanced? " + (balanced && brackets.isEmpty()));
+        Deque<String> stack = new ArrayDeque<>();
+        stack.push("a"); stack.push("b"); stack.push("c");
+        System.out.println("Top: " + stack.peek());
+        System.out.println("Pop: " + stack.pop());
+        System.out.println("Pop: " + stack.pop());
     }
 }`,
-    output: `Top: type C
-Undo: type C
-Undo: type B
-Remaining: [type A]
-
-Next to print: doc1.pdf
-Printing: doc1.pdf
-Printing: doc2.pdf
-
-Brackets balanced? true`,
+        output: `Top: c
+Pop: c
+Pop: b`,
+      },
+      {
+        label: "2. Queue usage (FIFO) with ArrayDeque",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Deque<String> q = new ArrayDeque<>();
+        q.offer("first"); q.offer("second"); q.offer("third");
+        System.out.println("Front: " + q.peek());
+        System.out.println("Poll: " + q.poll());
+        System.out.println("Poll: " + q.poll());
+    }
+}`,
+        output: `Front: first
+Poll: first
+Poll: second`,
+      },
+      {
+        label: "3. Bracket matching with a stack",
+        code: `import java.util.*;
+public class Main {
+    static boolean balanced(String s) {
+        Deque<Character> st = new ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if ("{[(".indexOf(c) >= 0) st.push(c);
+            else if (st.isEmpty() || "{[(".charAt("}])".indexOf(c)) != st.pop()) return false;
+        }
+        return st.isEmpty();
+    }
+    public static void main(String[] args) {
+        System.out.println("{[()]} balanced? " + balanced("{[()]}"));
+        System.out.println("{[(])} balanced? " + balanced("{[(])}"));
+    }
+}`,
+        output: `{[()]} balanced? true
+{[(])} balanced? false`,
+      },
+    ],
     commonMistakes: [
       "Using the legacy Stack class — it's synchronized (slow) and extends Vector (bad design). Use ArrayDeque instead.",
       "Adding null to ArrayDeque — throws NullPointerException. Use LinkedList if you need nulls.",
@@ -7516,60 +7661,69 @@ list.removeIf(s -> s.startsWith("x"));`,
       "forEachRemaining(Consumer) — apply an action to each remaining element",
       "Iterable.forEach(Consumer) — Java 8+ shortcut, no explicit iterator needed",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. for-each uses Iterator internally",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        List<String> names = new ArrayList<>(List.of("Ana", "Bob", "Cy", "Dave", "Eve"));
-
-        // for-each uses Iterator internally
+        List<String> names = List.of("Ana", "Bob", "Cy");
         for (String n : names) System.out.print(n + " ");
         System.out.println();
-
-        // Explicit Iterator
-        Iterator<String> it = names.iterator();
-        while (it.hasNext()) {
-            String n = it.next();
-            System.out.print(n.length() + " ");
-        }
-        System.out.println();
-
-        // Safe removal during iteration
-        Iterator<String> it2 = names.iterator();
-        while (it2.hasNext()) {
-            String n = it2.next();
-            if (n.length() <= 3) it2.remove();   // remove short names
-        }
-        System.out.println("After removing short: " + names);
-
-        // Modern: removeIf (uses iterator internally)
-        names.removeIf(n -> n.contains("a"));
-        System.out.println("After removeIf: " + names);
-
-        // Custom Iterable — for-each on your own class
-        Range range = new Range(1, 5);
-        for (int i : range) System.out.print(i + " ");
-        System.out.println();
-    }
-}
-
-// Implementing Iterable enables for-each
-class Range implements Iterable<Integer> {
-    private final int start, end;
-    Range(int start, int end) { this.start = start; this.end = end; }
-    public Iterator<Integer> iterator() {
-        return new Iterator<>() {
-            int current = start;
-            public boolean hasNext() { return current <= end; }
-            public Integer next() { return current++; }
-        };
     }
 }`,
-    output: `Ana Bob Cy Dave Eve 
-3 3 2 4 3 
-After removing short: [Dave]
-After removeIf: [Dave]
-1 2 3 4 5 `,
+        output: `Ana Bob Cy `,
+      },
+      {
+        label: "2. Explicit Iterator with safe removal",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<String> names = new ArrayList<>(List.of("Ana", "Bob", "Cy", "Dave"));
+        Iterator<String> it = names.iterator();
+        while (it.hasNext()) {
+            if (it.next().length() <= 3) it.remove();
+        }
+        System.out.println("After removing short: " + names);
+    }
+}`,
+        output: `After removing short: [Dave]`,
+      },
+      {
+        label: "3. removeIf — modern shortcut",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<String> names = new ArrayList<>(List.of("Ana", "Bob", "Cy", "Dave"));
+        names.removeIf(n -> n.length() <= 3);
+        System.out.println(names);
+    }
+}`,
+        output: `[Dave]`,
+      },
+      {
+        label: "4. Custom Iterable — enable for-each on your class",
+        code: `import java.util.*;
+public class Main {
+    static class Range implements Iterable<Integer> {
+        int start, end;
+        Range(int s, int e) { start = s; end = e; }
+        public Iterator<Integer> iterator() {
+            return new Iterator<>() {
+                int cur = start;
+                public boolean hasNext() { return cur <= end; }
+                public Integer next() { return cur++; }
+            };
+        }
+    }
+    public static void main(String[] args) {
+        for (int i : new Range(1, 5)) System.out.print(i + " ");
+        System.out.println();
+    }
+}`,
+        output: `1 2 3 4 5 `,
+      },
+    ],
     commonMistakes: [
       "Calling next() without checking hasNext() — throws NoSuchElementException at the end.",
       "Modifying the collection while iterating with a for-each — ConcurrentModificationException. Use iterator.remove() or removeIf().",
@@ -7634,58 +7788,43 @@ people.sort(byNameDesc);`,
       "nullsFirst / nullsLast — handle nulls in sorting",
       "naturalOrder() / reverseOrder() — use the Comparable's ordering",
     ],
-    example: `import java.util.*;
-import java.util.stream.*;
-
+    examples: [
+      {
+        label: "1. Comparable — natural ordering (inside the class)",
+        code: `import java.util.*;
 public class Main {
-    public static void main(String[] args) {
-        var people = new ArrayList<>(List.of(
-            new Person("Ana", 19),
-            new Person("Bob", 25),
-            new Person("Cy", 19),
-            new Person("Dave", 30)
-        ));
-
-        // Natural ordering (Comparable — by name)
-        Collections.sort(people);
-        System.out.println("By name: " + people);
-
-        // By age (Comparator)
-        people.sort(Comparator.comparingInt(Person::getAge));
-        System.out.println("By age: " + people);
-
-        // By age descending
-        people.sort(Comparator.comparingInt(Person::getAge).reversed());
-        System.out.println("By age desc: " + people);
-
-        // By age, then name for ties
-        people.sort(Comparator.comparingInt(Person::getAge)
-                              .thenComparing(Person::getName));
-        System.out.println("By age, then name: " + people);
-
-        // Top 2 oldest
-        people.stream()
-              .sorted(Comparator.comparingInt(Person::getAge).reversed())
-              .limit(2)
-              .forEach(System.out::println);
+    static class Person implements Comparable<Person> {
+        String name; int age;
+        Person(String n, int a) { name = n; age = a; }
+        public int compareTo(Person o) { return name.compareTo(o.name); }
+        public String toString() { return name + "(" + age + ")"; }
     }
-}
-
-class Person implements Comparable<Person> {
-    private String name;
-    private int age;
-    Person(String n, int a) { name = n; age = a; }
-    public String getName() { return name; }
-    public int getAge() { return age; }
-    public int compareTo(Person o) { return name.compareTo(o.name); }
-    public String toString() { return name + "(" + age + ")"; }
+    public static void main(String[] args) {
+        List<Person> people = List.of(new Person("Bob", 25), new Person("Ana", 19));
+        Collections.sort(new ArrayList<>(people));
+        System.out.println(people);
+    }
 }`,
-    output: `By name: [Ana(19), Bob(25), Cy(19), Dave(30)]
-By age: [Ana(19), Cy(19), Bob(25), Dave(30)]
-By age desc: [Dave(30), Bob(25), Ana(19), Cy(19)]
-By age, then name: [Ana(19), Cy(19), Bob(25), Dave(30)]
-Dave(30)
-Bob(25)`,
+        output: `[Bob(25), Ana(19)]`,
+      },
+      {
+        label: "2. Comparator — custom ordering (external)",
+        code: `import java.util.*;
+public class Main {
+    record Person(String name, int age) {}
+    public static void main(String[] args) {
+        List<Person> people = new ArrayList<>(List.of(
+            new Person("Ana", 19), new Person("Bob", 25), new Person("Cy", 19)));
+        people.sort(Comparator.comparingInt(Person::age));
+        System.out.println("By age: " + people);
+        people.sort(Comparator.comparing(Person::name).reversed());
+        System.out.println("By name desc: " + people);
+    }
+}`,
+        output: `By age: [Person[name=Ana, age=19], Person[name=Cy, age=19], Person[name=Bob, age=25]]
+By name desc: [Person[name=Cy, age=19], Person[name=Bob, age=25], Person[name=Ana, age=19]]`,
+      },
+    ],
     commonMistakes: [
       "Returning 1 or -1 instead of the difference — use Integer.compare(a, b) to avoid integer overflow bugs (e.g., a-b overflows for large values).",
       "Forgetting that compareTo must be consistent with equals — if a.compareTo(b) == 0, a.equals(b) should be true, or TreeSet/TreeMap will behave unexpectedly.",
@@ -7758,61 +7897,50 @@ List<Integer> empty = Collections.emptyList();`,
       "emptyList() / emptySet() / emptyMap() — immutable empty collections",
       "addAll(coll, elements...) — add multiple elements at once",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. sort and reverse",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        List<Integer> nums = new ArrayList<>(List.of(3, 1, 4, 1, 5, 9, 2, 6));
-
-        // Sort
+        List<Integer> nums = new ArrayList<>(List.of(3, 1, 4, 1, 5, 9));
         Collections.sort(nums);
         System.out.println("Sorted: " + nums);
-
-        // Binary search (list must be sorted!)
-        System.out.println("Index of 4: " + Collections.binarySearch(nums, 4));
-        System.out.println("Index of 7: " + Collections.binarySearch(nums, 7));  // negative
-
-        // Frequency and max/min
-        System.out.println("Count of 1: " + Collections.frequency(nums, 1));
-        System.out.println("Max: " + Collections.max(nums));
-        System.out.println("Min: " + Collections.min(nums));
-
-        // Reverse and shuffle
         Collections.reverse(nums);
         System.out.println("Reversed: " + nums);
-        Collections.shuffle(nums);
-        System.out.println("Shuffled: " + nums);
-
-        // Unmodifiable wrapper
-        List<Integer> readOnly = Collections.unmodifiableList(nums);
-        System.out.println("Read-only: " + readOnly);
-        try { readOnly.add(99); } catch (UnsupportedOperationException e) {
-            System.out.println("Can't modify read-only list");
-        }
-
-        // Singleton and empty
-        List<String> one = Collections.singletonList("only");
-        List<String> empty = Collections.emptyList();
-        System.out.println("Singleton: " + one + ", empty: " + empty);
-
-        // addAll
-        List<String> fruits = new ArrayList<>();
-        Collections.addAll(fruits, "apple", "banana", "cherry");
-        System.out.println("Fruits: " + fruits);
     }
 }`,
-    output: `Sorted: [1, 1, 2, 3, 4, 5, 6, 9]
-Index of 4: 4
-Index of 7: -6
-Count of 1: 2
-Max: 9
-Min: 1
-Reversed: [9, 6, 5, 4, 3, 2, 1, 1]
-Shuffled: [3, 1, 9, 1, 5, 6, 2, 4]
-Read-only: [3, 1, 9, 1, 5, 6, 2, 4]
-Can't modify read-only list
-Singleton: [only], empty: []
-Fruits: [apple, banana, cherry]`,
+        output: `Sorted: [1, 1, 3, 4, 5, 9]
+Reversed: [9, 5, 4, 3, 1, 1]`,
+      },
+      {
+        label: "2. shuffle and frequency",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> nums = new ArrayList<>(List.of(1, 2, 1, 3, 1));
+        System.out.println("Count of 1: " + Collections.frequency(nums, 1));
+        Collections.shuffle(nums);
+        System.out.println("Shuffled: " + nums);
+    }
+}`,
+        output: `Count of 1: 3
+Shuffled: [3, 1, 2, 1, 1]`,
+      },
+      {
+        label: "3. unmodifiableList — read-only wrapper",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>(List.of("a", "b"));
+        List<String> readOnly = Collections.unmodifiableList(list);
+        try { readOnly.add("c"); }
+        catch (UnsupportedOperationException e) { System.out.println("Can't modify"); }
+    }
+}`,
+        output: `Can't modify`,
+      },
+    ],
     commonMistakes: [
       "Calling binarySearch on an UNSORTED list — returns garbage. Sort first.",
       "Forgetting that unmodifiable wrappers return a VIEW, not a copy — changes to the original are visible through the wrapper.",
@@ -7983,52 +8111,45 @@ try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream("data
       "flush() — force the buffer contents to the underlying stream",
       "BufferedInputStream/BufferedOutputStream — byte versions",
     ],
-    example: `import java.io.*;
+    examples: [
+      {
+        label: "1. Read lines with BufferedReader",
+        code: `import java.io.*;
 import java.nio.file.*;
-
 public class Main {
-    public static void main(String[] args) throws IOException {
-        // Write a file with BufferedWriter
-        Path file = Path.of("demo.txt");
-        try (BufferedWriter bw = Files.newBufferedWriter(file)) {
-            bw.write("Line 1: Hello");
-            bw.newLine();
-            bw.write("Line 2: World");
-            bw.newLine();
-            bw.write("Line 3: Goodbye");
-        }
-
-        // Read with BufferedReader
-        System.out.println("--- readLine loop ---");
+    public static void main(String[] args) throws Exception {
+        Path file = Files.createTempFile("demo", ".txt");
+        Files.writeString(file, "Line 1\\nLine 2\\nLine 3");
         try (BufferedReader br = Files.newBufferedReader(file)) {
             String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
+            while ((line = br.readLine()) != null) System.out.println(line);
         }
-
-        // Read with lines() stream (Java 8+)
-        System.out.println("--- lines().filter ---");
-        try (var lines = Files.lines(file)) {
-            lines.filter(l -> l.contains("World"))
-                 .forEach(System.out::println);
-        }
-
-        // Count lines
-        try (var lines = Files.lines(file)) {
-            System.out.println("Line count: " + lines.count());
-        }
-
-        Files.deleteIfExists(file);
     }
 }`,
-    output: `--- readLine loop ---
-Line 1: Hello
-Line 2: World
-Line 3: Goodbye
---- lines().filter ---
-Line 2: World
-Line count: 3`,
+        output: `Line 1
+Line 2
+Line 3`,
+      },
+      {
+        label: "2. Write with BufferedWriter",
+        code: `import java.io.*;
+import java.nio.file.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Path file = Path.of("output.txt");
+        try (BufferedWriter bw = Files.newBufferedWriter(file)) {
+            bw.write("First line");
+            bw.newLine();
+            bw.write("Second line");
+        }
+        System.out.println(Files.readString(file));
+        Files.delete(file);
+    }
+}`,
+        output: `First line
+Second line`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to close/flush a BufferedWriter — the last partial buffer never reaches disk.",
       "Using FileReader/FileWriter directly (unbuffered) for performance-sensitive code — 10-100x slower.",
@@ -8105,68 +8226,39 @@ try (FileChannel ch = FileChannel.open(path, StandardOpenOption.READ)) {
       "channel.read(buf) — fill buffer from channel",
       "channel.write(buf) — write buffer to channel",
     ],
-    example: `import java.nio.file.*;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.*;
-
+    examples: [
+      {
+        label: "1. Write and read with Files (modern API)",
+        code: `import java.nio.file.*;
 public class Main {
     public static void main(String[] args) throws Exception {
-        Path dir = Path.of("demo");
-        Path file = dir.resolve("note.txt");
-
-        // Create directory
-        Files.createDirectories(dir);
-
-        // Write
-        Files.writeString(file, "Line 1\\nLine 2\\nLine 3\\n");
-
-        // Read all at once
-        String all = Files.readString(file);
-        System.out.println("readString:\\n" + all);
-
-        // Read lines as a list
-        System.out.println("readAllLines: " + Files.readAllLines(file));
-
-        // Stream lines lazily (for large files)
-        System.out.print("lines().filter: ");
-        try (Stream<String> s = Files.lines(file)) {
-            s.filter(l -> l.contains("2")).forEach(System.out::println);
-        }
-
-        // Walk directory tree
-        System.out.println("Walk:");
-        try (Stream<Path> w = Files.walk(dir)) {
-            w.forEach(System.out::println);
-        }
-
-        // File attributes
-        System.out.println("Size: " + Files.size(file) + " bytes");
-        System.out.println("Exists? " + Files.exists(file));
-
-        // Copy
-        Path copy = dir.resolve("copy.txt");
-        Files.copy(file, copy, StandardCopyOption.REPLACE_EXISTING);
-        System.out.println("Copied to: " + copy.getFileName());
-
-        // Cleanup
-        Files.deleteIfExists(file);
-        Files.deleteIfExists(copy);
-        Files.deleteIfExists(dir);
+        Path file = Path.of("demo.txt");
+        Files.writeString(file, "Hello, NIO!");
+        System.out.println(Files.readString(file));
+        Files.delete(file);
     }
 }`,
-    output: `readString:
-Line 1
-Line 2
-Line 3
-
-readAllLines: [Line 1, Line 2, Line 3]
-lines().filter: Line 2
-Walk:
-demo
-demo/note.txt
-Size: 21 bytes
-Exists? true
-Copied to: copy.txt`,
+        output: `Hello, NIO!`,
+      },
+      {
+        label: "2. Walk a directory tree",
+        code: `import java.nio.file.*;
+import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Path dir = Files.createTempDirectory("demo");
+        Files.createFile(dir.resolve("a.txt"));
+        Files.createFile(dir.resolve("b.txt"));
+        try (Stream<Path> walk = Files.walk(dir)) {
+            walk.forEach(System.out::println);
+        }
+    }
+}`,
+        output: `/tmp/demo...
+/tmp/demo.../a.txt
+/tmp/demo.../b.txt`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to close Files.lines() / Files.walk() streams — they hold file handles. Use try-with-resources.",
       "Confusing Path with File — they're different types. Convert with file.toPath() or path.toFile().",
@@ -8230,44 +8322,41 @@ java.util.Arrays.fill(password, '\\0');`,
       "reader() — get a Reader for the console",
       "writer() — get a PrintWriter for the console",
     ],
-    example: `import java.io.Console;
-import java.util.Arrays;
-
+    examples: [
+      {
+        label: "1. readLine and printf (terminal only)",
+        code: `import java.io.Console;
 public class Main {
     public static void main(String[] args) {
-        Console console = System.console();
-        if (console == null) {
-            System.out.println("No console (running in IDE?). Use Scanner instead.");
-            return;
-        }
-
-        // Read username
-        String username = console.readLine("Username: ");
-
-        // Read password securely (no echo)
-        char[] password = console.readPassword("Password: ");
-
-        // Verify (in real code, hash and compare, never store plain)
-        if (username.equals("admin") && new String(password).equals("1234")) {
-            console.printf("Welcome, %s!%n", username);
-        } else {
-            console.printf("Invalid credentials.%n");
-        }
-
-        // CRITICAL: zero out the password from memory
-        Arrays.fill(password, '\\0');
-
-        console.printf("Password erased from memory.%n");
+        Console c = System.console();
+        if (c == null) { System.out.println("No console (IDE)"); return; }
+        String name = c.readLine("Name: ");
+        c.printf("Hello, %s!%n", name);
     }
 }`,
-    output: `# Run from a real terminal (NOT an IDE):
-Username: admin
-Password:           ← you type here but nothing shows
-Welcome, admin!
-Password erased from memory.
-
-# In an IDE, System.console() returns null:
-No console (running in IDE?). Use Scanner instead.`,
+        output: `# Run from terminal:
+Name: Ana
+Hello, Ana!`,
+      },
+      {
+        label: "2. readPassword — no echo (security)",
+        code: `import java.io.Console;
+import java.util.Arrays;
+public class Main {
+    public static void main(String[] args) {
+        Console c = System.console();
+        if (c == null) return;
+        char[] pw = c.readPassword("Password: ");
+        // Use the password, then zero it out
+        System.out.println("Password length: " + pw.length);
+        Arrays.fill(pw, '\\0');
+    }
+}`,
+        output: `# Password is typed but NOT echoed to screen
+Password: 
+Password length: 4`,
+      },
+    ],
     commonMistakes: [
       "Calling System.console() in an IDE — returns null, and calling methods on null crashes. Always null-check.",
       "Storing passwords in Strings — Strings can't be securely erased. Use char[] and zero it out after use.",
@@ -8331,53 +8420,32 @@ try (var reader = Files.newBufferedReader(path)) { ... }
       "for (var item : collection) — var in enhanced for loop",
       "try (var r = ...) — var in try-with-resources",
     ],
-    example: `import java.util.*;
-import java.util.stream.*;
-
-public class Main {
+    examples: [
+      {
+        label: "1. var with obvious types",
+        code: `public class Main {
     public static void main(String[] args) {
-        // var with obvious types
-        var name = "Ana";
-        var age = 19;
-        var scores = List.of(95, 88, 76, 91);
-
+        var name = "Ana";       // inferred as String
+        var age = 19;           // inferred as int
+        var list = new java.util.ArrayList<String>();
         System.out.println(name + " is " + age);
-        System.out.println("Scores: " + scores);
-
-        // var saves typing with complex generics
-        var map = new HashMap<String, List<Integer>>();
-        map.put("math", List.of(90, 85, 92));
-        map.put("science", List.of(88, 91));
-        System.out.println("Map: " + map);
-
-        // var in streams
-        var filtered = scores.stream()
-            .filter(s -> s >= 85)
-            .sorted()
-            .toList();
-        System.out.println("Filtered: " + filtered);
-
-        // var in for-each
-        for (var score : scores) {
-            System.out.print(score + " ");
-        }
-        System.out.println();
-
-        // var in try-with-resources
-        try (var reader = new java.io.StringReader("hello")) {
-            var ch = reader.read();
-            System.out.println("First char: " + (char) ch);
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
     }
 }`,
-    output: `Ana is 19
-Scores: [95, 88, 76, 91]
-Map: {math=[90, 85, 92], science=[88, 91]}
-Filtered: [88, 91, 95]
-95 88 76 91 
-First char: h`,
+        output: `Ana is 19`,
+      },
+      {
+        label: "2. var in for-each and try-with-resources",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        var nums = List.of(1, 2, 3);
+        for (var n : nums) System.out.print(n + " ");
+        System.out.println();
+    }
+}`,
+        output: `1 2 3 `,
+      },
+    ],
     commonMistakes: [
       "Using var when the type isn't obvious — 'var result = process(data)' leaves the reader guessing. Use explicit types when readability suffers.",
       "Thinking var changes type at runtime — it doesn't. 'var x = 5; x = \"hi\";' is a compile error (x is int).",
@@ -8445,53 +8513,72 @@ switch (n) {
       "default -> value — catch-all",
       "case X when condition -> value — guarded pattern (Java 21+)",
     ],
-    example: `public class Main {
-    enum Day { MON, TUE, WED, THU, FRI, SAT, SUN }
-
+    examples: [
+      {
+        label: "1. Arrow form — returns a value, no fall-through",
+        code: `public class Main {
     public static void main(String[] args) {
-        // Switch expression returning a String
-        Day day = Day.WED;
+        int day = 3;
+        String name = switch (day) {
+            case 1 -> "Monday";
+            case 2 -> "Tuesday";
+            case 3 -> "Wednesday";
+            default -> "Other";
+        };
+        System.out.println(name);
+    }
+}`,
+        output: `Wednesday`,
+      },
+      {
+        label: "2. Multiple case labels",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int day = 6;
         String type = switch (day) {
-            case MON, TUE, WED, THU, FRI -> "Weekday";
-            case SAT, SUN -> "Weekend";
+            case 1, 2, 3, 4, 5 -> "Weekday";
+            case 6, 7 -> "Weekend";
+            default -> "Invalid";
         };
-        System.out.println(day + " is a " + type);
-
-        // Switch expression with calculation
-        int n = 3;
-        int squares = switch (n) {
-            case 1 -> 1;
-            case 2 -> 4;
-            case 3 -> 9;
-            default -> n * n;
-        };
-        System.out.println(n + "² = " + squares);
-
-        // Multi-line block with yield
+        System.out.println(type);
+    }
+}`,
+        output: `Weekend`,
+      },
+      {
+        label: "3. Multi-line block with yield",
+        code: `public class Main {
+    public static void main(String[] args) {
         int score = 85;
         String grade = switch (score / 10) {
             case 10, 9 -> "A";
             case 8 -> "B";
             case 7 -> "C";
-            case 6 -> "D";
             default -> {
-                System.out.println("Failing grade: " + score);
+                System.out.println("Failing");
                 yield "F";
             }
         };
         System.out.println("Grade: " + grade);
-
-        // Assign to variable, return, or use inline
-        System.out.println("Type length: " + (switch (type.length()) {
-            case 0, 1, 2 -> "short";
-            default -> "long";
-        }));
     }
 }`,
-    output: `WED is a Weekday
-3² = 9
-Grade: B
-Type length: short`,
+        output: `Grade: B`,
+      },
+      {
+        label: "4. Statement form (no value returned)",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int day = 1;
+        switch (day) {
+            case 1 -> System.out.println("Start of week");
+            case 5 -> System.out.println("Almost weekend");
+            default -> System.out.println("Midweek");
+        }
+    }
+}`,
+        output: `Start of week`,
+      },
+    ],
     commonMistakes: [
       "Forgetting 'yield' in a multi-line block — the value is lost and compilation fails.",
       "Not covering all enum cases — compile error for non-exhaustive switch. Add default or all cases.",
@@ -8546,77 +8633,71 @@ String json = """
       ".translateEscapes() — interpret escape sequences in a string",
       ".formatted(args) — String.format on a text block (Java 15+)",
     ],
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. JSON with text block (no escaping)",
+        code: `public class Main {
     public static void main(String[] args) {
-        // JSON — no escaping needed
         String json = """
                 {
                   "name": "Ana",
-                  "age": 19,
-                  "active": true
+                  "age": 19
                 }
                 """;
-        System.out.println("JSON:");
         System.out.println(json);
-
-        // SQL — readable
+    }
+}`,
+        output: `{
+  "name": "Ana",
+  "age": 19
+}`,
+      },
+      {
+        label: "2. SQL query with text block",
+        code: `public class Main {
+    public static void main(String[] args) {
         String sql = """
-                SELECT u.name, COUNT(o.id) AS order_count
-                FROM users u
-                LEFT JOIN orders o ON u.id = o.user_id
-                WHERE u.active = true
-                GROUP BY u.name
-                HAVING COUNT(o.id) > 5
-                ORDER BY order_count DESC
+                SELECT name, age
+                FROM users
+                WHERE active = true
+                ORDER BY name
                 """;
-        System.out.println("SQL (first line): " + sql.lines().findFirst().get());
-
-        // HTML
+        System.out.println(sql.lines().findFirst().get());
+    }
+}`,
+        output: `SELECT name, age`,
+      },
+      {
+        label: "3. HTML template with .formatted()",
+        code: `public class Main {
+    public static void main(String[] args) {
         String html = """
                 <html>
-                  <body>
-                    <h1>Hello, %s!</h1>
-                  </body>
+                  <body><h1>Hello, %s!</h1></body>
                 </html>
                 """.formatted("Ana");
-        System.out.println("HTML:");
         System.out.println(html);
-
-        // Line continuation with \\
+    }
+}`,
+        output: `<html>
+  <body><h1>Hello, Ana!</h1></body>
+</html>`,
+      },
+      {
+        label: "4. Line continuation with \\\\",
+        code: `public class Main {
+    public static void main(String[] args) {
         String joined = """
                 This is one line \\
                 even though it spans \\
                 three source lines.
                 """;
-        System.out.println("Joined: " + joined);
-
-        // Preserve trailing space with \\s
-        String withSpaces = """
-                name   s
-                age    s
-                """;
-        System.out.println("With spaces: [" + withSpaces + "]");
+        System.out.println(joined);
     }
 }`,
-    output: `JSON:
-{
-  "name": "Ana",
-  "age": 19,
-  "active": true
-}
-SQL (first line): SELECT u.name, COUNT(o.id) AS order_count
-HTML:
-<html>
-  <body>
-    <h1>Hello, Ana!</h1>
-  </body>
-</html>
-
-Joined: This is one line even though it spans three source lines.
-
-With spaces: [name   
-age   
-]`,
+        output: `This is one line even though it spans three source lines.`,
+      },
+    ],
     commonMistakes: [
       "Putting text on the same line as the opening \"\"\" — the opening must be followed by a newline.",
       "Forgetting that incidental whitespace is stripped — if you need specific indentation, use .stripIndent() carefully or \\s.",
@@ -8680,63 +8761,86 @@ String describe = switch (obj) {
       "case null -> — match null (Java 21+)",
       "case Type(var1, var2) -> — deconstruct a record (Java 21+)",
     ],
-    example: `public class Main {
-    sealed interface Shape permits Circle, Rectangle, Triangle {}
-    record Circle(double r) implements Shape {}
-    record Rectangle(double w, double h) implements Shape {}
-    record Triangle(double a, double b, double c) implements Shape {}
-
-    static double area(Shape s) {
-        // Switch pattern matching with record deconstruction
-        return switch (s) {
-            case Circle(double r) -> Math.PI * r * r;
-            case Rectangle(double w, double h) -> w * h;
-            case Triangle(double a, double b, double c) -> {
-                double p = (a + b + c) / 2;
-                yield Math.sqrt(p * (p-a) * (p-b) * (p-c));
-            }
-        };
-    }
-
-    static String describe(Object obj) {
-        // instanceof pattern
-        if (obj == null) return "null";
-        if (obj instanceof String s && s.length() > 10) return "long string";
-        if (obj instanceof String s) return "string: " + s;
-        if (obj instanceof Integer i) return "integer: " + i;
-
-        // Switch pattern with types and guards
-        return switch (obj) {
-            case Double d when d.isNaN() -> "NaN";
-            case Double d -> "double: " + d;
-            case int[] arr -> "int array of length " + arr.length;
-            case Shape s -> "shape with area " + area(s);
-            default -> "unknown: " + obj.getClass().getSimpleName();
-        };
-    }
-
+    examples: [
+      {
+        label: "1. instanceof pattern (Java 16+)",
+        code: `public class Main {
     public static void main(String[] args) {
-        System.out.println(describe("hello"));
-        System.out.println(describe("this is a very long string"));
-        System.out.println(describe(42));
-        System.out.println(describe(Double.NaN));
-        System.out.println(describe(new int[]{1, 2, 3}));
-        System.out.println(describe(new Circle(5)));
-        System.out.println(describe(null));
-
-        System.out.printf("Circle area: %.2f%n", area(new Circle(3)));
-        System.out.printf("Rectangle area: %.2f%n", area(new Rectangle(4, 5)));
+        Object obj = "Hello";
+        if (obj instanceof String s) {
+            System.out.println("Length: " + s.length());
+        }
     }
 }`,
-    output: `string: hello
-long string
-integer: 42
-NaN
-int array of length 3
-shape with area 78.54
-null
-Circle area: 28.27
-Rectangle area: 20.00`,
+        output: `Length: 5`,
+      },
+      {
+        label: "2. Switch on types (Java 21+)",
+        code: `public class Main {
+    static String describe(Object obj) {
+        return switch (obj) {
+            case null              -> "null";
+            case String s          -> "String: " + s;
+            case Integer i         -> "Integer: " + i;
+            case int[] arr         -> "Array of length " + arr.length;
+            default                -> "Other: " + obj.getClass().getSimpleName();
+        };
+    }
+    public static void main(String[] args) {
+        System.out.println(describe("hi"));
+        System.out.println(describe(42));
+        System.out.println(describe(new int[]{1, 2, 3}));
+        System.out.println(describe(null));
+    }
+}`,
+        output: `String: hi
+Integer: 42
+Array of length 3
+null`,
+      },
+      {
+        label: "3. Guarded patterns with when (Java 21+)",
+        code: `public class Main {
+    static String classify(Object obj) {
+        return switch (obj) {
+            case String s when s.length() > 10 -> "long string";
+            case String s                      -> "short string";
+            case Integer i when i < 0          -> "negative";
+            case Integer i                     -> "non-negative";
+            default                            -> "other";
+        };
+    }
+    public static void main(String[] args) {
+        System.out.println(classify("hello world!!"));
+        System.out.println(classify("hi"));
+        System.out.println(classify(-5));
+        System.out.println(classify(42));
+    }
+}`,
+        output: `long string
+short string
+negative
+non-negative`,
+      },
+      {
+        label: "4. Record deconstruction (Java 21+)",
+        code: `public class Main {
+    record Point(int x, int y) {}
+    static String describe(Point p) {
+        return switch (p) {
+            case Point(int x, int y) when x == y -> "diagonal: " + x;
+            case Point(int x, int y)             -> "(" + x + ", " + y + ")";
+        };
+    }
+    public static void main(String[] args) {
+        System.out.println(describe(new Point(3, 3)));
+        System.out.println(describe(new Point(1, 2)));
+    }
+}`,
+        output: `diagonal: 3
+(1, 2)`,
+      },
+    ],
     commonMistakes: [
       "Using pattern variables outside their scope — the variable from 'instanceof String s' is only in scope where the instanceof is definitely true (inside the if block, after && in the condition).",
       "Forgetting exhaustiveness — switch patterns must cover all possible types or have a default. The compiler enforces this for sealed hierarchies.",
@@ -8793,40 +8897,29 @@ double area = switch (shape) {
       "sealed — permitted subtype, also restricts its children",
       "non-sealed — permitted subtype, opens back up to anyone",
     ],
-    example: `public class Main {
-    // Sealed hierarchy
+    examples: [
+      {
+        label: "1. Sealed hierarchy with records",
+        code: `public class Main {
     sealed interface Shape permits Circle, Rectangle {}
-    record Circle(double radius) implements Shape {}
-    record Rectangle(double width, double height) implements Shape {}
+    record Circle(double r) implements Shape {}
+    record Rectangle(double w, double h) implements Shape {}
 
-    // Exhaustive switch — no default needed!
     static double area(Shape s) {
         return switch (s) {
-            case Circle c -> Math.PI * c.radius() * c.radius();
-            case Rectangle r -> r.width() * r.height();
+            case Circle c -> Math.PI * c.r() * c.r();
+            case Rectangle r -> r.w() * r.h();
         };
     }
-
-    static String describe(Shape s) {
-        return switch (s) {
-            case Circle c -> String.format("Circle(r=%.1f)", c.radius());
-            case Rectangle r -> String.format("Rect(%.1f x %.1f)", r.width(), r.height());
-        };
-    }
-
     public static void main(String[] args) {
-        Shape[] shapes = { new Circle(3), new Rectangle(4, 5), new Circle(1) };
-        for (Shape s : shapes) {
-            System.out.printf("%s → area = %.2f%n", describe(s), area(s));
-        }
-
-        // If you add a new Shape subtype, the switch above won't compile
-        // until you handle it — that's the safety of sealed hierarchies.
+        System.out.printf("Circle: %.2f%n", area(new Circle(3)));
+        System.out.printf("Rect: %.2f%n", area(new Rectangle(4, 5)));
     }
 }`,
-    output: `Circle(r=3.0) → area = 28.27
-Rect(4.0 x 5.0) → area = 20.00
-Circle(r=1.0) → area = 3.14`,
+        output: `Circle: 28.27
+Rect: 20.00`,
+      },
+    ],
     commonMistakes: [
       "Forgetting that permitted subtypes must be final, sealed, or non-sealed — the compiler requires an explicit choice.",
       "Adding a new subtype to the permits list but forgetting to update switches — the compiler catches this (which is the whole point).",
@@ -8886,47 +8979,37 @@ boolean isVirtual = Thread.currentThread().isVirtual();`,
       "Thread.join() — wait for a virtual thread to finish (same as platform)",
       "Thread.sleep(Duration) — virtual threads park cheaply during sleep",
     ],
-    example: `import java.util.concurrent.*;
-import java.time.Duration;
-import java.util.stream.*;
-
-public class Main {
+    examples: [
+      {
+        label: "1. Start a single virtual thread",
+        code: `public class Main {
     public static void main(String[] args) throws Exception {
-        long start = System.currentTimeMillis();
-
-        // Launch 10,000 virtual threads — each sleeps 1 second
-        // With platform threads, this would need ~10GB of memory.
-        // With virtual threads, it's trivial.
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            var futures = new java.util.ArrayList<Future<String>>();
-            for (int i = 0; i < 10_000; i++) {
-                final int id = i;
-                futures.add(executor.submit(() -> {
-                    Thread.sleep(Duration.ofSeconds(1));  // blocks cheaply
-                    return "Task " + id + " done on " + Thread.currentThread();
-                }));
-            }
-
-            // Wait for a few and print
-            for (int i = 0; i < 3; i++) {
-                System.out.println(futures.get(i).get());
-            }
-        }
-
-        long elapsed = System.currentTimeMillis() - start;
-        System.out.println("All 10,000 tasks completed in " + elapsed + " ms");
-        System.out.println("(Should be ~1 second, not ~10,000 seconds)");
-
-        // Check current thread
-        System.out.println("Main thread is virtual? " + Thread.currentThread().isVirtual());
+        Thread vt = Thread.startVirtualThread(() -> {
+            System.out.println("Running on: " + Thread.currentThread());
+            System.out.println("Is virtual? " + Thread.currentThread().isVirtual());
+        });
+        vt.join();
     }
 }`,
-    output: `Task 0 done on VirtualThread[#33]/runnable@ForkJoinPool-1-worker-1
-Task 1 done on VirtualThread[#34]/runnable@ForkJoinPool-1-worker-2
-Task 2 done on VirtualThread[#35]/runnable@ForkJoinPool-1-worker-3
-All 10,000 tasks completed in 1087 ms
-(Should be ~1 second, not ~10,000 seconds)
-Main thread is virtual? false`,
+        output: `Running on: VirtualThread[...]/runnable@ForkJoinPool-1-worker-1
+Is virtual? true`,
+      },
+      {
+        label: "2. Launch 10,000 virtual threads",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 0; i < 10000; i++) {
+                executor.submit(() -> Thread.sleep(100));
+            }
+        }
+        System.out.println("All 10,000 virtual threads completed");
+    }
+}`,
+        output: `All 10,000 virtual threads completed`,
+      },
+    ],
     commonMistakes: [
       "Using virtual threads for CPU-intensive work — they don't speed up computation; use platform threads (ForkJoinPool) for CPU work.",
       "Calling Thread.sleep or I/O in a synchronized block inside a virtual thread — it 'pins' the carrier thread, losing the benefit. Use ReentrantLock instead of synchronized for long waits.",
@@ -9112,30 +9195,32 @@ public void run() {
       "volatile boolean flag — common pattern for stop signals",
       "volatile Type reference — safe publication of an immutable object",
     ],
-    example: `public class Main {
-    // Without volatile, the worker thread might cache 'running' and never stop.
-    private static volatile boolean running = true;
-
+    examples: [
+      {
+        label: "1. Without volatile — stale reads possible",
+        code: `// Without volatile, the worker thread might cache 'running'
+// and never see the update from the main thread.
+public class Main {
+    static boolean running = true;  // could be stale
     public static void main(String[] args) throws Exception {
-        Thread worker = new Thread(() -> {
-            int count = 0;
-            // The worker reads 'running' each iteration.
-            // Without volatile, it might cache 'true' and loop forever.
-            while (running) {
-                count++;
-            }
-            System.out.println("Worker stopped after " + count + " iterations");
-        });
-        worker.start();
-
-        Thread.sleep(100);  // let it run for 100ms
-        running = false;     // worker sees this immediately (volatile)
-        worker.join();
-        System.out.println("Main thread done");
+        new Thread(() -> { while (running) { /* might loop forever */ } }).start();
+        Thread.sleep(100);
+        running = false;
     }
 }`,
-    output: `Worker stopped after 48372910 iterations
-Main thread done`,
+      },
+      {
+        label: "2. With volatile — guaranteed visibility",
+        code: `public class Main {
+    static volatile boolean running = true;  // visible across threads
+    public static void main(String[] args) throws Exception {
+        new Thread(() -> { while (running) { /* will see the update */ } }).start();
+        Thread.sleep(100);
+        running = false;  // worker sees this immediately
+    }
+}`,
+      },
+    ],
     commonMistakes: [
       "Using volatile for counters (count++) — still a race condition. Use AtomicInteger instead.",
       "Expecting volatile to make multi-field updates atomic — it doesn't. If you update two volatile fields, another thread can see one update but not the other.",
@@ -9211,70 +9296,63 @@ try { /* write */ } finally { rwLock.writeLock().unlock(); }`,
       "ReadWriteLock.readLock() — shared read lock",
       "ReadWriteLock.writeLock() — exclusive write lock",
     ],
-    example: `import java.util.concurrent.locks.*;
-import java.util.*;
-
+    examples: [
+      {
+        label: "1. ReentrantLock — mutual exclusion",
+        code: `import java.util.concurrent.locks.*;
 public class Main {
-    private final ReentrantLock lock = new ReentrantLock();
-    private final Map<String, Integer> cache = new HashMap<>();
-    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
-
-    // ReentrantLock — counter
-    private int count = 0;
-    public void increment() {
-        lock.lock();
-        try {
-            count++;
-        } finally {
-            lock.unlock();
-        }
-    }
-    public int getCount() {
-        lock.lock();
-        try { return count; } finally { lock.unlock(); }
-    }
-
-    // tryLock — avoid deadlock
-    public boolean tryDoWork() {
-        if (!lock.tryLock()) return false;
-        try {
-            // do work
-            return true;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    // ReadWriteLock — read-heavy cache
-    public Integer get(String key) {
-        rwLock.readLock().lock();
-        try { return cache.get(key); }
-        finally { rwLock.readLock().unlock(); }
-    }
-    public void put(String key, int value) {
-        rwLock.writeLock().lock();
-        try { cache.put(key, value); }
-        finally { rwLock.writeLock().unlock(); }
-    }
-
+    private static int count = 0;
+    private static final ReentrantLock lock = new ReentrantLock();
     public static void main(String[] args) throws Exception {
-        var m = new Main();
-
-        // Two threads incrementing 10000 times each
-        Runnable task = () -> { for (int i = 0; i < 10000; i++) m.increment(); };
+        Runnable task = () -> {
+            for (int i = 0; i < 10000; i++) {
+                lock.lock();
+                try { count++; } finally { lock.unlock(); }
+            }
+        };
         Thread t1 = new Thread(task), t2 = new Thread(task);
         t1.start(); t2.start(); t1.join(); t2.join();
-        System.out.println("Count: " + m.getCount());  // 20000
-
-        // Cache with ReadWriteLock
-        m.put("a", 1); m.put("b", 2);
-        System.out.println("Get a: " + m.get("a"));
-        System.out.println("Lock held by me? " + m.lock.isHeldByCurrentThread());
+        System.out.println("Count: " + count);
     }
 }`,
-    output: `Count: 20000
-Get a: 1
-Lock held by me? false`,
+        output: `Count: 20000`,
+      },
+      {
+        label: "2. tryLock — non-blocking attempt",
+        code: `import java.util.concurrent.locks.*;
+public class Main {
+    public static void main(String[] args) {
+        ReentrantLock lock = new ReentrantLock();
+        if (lock.tryLock()) {
+            try { System.out.println("Got the lock"); }
+            finally { lock.unlock(); }
+        } else {
+            System.out.println("Lock not available");
+        }
+    }
+}`,
+        output: `Got the lock`,
+      },
+      {
+        label: "3. ReadWriteLock — multiple readers, one writer",
+        code: `import java.util.concurrent.locks.*;
+import java.util.*;
+public class Main {
+    private static final Map<String, Integer> cache = new HashMap<>();
+    private static final ReadWriteLock rw = new ReentrantReadWriteLock();
+    public static void main(String[] args) {
+        // Write (exclusive)
+        rw.writeLock().lock();
+        try { cache.put("a", 1); } finally { rw.writeLock().unlock(); }
+        // Read (shared — multiple readers OK)
+        rw.readLock().lock();
+        try { System.out.println("a=" + cache.get("a")); }
+        finally { rw.readLock().unlock(); }
+    }
+}`,
+        output: `a=1`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to put unlock() in a finally block — if the code throws, the lock is never released and other threads wait forever (deadlock).",
       "Forgetting to unlock the same number of times you locked (reentrant) — the lock isn't released until all holds are undone.",
@@ -9352,60 +9430,40 @@ pool.awaitTermination(60, TimeUnit.SECONDS);
       "Executors.newVirtualThreadPerTaskExecutor() — Java 21+, one virtual thread per task",
       "Executors.newScheduledThreadPool(n) — for delayed/periodic tasks",
     ],
-    example: `import java.util.concurrent.*;
-import java.util.*;
-
+    examples: [
+      {
+        label: "1. Submit a task and get the result",
+        code: `import java.util.concurrent.*;
 public class Main {
     public static void main(String[] args) throws Exception {
-        try (var pool = Executors.newFixedThreadPool(3)) {
-
-            // Submit 5 tasks to a 3-thread pool
-            List<Future<String>> futures = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                final int id = i;
-                futures.add(pool.submit(() -> {
-                    Thread.sleep(500);
-                    return "Task " + id + " on " + Thread.currentThread().getName();
-                }));
-            }
-
-            // Get results as they complete
-            for (Future<String> f : futures) {
-                System.out.println(f.get());  // blocks until this one is done
-            }
-        }  // try-with-resources calls shutdown() (Java 19+)
-
-        // invokeAll — run a batch, wait for all
-        try (var pool = Executors.newVirtualThreadPerTaskExecutor()) {
-            List<Callable<Integer>> tasks = List.of(
-                () -> { Thread.sleep(300); return 1; },
-                () -> { Thread.sleep(200); return 2; },
-                () -> { Thread.sleep(100); return 3; }
-            );
-            List<Future<Integer>> results = pool.invokeAll(tasks);
-            int sum = 0;
-            for (Future<Integer> f : results) sum += f.get();
-            System.out.println("Sum: " + sum);
-        }
-
-        // invokeAny — first successful result wins
-        try (var pool = Executors.newCachedThreadPool()) {
-            String winner = pool.invokeAny(List.of(
-                () -> { Thread.sleep(300); return "slow"; },
-                () -> { Thread.sleep(100); return "fast"; },
-                () -> { Thread.sleep(200); return "medium"; }
-            ));
-            System.out.println("First to finish: " + winner);
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            Future<Integer> f = pool.submit(() -> 42);
+            System.out.println("Result: " + f.get());
         }
     }
 }`,
-    output: `Task 0 on pool-1-thread-1
-Task 1 on pool-1-thread-2
-Task 2 on pool-1-thread-3
-Task 3 on pool-1-thread-1
-Task 4 on pool-1-thread-2
-Sum: 6
-First to finish: fast`,
+        output: `Result: 42`,
+      },
+      {
+        label: "2. Submit multiple tasks",
+        code: `import java.util.concurrent.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        try (var pool = Executors.newFixedThreadPool(3)) {
+            List<Future<Integer>> futures = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                final int id = i;
+                futures.add(pool.submit(() -> id * id));
+            }
+            for (Future<Integer> f : futures) System.out.print(f.get() + " ");
+            System.out.println();
+        }
+    }
+}`,
+        output: `0 1 4 9 16 `,
+      },
+    ],
     commonMistakes: [
       "Forgetting to shutdown() — the JVM won't exit because pool threads are non-daemon. Use try-with-resources (Java 19+) or finally.",
       "Calling future.get() without a timeout — blocks forever if the task hangs. Always pass a timeout: future.get(5, TimeUnit.SECONDS).",
@@ -9532,64 +9590,80 @@ Integer result = future.join();    // blocking, throws unchecked`,
       "complete(value) — manually complete the future",
       "cancel(boolean) — cancel the future",
     ],
-    example: `import java.util.concurrent.*;
-import java.util.*;
-
+    examples: [
+      {
+        label: "1. supplyAsync — start an async task",
+        code: `import java.util.concurrent.*;
 public class Main {
     public static void main(String[] args) throws Exception {
-        // Chain of async operations
-        CompletableFuture<String> pipeline = CompletableFuture
-            .supplyAsync(() -> {
-                sleep(200);
-                return 21;
-            })
-            .thenApply(x -> x * 2)                    // 42
-            .thenCompose(x -> CompletableFuture.supplyAsync(() -> {
-                sleep(200);
-                return "value-" + x;
-            }))
-            .exceptionally(e -> "error: " + e.getMessage());
-
-        System.out.println("Pipeline started, doing other work...");
-        System.out.println("Result: " + pipeline.join());
-
-        // Parallel API calls — fan out, then combine
-        long start = System.currentTimeMillis();
-        CompletableFuture<String> user = CompletableFuture.supplyAsync(() -> {
-            sleep(300); return "Ana";
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            try { Thread.sleep(100); } catch (Exception e) {}
+            return 42;
         });
-        CompletableFuture<Integer> age = CompletableFuture.supplyAsync(() -> {
-            sleep(300); return 19;
-        });
-        CompletableFuture<String> combined = user.thenCombine(age, (u, a) ->
-            u + " is " + a + " years old");
-
-        System.out.println(combined.join());
-        long elapsed = System.currentTimeMillis() - start;
-        System.out.println("Took " + elapsed + "ms (parallel, not 600ms)");
-
-        // allOf — wait for multiple
-        List<CompletableFuture<Integer>> futures = List.of(
-            CompletableFuture.supplyAsync(() -> { sleep(100); return 1; }),
-            CompletableFuture.supplyAsync(() -> { sleep(100); return 2; }),
-            CompletableFuture.supplyAsync(() -> { sleep(100); return 3; })
-        );
-        CompletableFuture<Void> all = CompletableFuture.allOf(
-            futures.toArray(new CompletableFuture[0]));
-        all.join();
-        int sum = futures.stream().mapToInt(CompletableFuture::join).sum();
-        System.out.println("Sum of parallel results: " + sum);
-    }
-
-    static void sleep(int ms) {
-        try { Thread.sleep(ms); } catch (InterruptedException e) {}
+        System.out.println("Result: " + future.get());
     }
 }`,
-    output: `Pipeline started, doing other work...
-Result: value-42
-Ana is 19 years old
-Took 308ms (parallel, not 600ms)
-Sum of parallel results: 6`,
+        output: `Result: 42`,
+      },
+      {
+        label: "2. thenApply — transform the result",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        String result = CompletableFuture.supplyAsync(() -> 21)
+            .thenApply(x -> x * 2)
+            .thenApply(x -> "value-" + x)
+            .get();
+        System.out.println(result);
+    }
+}`,
+        output: `value-42`,
+      },
+      {
+        label: "3. thenCombine — combine two futures",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        CompletableFuture<String> user = CompletableFuture.supplyAsync(() -> "Ana");
+        CompletableFuture<Integer> age = CompletableFuture.supplyAsync(() -> 19);
+        String combined = user.thenCombine(age, (u, a) -> u + " is " + a).get();
+        System.out.println(combined);
+    }
+}`,
+        output: `Ana is 19`,
+      },
+      {
+        label: "4. allOf — wait for all futures",
+        code: `import java.util.concurrent.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        List<CompletableFuture<Integer>> futures = List.of(
+            CompletableFuture.supplyAsync(() -> 1),
+            CompletableFuture.supplyAsync(() -> 2),
+            CompletableFuture.supplyAsync(() -> 3));
+        CompletableFuture<Void> all = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        all.join();
+        int sum = futures.stream().mapToInt(CompletableFuture::join).sum();
+        System.out.println("Sum: " + sum);
+    }
+}`,
+        output: `Sum: 6`,
+      },
+      {
+        label: "5. exceptionally — handle errors",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Integer result = CompletableFuture.supplyAsync(() -> { throw new RuntimeException("fail"); })
+            .exceptionally(e -> 0)
+            .get();
+        System.out.println("Recovered: " + result);
+    }
+}`,
+        output: `Recovered: 0`,
+      },
+    ],
     commonMistakes: [
       "Calling join() or get() too early — blocks the main thread, defeating the purpose. Chain with thenApply/thenAccept instead.",
       "Forgetting exceptionally() or handle() — exceptions are silently swallowed unless you handle them.",
@@ -9658,54 +9732,37 @@ counter.accumulateAndGet(5, (a, b) -> a * b); // atomically multiply by 5`,
       "accumulateAndGet(x, BinaryOperator) — atomically combine with x",
       "LongAdder — high-throughput counter (use instead of AtomicLong for hot counters)",
     ],
-    example: `import java.util.concurrent.atomic.*;
-import java.util.concurrent.*;
-
+    examples: [
+      {
+        label: "1. AtomicInteger — safe counter",
+        code: `import java.util.concurrent.atomic.*;
 public class Main {
-    private static final AtomicInteger counter = new AtomicInteger(0);
-    private static final AtomicBoolean running = new AtomicBoolean(true);
-    private static final LongAdder sum = new LongAdder();  // high-throughput
-
     public static void main(String[] args) throws Exception {
-        // 10 threads, each incrementing 10000 times — no lost updates
-        try (var pool = Executors.newFixedThreadPool(10)) {
-            for (int i = 0; i < 10; i++) {
-                pool.submit(() -> {
-                    for (int j = 0; j < 10000; j++) {
-                        counter.incrementAndGet();  // atomic
-                        sum.increment();             // high-throughput
-                    }
-                });
-            }
-        }
-        System.out.println("Counter: " + counter.get());    // 100000
-        System.out.println("Sum: " + sum.sum());             // 100000
-
-        // compareAndSet — lock-free update loop
-        AtomicInteger val = new AtomicInteger(5);
-        boolean updated = val.compareAndSet(5, 10);  // was 5, now 10
-        System.out.println("CAS succeeded? " + updated + ", val=" + val);
-
-        boolean failed = val.compareAndSet(5, 20);   // was 10, not 5
-        System.out.println("CAS succeeded? " + failed + ", val=" + val);
-
-        // Atomic function application
-        AtomicInteger n = new AtomicInteger(3);
-        n.updateAndGet(x -> x * x);   // 3*3 = 9
-        System.out.println("Squared: " + n.get());
-
-        // AtomicReference — safe publication
-        AtomicReference<String> config = new AtomicReference<>("v1");
-        config.set("v2");
-        System.out.println("Config: " + config.get());
+        AtomicInteger counter = new AtomicInteger(0);
+        Runnable task = () -> { for (int i = 0; i < 10000; i++) counter.incrementAndGet(); };
+        Thread t1 = new Thread(task), t2 = new Thread(task);
+        t1.start(); t2.start(); t1.join(); t2.join();
+        System.out.println("Count: " + counter.get());
     }
 }`,
-    output: `Counter: 100000
-Sum: 100000
-CAS succeeded? true, val=10
-CAS succeeded? false, val=10
-Squared: 9
-Config: v2`,
+        output: `Count: 20000`,
+      },
+      {
+        label: "2. compareAndSet — lock-free update",
+        code: `import java.util.concurrent.atomic.*;
+public class Main {
+    public static void main(String[] args) {
+        AtomicInteger val = new AtomicInteger(5);
+        boolean success = val.compareAndSet(5, 10);  // if 5, set to 10
+        System.out.println("Success? " + success + ", val=" + val.get());
+        boolean fail = val.compareAndSet(5, 20);     // was 10, not 5
+        System.out.println("Success? " + fail + ", val=" + val.get());
+    }
+}`,
+        output: `Success? true, val=10
+Success? false, val=10`,
+      },
+    ],
     commonMistakes: [
       "Using AtomicLong for a high-contention counter — LongAdder is much faster under heavy contention (it shards across cells).",
       "Assuming atomic variables make compound operations safe — 'if (map.get(k) == null) map.put(k, v);' is still a race even with atomic map. Use ConcurrentHashMap.computeIfAbsent.",
@@ -9776,73 +9833,74 @@ String item = bq.take();               // blocks if empty`,
       "BlockingQueue.poll(timeout, unit) — non-blocking with timeout",
       "BlockingQueue.remainingCapacity() — space left",
     ],
-    example: `import java.util.concurrent.*;
+    examples: [
+      {
+        label: "1. ConcurrentHashMap — thread-safe map",
+        code: `import java.util.concurrent.*;
 import java.util.*;
-
 public class Main {
-    public static void main(String[] args) throws Exception {
-        // ConcurrentHashMap — atomic operations
-        ConcurrentHashMap<String, Integer> counts = new ConcurrentHashMap<>();
-        counts.put("apple", 1);
-        counts.merge("apple", 1, Integer::sum);     // atomically: 2
-        counts.computeIfAbsent("banana", k -> 5);   // put 5 if absent
-        System.out.println("Counts: " + counts);
-
-        // Parallel word count
-        String text = "the cat sat on the mat the cat ran";
-        ConcurrentHashMap<String, Integer> wc = new ConcurrentHashMap<>();
-        for (String w : text.split(" ")) {
-            wc.merge(w, 1, Integer::sum);   // atomic increment
-        }
-        System.out.println("Word count: " + wc);
-
-        // BlockingQueue — producer/consumer
-        BlockingQueue<String> queue = new ArrayBlockingQueue<>(5);
-
-        Runnable producer = () -> {
-            try {
-                for (int i = 0; i < 3; i++) {
-                    queue.put("item-" + i);
-                    System.out.println("Produced item-" + i);
-                }
-                queue.put("DONE");
-            } catch (InterruptedException e) {}
-        };
-
-        Runnable consumer = () -> {
-            try {
-                while (true) {
-                    String item = queue.take();  // blocks if empty
-                    System.out.println("Consumed " + item);
-                    if (item.equals("DONE")) break;
-                }
-            } catch (InterruptedException e) {}
-        };
-
-        Thread p = new Thread(producer);
-        Thread c = new Thread(consumer);
-        p.start(); c.start();
-        p.join(); c.join();
-
-        // CopyOnWriteArrayList — safe iteration (no ConcurrentModificationException)
-        CopyOnWriteArrayList<String> listeners = new CopyOnWriteArrayList<>();
-        listeners.add("L1"); listeners.add("L2");
-        for (String l : listeners) {
-            listeners.add("L3");  // safe — iterates the old snapshot
-        }
-        System.out.println("Listeners: " + listeners);
+    public static void main(String[] args) {
+        ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+        map.put("a", 1);
+        map.merge("a", 1, Integer::sum);  // atomic increment
+        map.computeIfAbsent("b", k -> 2);
+        System.out.println(map);
     }
 }`,
-    output: `Counts: {banana=5, apple=2}
-Word count: {mat=1, ran=1, cat=2, on=1, sat=1, the=3}
-Produced item-0
-Consumed item-0
-Produced item-1
-Consumed item-1
-Produced item-2
-Consumed item-2
-Consumed DONE
-Listeners: [L1, L2, L3, L3, L3]`,
+        output: `{a=2, b=2}`,
+      },
+      {
+        label: "2. CopyOnWriteArrayList — safe for reads",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) {
+        CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
+        list.add("a"); list.add("b"); list.add("c");
+        // Safe to iterate while modifying (iterates a snapshot)
+        for (String s : list) {
+            if (s.equals("b")) list.add("d");  // no ConcurrentModificationException
+        }
+        System.out.println(list);
+    }
+}`,
+        output: `[a, b, c, d]`,
+      },
+      {
+        label: "3. BlockingQueue — producer/consumer",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        BlockingQueue<String> bq = new ArrayBlockingQueue<>(5);
+        bq.put("item-1");  // blocks if full
+        bq.put("item-2");
+        System.out.println("Took: " + bq.take());  // blocks if empty
+        System.out.println("Took: " + bq.take());
+        System.out.println("Remaining: " + bq.size());
+    }
+}`,
+        output: `Took: item-1
+Took: item-2
+Remaining: 0`,
+      },
+      {
+        label: "4. ConcurrentLinkedQueue — non-blocking FIFO",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) {
+        ConcurrentLinkedQueue<String> q = new ConcurrentLinkedQueue<>();
+        q.offer("a"); q.offer("b"); q.offer("c");
+        System.out.println("Peek: " + q.peek());
+        System.out.println("Poll: " + q.poll());
+        System.out.println("Poll: " + q.poll());
+        System.out.println("Size: " + q.size());
+    }
+}`,
+        output: `Peek: a
+Poll: a
+Poll: b
+Size: 1`,
+      },
+    ],
     commonMistakes: [
       "Using Hashtable or Collections.synchronizedMap for new code — ConcurrentHashMap is much faster and equally safe.",
       "Calling size() on ConcurrentHashMap during concurrent updates — it's an estimate, not exact. Don't rely on it for synchronization.",
@@ -9914,106 +9972,89 @@ sem.release();              // return a permit`,
       "tryAcquire() — non-blocking attempt",
       "tryAcquire(timeout, unit) — wait with timeout",
     ],
-    example: `import java.util.concurrent.*;
-import java.util.*;
-
+    examples: [
+      {
+        label: "1. CountDownLatch — wait for N threads to finish",
+        code: `import java.util.concurrent.*;
 public class Main {
     public static void main(String[] args) throws Exception {
-        // CountDownLatch — wait for 3 workers to initialize
-        int nWorkers = 3;
-        CountDownLatch initLatch = new CountDownLatch(nWorkers);
-        CountDownLatch startLatch = new CountDownLatch(1);  // signal to start
-
-        for (int i = 0; i < nWorkers; i++) {
+        int n = 3;
+        CountDownLatch latch = new CountDownLatch(n);
+        for (int i = 0; i < n; i++) {
             final int id = i;
             new Thread(() -> {
-                System.out.println("Worker " + id + " initializing...");
-                sleep(100 + id * 50);
                 System.out.println("Worker " + id + " ready");
-                initLatch.countDown();          // signal: I'm ready
-                try { startLatch.await(); }     // wait for start signal
-                catch (InterruptedException e) {}
-                System.out.println("Worker " + id + " working!");
+                latch.countDown();
             }).start();
         }
-
-        initLatch.await();                       // wait for all workers
-        System.out.println("All workers ready. Starting!");
-        startLatch.countDown();                  // release all workers
-        sleep(300);
-
-        // CyclicBarrier — phased computation
-        System.out.println("\\n--- CyclicBarrier ---");
-        int parties = 3;
-        CyclicBarrier barrier = new CyclicBarrier(parties, () ->
-            System.out.println("  [barrier tripped — phase complete]"));
-
-        for (int i = 0; i < parties; i++) {
+        latch.await();
+        System.out.println("All workers ready — GO!");
+    }
+}`,
+        output: `Worker 0 ready
+Worker 1 ready
+Worker 2 ready
+All workers ready — GO!`,
+      },
+      {
+        label: "2. CyclicBarrier — reusable meeting point",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        CyclicBarrier barrier = new CyclicBarrier(3, () ->
+            System.out.println("  [barrier tripped — all arrived]"));
+        for (int i = 0; i < 3; i++) {
             final int id = i;
             new Thread(() -> {
-                for (int phase = 1; phase <= 2; phase++) {
-                    System.out.println("Thread " + id + " phase " + phase + " done");
-                    try { barrier.await(); }
-                    catch (Exception e) {}
-                }
+                try {
+                    System.out.println("Thread " + id + " at barrier");
+                    barrier.await();
+                    System.out.println("Thread " + id + " continuing");
+                } catch (Exception e) {}
             }).start();
         }
-        sleep(500);
-
-        // Semaphore — limit concurrent access to 2
-        System.out.println("\\n--- Semaphore (2 permits) ---");
-        Semaphore sem = new Semaphore(2);
-        for (int i = 0; i < 5; i++) {
+        Thread.sleep(500);
+    }
+}`,
+        output: `Thread 0 at barrier
+Thread 1 at barrier
+Thread 2 at barrier
+  [barrier tripped — all arrived]
+Thread 0 continuing
+Thread 1 continuing
+Thread 2 continuing`,
+      },
+      {
+        label: "3. Semaphore — limit concurrent access",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Semaphore sem = new Semaphore(2); // 2 permits
+        for (int i = 0; i < 4; i++) {
             final int id = i;
             new Thread(() -> {
                 try {
                     sem.acquire();
                     System.out.println("Thread " + id + " got permit");
-                    sleep(200);
-                    System.out.println("Thread " + id + " releasing");
+                    Thread.sleep(200);
+                    System.out.println("Thread " + id + " released");
                     sem.release();
-                } catch (InterruptedException e) {}
+                } catch (Exception e) {}
             }).start();
         }
-        sleep(1500);
-    }
-
-    static void sleep(int ms) {
-        try { Thread.sleep(ms); } catch (InterruptedException e) {}
+        Thread.sleep(1000);
     }
 }`,
-    output: `Worker 0 initializing...
-Worker 1 initializing...
-Worker 2 initializing...
-Worker 0 ready
-Worker 1 ready
-Worker 2 ready
-All workers ready. Starting!
-Worker 0 working!
-Worker 1 working!
-Worker 2 working!
-
---- CyclicBarrier ---
-Thread 0 phase 1 done
-Thread 1 phase 1 done
-Thread 2 phase 1 done
-  [barrier tripped — phase complete]
-Thread 0 phase 2 done
-Thread 1 phase 2 done
-Thread 2 phase 2 done
-  [barrier tripped — phase complete]
-
---- Semaphore (2 permits) ---
-Thread 0 got permit
+        output: `Thread 0 got permit
 Thread 1 got permit
-Thread 0 releasing
+Thread 0 released
 Thread 2 got permit
-Thread 1 releasing
+Thread 1 released
 Thread 3 got permit
-Thread 2 releasing
-Thread 4 got permit
-Thread 3 releasing
-Thread 4 releasing`,
+Thread 2 released
+Thread 3 released`,
+      },
+    ],
     commonMistakes: [
       "Reusing CountDownLatch — it's one-shot. Once the count hits 0, await() returns immediately forever. Use CyclicBarrier for reusable barriers.",
       "Forgetting to countDown() in a finally block — if a worker crashes before countDown(), the latch never opens and await() blocks forever.",
@@ -10091,59 +10132,50 @@ f.set(obj, newValue);`,
       "clazz.isAnnotationPresent(Ann.class) — check for an annotation",
       "clazz.getAnnotation(Ann.class) — get an annotation",
     ],
-    example: `import java.lang.reflect.*;
-
+    examples: [
+      {
+        label: "1. Inspect a class's methods",
+        code: `import java.lang.reflect.*;
 public class Main {
-    public static void main(String[] args) throws Exception {
-        // Inspect a class
-        Class<?> clazz = String.class;
-        System.out.println("Class: " + clazz.getName());
-        System.out.println("Modifiers: " + Modifier.toString(clazz.getModifiers()));
-        System.out.println("Methods (first 3):");
-        for (Method m : clazz.getMethods()) {
-            if (m.getName().length() <= 5) {
-                System.out.println("  " + m.getName() + "(" +
-                    m.getParameterCount() + " params)");
-                if (--count <= 0) break;
-            }
+    public static void main(String[] args) {
+        for (Method m : String.class.getMethods()) {
+            if (m.getName().equals("length"))
+                System.out.println("Found: " + m.getName());
         }
-        int count = 3;
-
-        // Create an instance via reflection
-        Constructor<String> ctor = String.class.getConstructor(byte[].class);
-        String s = ctor.newInstance(new byte[]{72, 73});  // "HI"
-        System.out.println("\\nCreated: " + s);
-
-        // Invoke a method
-        Method m = String.class.getMethod("toUpperCase");
-        String upper = (String) m.invoke(s);
-        System.out.println("Uppercase: " + upper);
-
-        // Custom class with a private field
-        class Box {
-            private String secret = "hidden";
-            public String getSecret() { return secret; }
-        }
-        Box box = new Box();
-        Field f = Box.class.getDeclaredField("secret");
-        f.setAccessible(true);  // bypass private
-        System.out.println("\\nSecret (via reflection): " + f.get(box));
-        f.set(box, "changed");
-        System.out.println("After modification: " + box.getSecret());
     }
 }`,
-    output: `Class: java.lang.String
-Modifiers: public final
-Methods (first 3):
-  length(0 params)
-  charAt(1 params)
-  equals(1 params)
-
-Created: HI
-Uppercase: HI
-
-Secret (via reflection): hidden
-After modification: changed`,
+        output: `Found: length`,
+      },
+      {
+        label: "2. Create an instance via reflection",
+        code: `import java.lang.reflect.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Constructor<String> ctor = String.class.getConstructor(byte[].class);
+        String s = ctor.newInstance(new byte[]{72, 73});  // "HI"
+        System.out.println(s);
+    }
+}`,
+        output: `HI`,
+      },
+      {
+        label: "3. Access a private field",
+        code: `import java.lang.reflect.*;
+public class Main {
+    static class Box { private String secret = "hidden"; }
+    public static void main(String[] args) throws Exception {
+        Box box = new Box();
+        Field f = Box.class.getDeclaredField("secret");
+        f.setAccessible(true);
+        System.out.println(f.get(box));
+        f.set(box, "changed");
+        System.out.println(f.get(box));
+    }
+}`,
+        output: `hidden
+changed`,
+      },
+    ],
     commonMistakes: [
       "Using reflection when normal code works — reflection is slower, less type-safe, and breaks when internals change. Use it only for frameworks, serializers, and tools.",
       "Forgetting setAccessible(true) for private members — throws IllegalAccessException.",
@@ -10244,35 +10276,25 @@ java --module-path out --module com.example.app/com.example.app.Main`,
       "uses ServiceInterface — declare a service consumer",
       "provides ServiceInterface with Implementation — declare a service provider",
     ],
-    example: `// File: module-info.java for a simple app
+    examples: [
+      {
+        label: "1. module-info.java — declare a module",
+        code: `// File: module-info.java
 module com.example.app {
-    requires java.sql;           // need JDBC
-    requires java.net.http;      // need HttpClient (Java 11+)
-    exports com.example.app.api; // only 'api' package is public
-    // 'internal' package is NOT exported — invisible outside
-    opens com.example.app.models to org.hibernate.orm.core; // for Hibernate
-}
+    requires java.sql;           // depend on java.sql module
+    exports com.example.app.api; // only 'api' package is visible
+    opens com.example.app.data;  // allow reflection (for frameworks)
+}`,
+      },
+      {
+        label: "2. Compile and run with module path",
+        code: `# Compile
+javac -d out --module-source-path src $(find src -name "*.java")
 
-// File: com/example/app/api/PublicService.java
-package com.example.app.api;
-public class PublicService {
-    public String greet() { return "Hello from module!"; }
-}
-
-// File: com/example/app/internal/Secret.java
-package com.example.app.internal;
-public class Secret { /* not visible outside this module */ }
-
-// Compile and run
-// javac -d out --module-source-path src $(find src -name "*.java")
-// java --module-path out --module com.example.app/com.example.app.api.Main`,
-    output: `// Module boundary checks at compile time:
-// src/com.example.app/com/example/app/internal/Secret.java → can't be
-// imported from another module. The compiler rejects it.
-//
-// At runtime:
-// java --module-path out --module com.example.app/...
-// → "Hello from module!"`,
+# Run
+java --module-path out --module com.example.app/com.example.app.Main`,
+      },
+    ],
     commonMistakes: [
       "Forgetting that packages not in 'exports' are invisible — even public classes. This breaks code that used to work on the classpath.",
       "Mixing classpath and module path — when a module is on the module path, it follows module rules; on the classpath, it's treated as an unnamed module (everything visible).",
@@ -10344,53 +10366,30 @@ gradle jar`,
       "mvn package — Maven: build a JAR (target/*.jar)",
       "gradle jar — Gradle: build a JAR (build/libs/*.jar)",
     ],
-    example: `# Project structure:
-#   src/com/example/Main.java
-#   src/com/example/Util.java
+    examples: [
+      {
+        label: "1. Create a JAR",
+        code: `# Compile
+javac -d out src/com/example/Main.java
 
-# 1. Compile
-javac -d out src/com/example/*.java
+# Create a JAR
+jar cf mylib.jar -C out .
 
-# 2. Create an executable JAR
+# List contents
+jar tf mylib.jar
+# META-INF/
+# META-INF/MANIFEST.MF
+# com/example/Main.class`,
+      },
+      {
+        label: "2. Create an executable JAR",
+        code: `# With a main class
 jar cfe app.jar com.example.Main -C out .
-#    c = create, f = file app.jar, e = entry point com.example.Main
 
-# 3. List contents
-jar tf app.jar
-# Output:
-#   META-INF/
-#   META-INF/MANIFEST.MF
-#   com/
-#   com/example/
-#   com/example/Main.class
-#   com/example/Util.class
-
-# 4. Run it
-java -jar app.jar
-# Runs com.example.Main
-
-# 5. Maven pom.xml (modern way)
-# <project>
-#   <groupId>com.example</groupId>
-#   <artifactId>myapp</artifactId>
-#   <version>1.0</version>
-#   <packaging>jar</packaging>
-# </project>
-# Then: mvn package → produces target/myapp-1.0.jar`,
-    output: `# jar tf app.jar output:
-META-INF/
-META-INF/MANIFEST.MF
-com/
-com/example/
-com/example/Main.class
-com/example/Util.class
-
-# The MANIFEST.MF looks like:
-Manifest-Version: 1.0
-Created-By: 17 (Oracle Corporation)
-Main-Class: com.example.Main
-
-# java -jar app.jar runs Main-Class`,
+# Run it
+java -jar app.jar`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to specify Main-Class — 'java -jar' fails with 'no main manifest attribute'.",
       "Including source .java files in the JAR instead of compiled .class files — bloats the JAR and serves no purpose at runtime.",
@@ -10450,35 +10449,21 @@ java com.example.Main   # uses $CLASSPATH`,
       "java.class.path system property — read the current classpath at runtime",
       "Class-Path manifest attribute — set classpath for executable JARs",
     ],
-    example: `# Project layout:
-#   src/com/example/Main.java    (imports com.google.gson.Gson)
-#   libs/gson-2.10.jar
-#
-# 1. Compile (need gson on the classpath to find the import)
-javac -cp "libs/gson-2.10.jar" -d out src/com/example/*.java
+    examples: [
+      {
+        label: "1. Set classpath with -cp (Linux/Mac)",
+        code: `# Multiple entries separated by colons
+java -cp out:libs/gson.jar:libs/jackson.jar com.example.Main
 
-# 2. Run (need both your classes AND gson)
-java -cp "out:libs/gson-2.10.jar" com.example.Main
-
-# 3. Use wildcard for many JARs
-java -cp "out:libs/*" com.example.Main
-
-# 4. Inspect the classpath at runtime
-# In Main.java:
-System.out.println(System.getProperty("java.class.path"));
-// prints: out:libs/gson-2.10.jar
-
-# 5. Common error when classpath is wrong:
-#   Exception in thread "main" java.lang.NoClassDefFoundError:
-#   com/google/gson/Gson
-#   → means gson JAR is not on the classpath`,
-    output: `# System.getProperty("java.class.path") prints:
-out:libs/gson-2.10.jar
-
-# Common error messages when classpath is wrong:
-# ClassNotFoundException — class not found at RUNTIME
-# NoClassDefFoundError — class was there at compile time but missing at runtime
-# Could not find or load main class — main class not on classpath`,
+# Wildcard — all JARs in a folder
+java -cp "out:libs/*" com.example.Main`,
+      },
+      {
+        label: "2. Windows uses semicolons",
+        code: `# Windows classpath
+java -cp "out;libs/gson.jar;libs/jackson.jar" com.example.Main`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to include your own compiled classes (out directory) on the runtime classpath — you only added the JARs.",
       "Using 'libs' (the folder) instead of 'libs/*' (wildcard) — the folder itself doesn't load the JARs inside it.",
@@ -10554,53 +10539,36 @@ public class UserService {
       "log.isDebugEnabled() / isInfoEnabled() — check before expensive logging",
       "MDC.put(\"userId\", id) — add context visible in log patterns",
     ],
-    example: `import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-
+    examples: [
+      {
+        label: "1. SLF4J with parameterized messages",
+        code: `import org.slf4j.*;
 public class Main {
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
-
+    static final Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) {
-        log.info("Application starting");
-
-        // Parameterized messages — no string concat if level is off
-        String user = "Ana";
-        log.info("User {} logged in", user);
-
-        // MDC — context added to every log line
-        MDC.put("requestId", "req-123");
-        MDC.put("userId", user);
-        log.info("Processing order");
-
-        // Exception logging — pass the exception as the last arg
-        try {
-            int x = 1 / 0;
-        } catch (ArithmeticException e) {
-            log.error("Division failed for user {}", user, e);
-        }
-
-        // Level-guarded expensive logging
-        if (log.isDebugEnabled()) {
-            String state = computeExpensiveState();
-            log.debug("Current state: {}", state);
-        }
-
-        MDC.clear();
-        log.info("Application done");
-    }
-
-    static String computeExpensiveState() {
-        return "[big state object]";
+        log.info("User {} logged in", "Ana");
+        log.error("Failed", new RuntimeException("oops"));
     }
 }`,
-    output: `14:23:01 INFO  Main - Application starting
-14:23:01 INFO  Main - User Ana logged in
-14:23:01 INFO  Main [requestId=req-123, userId=Ana] - Processing order
-14:23:01 ERROR Main [requestId=req-123, userId=Ana] - Division failed for user Ana
-java.lang.ArithmeticException: / by zero
-    at Main.main(Main.java:18)
-14:23:01 INFO  Main [requestId=req-123, userId=Ana] - Application done`,
+        output: `INFO  Main - User Ana logged in
+ERROR Main - Failed
+java.lang.RuntimeException: oops`,
+      },
+      {
+        label: "2. Level-guarded expensive logging",
+        code: `import org.slf4j.*;
+public class Main {
+    static final Logger log = LoggerFactory.getLogger(Main.class);
+    public static void main(String[] args) {
+        if (log.isDebugEnabled()) {
+            log.debug("Expensive state: {}", computeState());
+        }
+    }
+    static String computeState() { return "[big state]"; }
+}`,
+        output: `(no output if DEBUG is disabled)`,
+      },
+    ],
     commonMistakes: [
       "Using System.out.println instead of a logger — can't be turned off, no levels, no formatting, can't route to files.",
       "String concatenation in log statements — 'log.info(\"User \" + user)' always builds the string, even if INFO is off. Use 'log.info(\"User {}\", user)' instead.",
@@ -10719,64 +10687,48 @@ public class Person {
       "@JsonFormat(pattern=\"yyyy-MM-dd\") — format dates",
       "@JsonCreator / @JsonProperty — custom constructor for deserialization",
     ],
-    example: `import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import java.util.*;
-
+    examples: [
+      {
+        label: "1. Object → JSON with Jackson",
+        code: `import com.fasterxml.jackson.databind.ObjectMapper;
+public class Main {
+    record Person(String name, int age) {}
+    public static void main(String[] args) throws Exception {
+        var mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(new Person("Ana", 19));
+        System.out.println(json);
+    }
+}`,
+        output: `{"name":"Ana","age":19}`,
+      },
+      {
+        label: "2. JSON → Object with Jackson",
+        code: `import com.fasterxml.jackson.databind.ObjectMapper;
+public class Main {
+    record Person(String name, int age) {}
+    public static void main(String[] args) throws Exception {
+        var mapper = new ObjectMapper();
+        Person p = mapper.readValue("""{"name":"Ana","age":19}""", Person.class);
+        System.out.println(p.name() + " is " + p.age());
+    }
+}`,
+        output: `Ana is 19`,
+      },
+      {
+        label: "3. Parse unknown JSON into a tree",
+        code: `import com.fasterxml.jackson.databind.*;
 public class Main {
     public static void main(String[] args) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-
-        // Serialize
-        Person ana = new Person("Ana", 19, "secret123");
-        String json = mapper.writeValueAsString(ana);
-        System.out.println("JSON: " + json);
-
-        // Pretty print
-        System.out.println("\\nPretty:");
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ana));
-
-        // Deserialize
-        Person parsed = mapper.readValue(json, Person.class);
-        System.out.println("\\nParsed: " + parsed.name + ", " + parsed.age);
-
-        // Deserialize a list
-        String listJson = "[{\\"name\\":\\"A\\",\\"age\\":1},{\\"name\\":\\"B\\",\\"age\\":2}]";
-        List<Person> people = mapper.readValue(listJson, new TypeReference<List<Person>>(){});
-        System.out.println("List size: " + people.size());
-
-        // Parse unknown structure into a tree
-        var tree = mapper.readTree("{\\"a\\":1,\\"b\\":[2,3]}");
+        var mapper = new ObjectMapper();
+        var tree = mapper.readTree("""{"a":1,"b":[2,3]}""");
         System.out.println("a = " + tree.get("a").asInt());
         System.out.println("b[0] = " + tree.get("b").get(0).asInt());
     }
-}
-
-class Person {
-    @JsonProperty("full_name")
-    public String name;
-    public int age;
-    @JsonIgnore
-    public String password;
-
-    public Person() {}  // Jackson needs a no-arg constructor
-    public Person(String name, int age, String password) {
-        this.name = name; this.age = age; this.password = password;
-    }
 }`,
-    output: `JSON: {"full_name":"Ana","age":19}
-
-Pretty:
-{
-  "full_name" : "Ana",
-  "age" : 19
-}
-
-Parsed: Ana, 19
-List size: 2
-a = 1
+        output: `a = 1
 b[0] = 2`,
+      },
+    ],
     commonMistakes: [
       "Forgetting a no-arg constructor — Jackson can't deserialize without one. Add one or use @JsonCreator.",
       "Creating a new ObjectMapper for every conversion — it's expensive to construct and thread-safe after setup. Create once, reuse.",
@@ -10878,78 +10830,56 @@ class CalculatorTest {
       "assertAll(\"group\", () -> ..., () -> ...) — run all, report all failures",
       "assertTimeout(Duration.ofMillis(100), () -> {...}) — check timing",
     ],
-    example: `import org.junit.jupiter.api.*;
+    examples: [
+      {
+        label: "1. Basic test with assertEquals",
+        code: `import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.jupiter.params.provider.CsvSource;
-import java.util.*;
-
 class CalculatorTest {
-    private Calculator calc;
-
-    @BeforeEach
-    void setUp() {
-        calc = new Calculator();
-    }
-
     @Test
-    @DisplayName("2 + 3 = 5")
-    void add() {
-        assertEquals(5, calc.add(2, 3));
+    void twoPlusThreeEqualsFive() {
+        assertEquals(5, 2 + 3);
     }
-
-    @Test
-    @DisplayName("Division by zero throws")
-    void divideByZero() {
-        assertThrows(ArithmeticException.class, () -> calc.divide(1, 0));
-    }
-
-    @ParameterizedTest
-    @CsvSource({"1, 1, 2", "2, 3, 5", "10, -5, 5", "0, 0, 0"})
-    void addMultiple(int a, int b, int expected) {
-        assertEquals(expected, calc.add(a, b));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {2, 4, 6, 8, 100})
-    void evenNumbersAreEven(int n) {
-        assertTrue(n % 2 == 0);
-    }
-
-    @Test
-    void listOperations() {
-        List<String> list = new ArrayList<>(List.of("a", "b"));
-        assertAll("list operations",
-            () -> assertEquals(2, list.size()),
-            () -> assertTrue(list.contains("a")),
-            () -> assertEquals("a", list.get(0))
-        );
-    }
-
-    @Nested
-    @DisplayName("Edge cases")
-    class EdgeCases {
-        @Test void emptyString() { assertEquals("", ""); }
-        @Test void maxValue() { assertEquals(Integer.MAX_VALUE, calc.add(Integer.MAX_VALUE, 0)); }
-    }
-}
-
-class Calculator {
-    int add(int a, int b) { return a + b; }
-    int divide(int a, int b) { return a / b; }
 }`,
-    output: `# Running with Maven: mvn test
-# Running with Gradle: gradle test
-# Output (typical):
-[INFO] Running CalculatorTest
-[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
-[INFO] BUILD SUCCESS
-
-# With a failure:
-[ERROR] Tests run: 8, Failures: 1, Errors: 0, Skipped: 0
-[ERROR] CalculatorTest.add:25 expected: <5> but was: <4>
-# → the assertEquals showed expected 5 but got 4`,
+      },
+      {
+        label: "2. Test exceptions with assertThrows",
+        code: `import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+class CalculatorTest {
+    @Test
+    void divideByZeroThrows() {
+        assertThrows(ArithmeticException.class, () -> 1 / 0);
+    }
+}`,
+      },
+      {
+        label: "3. Parameterized test — run with multiple inputs",
+        code: `import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
+import static org.junit.jupiter.api.Assertions.*;
+class CalculatorTest {
+    @ParameterizedTest
+    @CsvSource({"1, 1, 2", "2, 3, 5", "10, -5, 5"})
+    void add(int a, int b, int expected) {
+        assertEquals(expected, a + b);
+    }
+}`,
+      },
+      {
+        label: "4. Lifecycle with @BeforeEach",
+        code: `import org.junit.jupiter.api.*;
+import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
+class ListTest {
+    List<String> list;
+    @BeforeEach
+    void setUp() { list = new ArrayList<>(); }  // fresh list per test
+    @Test void emptyListHasSizeZero() { assertEquals(0, list.size()); }
+    @Test void addIncreasesSize() { list.add("a"); assertEquals(1, list.size()); }
+}`,
+      },
+    ],
     commonMistakes: [
       "Using System.out.println for assertions — use assertEquals etc. so failures are reported clearly with expected vs. actual.",
       "Tests that depend on each other or on shared mutable state — tests must be independent and order-independent. Use @BeforeEach for fresh state.",
@@ -11073,63 +11003,42 @@ tasks.test {
       "gradle run — run the application",
       "gradle dependencies — show dependency tree",
     ],
-    example: `# === Maven project ===
-# pom.xml declares dependencies and build config
-# Common commands:
-mvn clean package      # clean, compile, test, package → target/myapp-1.0.0.jar
-mvn test               # run tests only
-mvn dependency:tree    # show all dependencies (including transitive)
+    examples: [
+      {
+        label: "1. Maven pom.xml — declare a dependency",
+        code: `<!-- pom.xml -->
+<project>
+  <groupId>com.example</groupId>
+  <artifactId>myapp</artifactId>
+  <version>1.0.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
+  </dependencies>
+</project>`,
+      },
+      {
+        label: "2. Gradle build.gradle.kts — declare a dependency",
+        code: `// build.gradle.kts
+dependencies {
+    implementation("com.google.code.gson:gson:2.10.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+}`,
+      },
+      {
+        label: "3. Common commands",
+        code: `# Maven
+mvn clean package     # compile, test, build JAR
+mvn test              # run tests only
 
-# === Gradle project ===
-# build.gradle.kts declares dependencies and tasks
-# Common commands:
-gradle build           # compile, test, package → build/libs/myapp-1.0.0.jar
-gradle test            # run tests
-gradle dependencies    # show dependency tree
-gradle run             # run the application
-
-# === Project structure (both Maven and Gradle expect this) ===
-# myapp/
-#   pom.xml  OR  build.gradle.kts
-#   src/
-#     main/
-#       java/com/example/Main.java    ← your source code
-#       resources/                    ← config files, images
-#     test/
-#       java/com/example/MainTest.java ← your tests
-#       resources/
-
-# === Adding a dependency ===
-# Maven (pom.xml):
-#   <dependency>
-#     <groupId>com.google.code.gson</groupId>
-#     <artifactId>gson</artifactId>
-#     <version>2.10.1</version>
-#   </dependency>
-#
-# Gradle (build.gradle.kts):
-#   implementation("com.google.code.gson:gson:2.10.1")
-#
-# Both download gson from Maven Central automatically.`,
-    output: `# mvn clean package output:
-[INFO] Building myapp 1.0.0
-[INFO] --- maven-compiler-plugin:3.11.0:compile ---
-[INFO] Compiling 5 source files
-[INFO] --- maven-surefire-plugin:3.1.2:test ---
-[INFO] Tests run: 12, Failures: 0, Errors: 0
-[INFO] --- maven-jar-plugin:3.3.0:jar ---
-[INFO] Building jar: target/myapp-1.0.0.jar
-[INFO] BUILD SUCCESS
-
-# gradle build output:
-> Task :compileJava
-> Task :processResources
-> Task :classes
-> Task :compileTestJava
-> Task :test
-> Task :jar
-BUILD SUCCESSFUL in 3s
-build/libs/myapp-1.0.0.jar`,
+# Gradle
+gradle build          # compile, test, build JAR
+gradle test           # run tests only`,
+      },
+    ],
     commonMistakes: [
       "Committing the target/ or build/ directories to version control — they're build artifacts. Add them to .gitignore.",
       "Version conflicts — if two dependencies pull in different versions of the same transitive dependency, use 'mvn dependency:tree' or 'gradle dependencies' to find and resolve the conflict.",
@@ -11207,64 +11116,74 @@ public class MyLinkedList<E> {
       "isEmpty() — true if head == null",
       "contains(e) — walk and compare, O(n)",
     ],
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. Singly-linked list — addFirst and get",
+        code: `public class Main {
+    static class Node<E> { E data; Node<E> next; Node(E d) { data = d; } }
+    static class MyList<E> {
+        Node<E> head; int size = 0;
+        void addFirst(E e) { Node<E> n = new Node<>(e); n.next = head; head = n; size++; }
+        E get(int i) { Node<E> c = head; for (int j = 0; j < i; j++) c = c.next; return c.data; }
+    }
     public static void main(String[] args) {
-        MyLinkedList<String> list = new MyLinkedList<>();
-        list.addFirst("c");
-        list.addFirst("b");
-        list.addFirst("a");
+        MyList<String> list = new MyList<>();
+        list.addFirst("c"); list.addFirst("b"); list.addFirst("a");
         System.out.println("First: " + list.get(0));
         System.out.println("Second: " + list.get(1));
-        System.out.println("Size: " + list.size());
-        System.out.println("Has b? " + list.contains("b"));
-        System.out.println("Removed: " + list.removeFirst());
-        System.out.println("Size now: " + list.size());
+        System.out.println("Size: " + list.size);
     }
-}
-
-class MyLinkedList<E> {
-    private static class Node<E> {
-        E data; Node<E> next;
-        Node(E d) { data = d; }
-    }
-    private Node<E> head;
-    private int size = 0;
-
-    public void addFirst(E e) {
-        Node<E> n = new Node<>(e);
-        n.next = head;
-        head = n;
-        size++;
-    }
-
-    public E removeFirst() {
-        if (head == null) throw new java.util.NoSuchElementException();
-        E data = head.data;
-        head = head.next;
-        size--;
-        return data;
-    }
-
-    public E get(int i) {
-        Node<E> cur = head;
-        for (int j = 0; j < i; j++) cur = cur.next;
-        return cur.data;
-    }
-
-    public boolean contains(E e) {
-        for (Node<E> cur = head; cur != null; cur = cur.next)
-            if (cur.data.equals(e)) return true;
-        return false;
-    }
-
-    public int size() { return size; }
 }`,
-    output: `First: a
+        output: `First: a
 Second: b
-Size: 3
-Has b? true
-Removed: a
-Size now: 2`,
+Size: 3`,
+      },
+      {
+        label: "2. Doubly-linked list — addFirst and removeFirst",
+        code: `public class Main {
+    static class DNode<E> { E data; DNode<E> prev, next; DNode(E d) { data = d; } }
+    static class DList<E> {
+        DNode<E> head, tail; int size = 0;
+        void addFirst(E e) {
+            DNode<E> n = new DNode<>(e);
+            if (head == null) head = tail = n;
+            else { n.next = head; head.prev = n; head = n; }
+            size++;
+        }
+        E removeFirst() {
+            if (head == null) return null;
+            E e = head.data; head = head.next;
+            if (head == null) tail = null; else head.prev = null;
+            size--; return e;
+        }
+    }
+    public static void main(String[] args) {
+        DList<String> list = new DList<>();
+        list.addFirst("a"); list.addFirst("b"); list.addFirst("c");
+        System.out.println("Removed: " + list.removeFirst());
+        System.out.println("Size: " + list.size);
+    }
+}`,
+        output: `Removed: c
+Size: 2`,
+      },
+      {
+        label: "3. Using Java's LinkedList (recommended)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        LinkedList<String> list = new LinkedList<>();
+        list.addFirst("b"); list.addFirst("a"); list.addLast("c");
+        System.out.println(list);
+        System.out.println("First: " + list.getFirst());
+        System.out.println("Last: " + list.getLast());
+    }
+}`,
+        output: `[a, b, c]
+First: a
+Last: c`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to update size — leads to incorrect size() reports.",
       "Losing the head pointer — if you do 'head = head.next' without saving the old head, you can't return the removed value.",
@@ -11328,60 +11247,42 @@ public class ListStack<E> {
       "isEmpty() — true if size == 0",
       "size() — number of elements",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Array-based stack",
+        code: `import java.util.*;
 public class Main {
-    public static void main(String[] args) {
-        // Using Java's built-in (recommended)
-        Deque<String> stack = new ArrayDeque<>();
-        stack.push("a");
-        stack.push("b");
-        stack.push("c");
-        System.out.println("Top: " + stack.peek());   // c
-        System.out.println("Pop: " + stack.pop());     // c
-        System.out.println("Pop: " + stack.pop());     // b
-        System.out.println("Size: " + stack.size());   // 1
-
-        // Bracket matching — classic stack use case
-        System.out.println("\\nBalanced? " + isBalanced("{[()]}"));   // true
-        System.out.println("Balanced? " + isBalanced("{[(])}"));     // false
-        System.out.println("Balanced? " + isBalanced("((()))"));     // true
-
-        // Reverse a string using a stack
-        String s = "hello";
-        Deque<Character> chars = new ArrayDeque<>();
-        for (char c : s.toCharArray()) chars.push(c);
-        StringBuilder rev = new StringBuilder();
-        while (!chars.isEmpty()) rev.append(chars.pop());
-        System.out.println("\\nReversed: " + rev);     // olleh
+    static class ArrayStack<E> {
+        List<E> items = new ArrayList<>();
+        void push(E e) { items.add(e); }
+        E pop() { return items.remove(items.size() - 1); }
+        E peek() { return items.get(items.size() - 1); }
     }
-
-    static boolean isBalanced(String expr) {
-        Deque<Character> stack = new ArrayDeque<>();
-        for (char c : expr.toCharArray()) {
-            if (c == '(' || c == '[' || c == '{') {
-                stack.push(c);
-            } else {
-                if (stack.isEmpty()) return false;
-                char open = stack.pop();
-                if ((c == ')' && open != '(') ||
-                    (c == ']' && open != '[') ||
-                    (c == '}' && open != '{')) return false;
-            }
-        }
-        return stack.isEmpty();
+    public static void main(String[] args) {
+        ArrayStack<String> s = new ArrayStack<>();
+        s.push("a"); s.push("b"); s.push("c");
+        System.out.println("Pop: " + s.pop());
+        System.out.println("Peek: " + s.peek());
     }
 }`,
-    output: `Top: c
-Pop: c
-Pop: b
-Size: 1
-
-Balanced? true
-Balanced? false
-Balanced? true
-
-Reversed: olleh`,
+        output: `Pop: c
+Peek: b`,
+      },
+      {
+        label: "2. Using Java's ArrayDeque (recommended)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Deque<String> stack = new ArrayDeque<>();
+        stack.push("a"); stack.push("b"); stack.push("c");
+        System.out.println("Pop: " + stack.pop());
+        System.out.println("Pop: " + stack.pop());
+    }
+}`,
+        output: `Pop: c
+Pop: b`,
+      },
+    ],
     commonMistakes: [
       "Popping from an empty stack — throws NoSuchElementException or returns null. Always check isEmpty() or handle the exception.",
       "Using the legacy java.util.Stack class — it's synchronized (slow) and extends Vector (bad design). Use ArrayDeque instead.",
@@ -11458,70 +11359,67 @@ public class LinkedQueue<E> {
       "isEmpty() — true if size == 0",
       "size() — number of elements",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Array-based circular queue",
+        code: `public class Main {
+    static class CircularQueue<E> {
+        Object[] arr; int head = 0, tail = 0, size = 0;
+        CircularQueue(int cap) { arr = new Object[cap]; }
+        void enqueue(E e) { arr[tail] = e; tail = (tail + 1) % arr.length; size++; }
+        @SuppressWarnings("unchecked")
+        E dequeue() { E e = (E) arr[head]; arr[head] = null; head = (head + 1) % arr.length; size--; return e; }
+    }
+    public static void main(String[] args) {
+        var q = new CircularQueue<String>(5);
+        q.enqueue("A"); q.enqueue("B"); q.enqueue("C");
+        System.out.println(q.dequeue());
+        System.out.println(q.dequeue());
+    }
+}`,
+        output: `A
+B`,
+      },
+      {
+        label: "2. Linked-list-based queue",
+        code: `public class Main {
+    static class Node<E> { E data; Node<E> next; Node(E d) { data = d; } }
+    static class LinkedQueue<E> {
+        Node<E> head, tail;
+        void enqueue(E e) {
+            Node<E> n = new Node<>(e);
+            if (tail == null) head = tail = n;
+            else { tail.next = n; tail = n; }
+        }
+        E dequeue() { E e = head.data; head = head.next; if (head == null) tail = null; return e; }
+    }
+    public static void main(String[] args) {
+        var q = new LinkedQueue<String>();
+        q.enqueue("X"); q.enqueue("Y"); q.enqueue("Z");
+        System.out.println(q.dequeue());
+        System.out.println(q.dequeue());
+    }
+}`,
+        output: `X
+Y`,
+      },
+      {
+        label: "3. Using Java's ArrayDeque (recommended)",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        // Java's built-in queue (recommended)
-        Deque<String> queue = new ArrayDeque<>();
-        queue.offer("Alice");
-        queue.offer("Bob");
-        queue.offer("Carol");
-        System.out.println("Front: " + queue.peek());    // Alice
-        System.out.println("Served: " + queue.poll());   // Alice
-        System.out.println("Served: " + queue.poll());   // Bob
-        System.out.println("Size: " + queue.size());     // 1
-
-        // BFS using a queue — level-order tree traversal
-        TreeNode root = new TreeNode(1,
-            new TreeNode(2, new TreeNode(4), null),
-            new TreeNode(3, null, new TreeNode(5)));
-        System.out.print("\\nBFS: ");
-        bfs(root);
-        System.out.println();
-
-        // Producer-consumer with BlockingQueue
-        BlockingQueue<String> bq = new ArrayBlockingQueue<>(3);
-        new Thread(() -> {
-            try { for (int i = 0; i < 5; i++) bq.put("item-" + i); }
-            catch (InterruptedException e) {}
-        }).start();
-        new Thread(() -> {
-            try { for (int i = 0; i < 5; i++) {
-                System.out.println("Consumed: " + bq.take());
-            }} catch (InterruptedException e) {}
-        }).start();
+        Deque<String> q = new ArrayDeque<>();
+        q.offer("Alice"); q.offer("Bob"); q.offer("Carol");
+        System.out.println("Front: " + q.peek());
+        System.out.println("Served: " + q.poll());
+        System.out.println("Served: " + q.poll());
     }
-
-    static void bfs(TreeNode root) {
-        if (root == null) return;
-        Deque<TreeNode> q = new ArrayDeque<>();
-        q.offer(root);
-        while (!q.isEmpty()) {
-            TreeNode n = q.poll();
-            System.out.print(n.val + " ");
-            if (n.left != null) q.offer(n.left);
-            if (n.right != null) q.offer(n.right);
-        }
-    }
-}
-
-class TreeNode {
-    int val; TreeNode left, right;
-    TreeNode(int v) { val = v; }
-    TreeNode(int v, TreeNode l, TreeNode r) { val = v; left = l; right = r; }
 }`,
-    output: `Front: Alice
+        output: `Front: Alice
 Served: Alice
-Served: Bob
-Size: 1
-
-BFS: 1 2 3 4 5 
-Consumed: item-0
-Consumed: item-1
-Consumed: item-2
-Consumed: item-3
-Consumed: item-4`,
+Served: Bob`,
+      },
+    ],
     commonMistakes: [
       "Using a regular ArrayList as a queue — remove(0) is O(n) because all elements shift. Use ArrayDeque instead.",
       "Not handling the empty queue — poll() returns null, remove() throws. Pick the right method for your case.",
@@ -11591,40 +11489,96 @@ void inOrder(TreeNode n) {
       "size(node) — count of nodes",
       "contains(value) — search for a value",
     ],
-    example: `import java.util.*;
-
-public class Main {
+    examples: [
+      {
+        label: "1. Build a binary tree",
+        code: `public class Main {
     static class TreeNode {
-        int val;
-        TreeNode left, right;
+        int val; TreeNode left, right;
         TreeNode(int v) { val = v; }
     }
-
-    // In-order: left → root → right
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(2);
+        root.right = new TreeNode(3);
+        root.left.left = new TreeNode(4);
+        root.left.right = new TreeNode(5);
+        //       1
+        //      / \\
+        //     2   3
+        //    / \\
+        //   4   5
+        System.out.println("Root: " + root.val);
+        System.out.println("Left: " + root.left.val);
+        System.out.println("Right: " + root.right.val);
+    }
+}`,
+        output: `Root: 1
+Left: 2
+Right: 3`,
+      },
+      {
+        label: "2. In-order traversal (left → root → right)",
+        code: `public class Main {
+    static class TreeNode { int val; TreeNode left, right; TreeNode(int v) { val = v; } }
     static void inOrder(TreeNode n) {
         if (n == null) return;
         inOrder(n.left);
         System.out.print(n.val + " ");
         inOrder(n.right);
     }
-
-    // Pre-order: root → left → right
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(2); root.right = new TreeNode(3);
+        root.left.left = new TreeNode(4); root.left.right = new TreeNode(5);
+        inOrder(root);
+    }
+}`,
+        output: `4 2 5 1 3 `,
+      },
+      {
+        label: "3. Pre-order traversal (root → left → right)",
+        code: `public class Main {
+    static class TreeNode { int val; TreeNode left, right; TreeNode(int v) { val = v; } }
     static void preOrder(TreeNode n) {
         if (n == null) return;
         System.out.print(n.val + " ");
         preOrder(n.left);
         preOrder(n.right);
     }
-
-    // Post-order: left → right → root
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(2); root.right = new TreeNode(3);
+        root.left.left = new TreeNode(4); root.left.right = new TreeNode(5);
+        preOrder(root);
+    }
+}`,
+        output: `1 2 4 5 3 `,
+      },
+      {
+        label: "4. Post-order traversal (left → right → root)",
+        code: `public class Main {
+    static class TreeNode { int val; TreeNode left, right; TreeNode(int v) { val = v; } }
     static void postOrder(TreeNode n) {
         if (n == null) return;
         postOrder(n.left);
         postOrder(n.right);
         System.out.print(n.val + " ");
     }
-
-    // Level-order (BFS) — uses a queue
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(2); root.right = new TreeNode(3);
+        root.left.left = new TreeNode(4); root.left.right = new TreeNode(5);
+        postOrder(root);
+    }
+}`,
+        output: `4 5 2 3 1 `,
+      },
+      {
+        label: "5. Level-order traversal (BFS with queue)",
+        code: `import java.util.*;
+public class Main {
+    static class TreeNode { int val; TreeNode left, right; TreeNode(int v) { val = v; } }
     static void levelOrder(TreeNode root) {
         if (root == null) return;
         Queue<TreeNode> q = new LinkedList<>();
@@ -11636,47 +11590,16 @@ public class Main {
             if (n.right != null) q.offer(n.right);
         }
     }
-
-    static int height(TreeNode n) {
-        if (n == null) return -1;
-        return 1 + Math.max(height(n.left), height(n.right));
-    }
-
-    static int size(TreeNode n) {
-        if (n == null) return 0;
-        return 1 + size(n.left) + size(n.right);
-    }
-
     public static void main(String[] args) {
-        //       1
-        //      / \\
-        //     2   3
-        //    / \\
-        //   4   5
         TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(3);
-        root.left.left = new TreeNode(4);
-        root.left.right = new TreeNode(5);
-
-        System.out.print("In-order: ");
-        inOrder(root);      // 4 2 5 1 3
-        System.out.print("\\nPre-order: ");
-        preOrder(root);     // 1 2 4 5 3
-        System.out.print("\\nPost-order: ");
-        postOrder(root);    // 4 5 2 3 1
-        System.out.print("\\nLevel-order: ");
-        levelOrder(root);   // 1 2 3 4 5
-        System.out.println("\\nHeight: " + height(root));  // 2
-        System.out.println("Size: " + size(root));          // 5
+        root.left = new TreeNode(2); root.right = new TreeNode(3);
+        root.left.left = new TreeNode(4); root.left.right = new TreeNode(5);
+        levelOrder(root);
     }
 }`,
-    output: `In-order: 4 2 5 1 3 
-Pre-order: 1 2 4 5 3 
-Post-order: 4 5 2 3 1 
-Level-order: 1 2 3 4 5 
-Height: 2
-Size: 5`,
+        output: `1 2 3 4 5 `,
+      },
+    ],
     commonMistakes: [
       "Forgetting the base case (if n == null return) — causes NullPointerException or infinite recursion.",
       "Confusing height and depth — height is from a node DOWN to the deepest leaf; depth is from a node UP to the root.",
@@ -11785,78 +11708,90 @@ class BST {
       "max() — rightmost node",
       "rangeSearch(low, high) — all values in [low, high]",
     ],
-    example: `import java.util.*;
-
-public class Main {
-    static class BSTNode {
-        int val; BSTNode left, right;
-        BSTNode(int v) { val = v; }
+    examples: [
+      {
+        label: "1. Insert into a BST",
+        code: `public class Main {
+    static class Node { int val; Node left, right; Node(int v) { val = v; } }
+    static Node insert(Node n, int val) {
+        if (n == null) return new Node(val);
+        if (val < n.val) n.left = insert(n.left, val);
+        else if (val > n.val) n.right = insert(n.right, val);
+        return n;
     }
-
-    static BSTNode insert(BSTNode node, int val) {
-        if (node == null) return new BSTNode(val);
-        if (val < node.val) node.left = insert(node.left, val);
-        else if (val > node.val) node.right = insert(node.right, val);
-        return node;
-    }
-
-    static boolean contains(BSTNode node, int target) {
-        if (node == null) return false;
-        if (target == node.val) return true;
-        return target < node.val
-            ? contains(node.left, target)
-            : contains(node.right, target);
-    }
-
-    static void inOrder(BSTNode node, List<Integer> out) {
-        if (node == null) return;
-        inOrder(node.left, out);
-        out.add(node.val);
-        inOrder(node.right, out);
-    }
-
-    static int min(BSTNode node) {
-        while (node.left != null) node = node.left;
-        return node.val;
-    }
-
     public static void main(String[] args) {
-        BSTNode root = null;
-        int[] values = {50, 30, 70, 20, 40, 60, 80, 10};
-        for (int v : values) root = insert(root, v);
-
-        //       50
-        //      /  \\
-        //     30   70
-        //    / \\  / \\
-        //   20 40 60 80
-        //  /
-        // 10
-
-        System.out.println("Contains 40? " + contains(root, 40));   // true
-        System.out.println("Contains 55? " + contains(root, 55));   // false
-
-        List<Integer> sorted = new ArrayList<>();
-        inOrder(root, sorted);
-        System.out.println("In-order (sorted): " + sorted);
-        System.out.println("Min: " + min(root));                     // 10
-
-        // Using Java's built-in BST (TreeSet)
-        TreeSet<Integer> set = new TreeSet<>();
-        for (int v : values) set.add(v);
-        System.out.println("\\nTreeSet: " + set);
-        System.out.println("Subset [30, 60): " + set.subSet(30, 60));
-        System.out.println("Higher than 40: " + set.higher(40));    // 50
+        Node root = null;
+        for (int v : new int[]{50, 30, 70, 20, 40, 60, 80}) root = insert(root, v);
+        System.out.println("Root: " + root.val);
+        System.out.println("Left: " + root.left.val);
+        System.out.println("Right: " + root.right.val);
     }
 }`,
-    output: `Contains 40? true
-Contains 55? false
-In-order (sorted): [10, 20, 30, 40, 50, 60, 70, 80]
-Min: 10
-
-TreeSet: [10, 20, 30, 40, 50, 60, 70, 80]
-Subset [30, 60): [30, 40, 50]
-Higher than 40: 50`,
+        output: `Root: 50
+Left: 30
+Right: 70`,
+      },
+      {
+        label: "2. Search a BST",
+        code: `public class Main {
+    static class Node { int val; Node left, right; Node(int v) { val = v; } }
+    static boolean contains(Node n, int target) {
+        if (n == null) return false;
+        if (target == n.val) return true;
+        return target < n.val ? contains(n.left, target) : contains(n.right, target);
+    }
+    public static void main(String[] args) {
+        Node root = new Node(50);
+        root.left = new Node(30); root.right = new Node(70);
+        root.left.left = new Node(20); root.left.right = new Node(40);
+        System.out.println("Has 40? " + contains(root, 40));
+        System.out.println("Has 55? " + contains(root, 55));
+    }
+}`,
+        output: `Has 40? true
+Has 55? false`,
+      },
+      {
+        label: "3. In-order traversal yields sorted order",
+        code: `import java.util.*;
+public class Main {
+    static class Node { int val; Node left, right; Node(int v) { val = v; } }
+    static void inOrder(Node n, List<Integer> out) {
+        if (n == null) return;
+        inOrder(n.left, out);
+        out.add(n.val);
+        inOrder(n.right, out);
+    }
+    public static void main(String[] args) {
+        Node root = new Node(50);
+        root.left = new Node(30); root.right = new Node(70);
+        root.left.left = new Node(20); root.left.right = new Node(40);
+        List<Integer> sorted = new ArrayList<>();
+        inOrder(root, sorted);
+        System.out.println("Sorted: " + sorted);
+    }
+}`,
+        output: `Sorted: [20, 30, 40, 50, 70]`,
+      },
+      {
+        label: "4. Using Java's built-in TreeSet (balanced BST)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        TreeSet<Integer> set = new TreeSet<>();
+        for (int v : new int[]{50, 30, 70, 20, 40, 60, 80}) set.add(v);
+        System.out.println("All: " + set);
+        System.out.println("Min: " + set.first());
+        System.out.println("Max: " + set.last());
+        System.out.println("Subset [30,60): " + set.subSet(30, 60));
+    }
+}`,
+        output: `All: [20, 30, 40, 50, 60, 70, 80]
+Min: 20
+Max: 80
+Subset [30,60): [30, 40, 50]`,
+      },
+    ],
     commonMistakes: [
       "Inserting sorted data — creates a degenerate (linked-list) tree with O(n) operations. Use a balanced BST (TreeMap/TreeSet) or shuffle before inserting.",
       "Forgetting to handle the two-children case in delete — find the in-order successor (min of right subtree), copy its value, delete the successor.",
@@ -11974,82 +11909,59 @@ public class SimpleHashMap<K, V> {
       "size() — number of entries",
       "index(key) — internal: hash → bucket index",
     ],
-    example: `import java.util.*;
+    examples: [
+      {
+        label: "1. Simple hash table with chaining",
+        code: `public class Main {
+    static class Entry { String key; int val; Entry next; Entry(String k, int v) { key = k; val = v; } }
+    static Entry[] buckets = new Entry[10];
 
-public class Main {
-    public static void main(String[] args) {
-        // Using Java's built-in (recommended)
-        Map<String, Integer> map = new HashMap<>();
-        map.put("Ana", 19);
-        map.put("Bob", 21);
-        map.put("Cy", 19);
-        System.out.println("Ana: " + map.get("Ana"));
-        System.out.println("Bob: " + map.get("Bob"));
-        System.out.println("Unknown: " + map.get("Zoe"));
-        System.out.println("Size: " + map.size());
+    static int hash(String key) { return Math.abs(key.hashCode() % buckets.length); }
 
-        // Custom hash table demo
-        SimpleHashMap<String, Integer> custom = new SimpleHashMap<>(10);
-        custom.put("apple", 5);
-        custom.put("banana", 3);
-        custom.put("cherry", 8);
-        System.out.println("\\nCustom - apple: " + custom.get("apple"));
-        System.out.println("Custom - cherry: " + custom.get("cherry"));
-        System.out.println("Custom - missing: " + custom.get("grape"));
-
-        // The importance of hashCode
-        System.out.println("\\n"Ana".hashCode() = " + "Ana".hashCode());
-        System.out.println(""ana".hashCode() = " + "ana".hashCode());
-        // Different case → different hash → different bucket
-    }
-}
-
-class SimpleHashMap<K, V> {
-    private static class Entry<K, V> {
-        K key; V value; Entry<K, V> next;
-        Entry(K k, V v) { key = k; value = v; }
-    }
-    private Entry<K, V>[] buckets;
-    private int size = 0;
-
-    @SuppressWarnings("unchecked")
-    SimpleHashMap(int capacity) { buckets = (Entry<K, V>[]) new Entry[capacity]; }
-
-    private int index(K key) { return Math.abs(key.hashCode() % buckets.length); }
-
-    public void put(K key, V value) {
-        int i = index(key);
-        for (Entry<K, V> e = buckets[i]; e != null; e = e.next) {
-            if (e.key.equals(key)) { e.value = value; return; }
-        }
-        Entry<K, V> entry = new Entry<>(key, value);
-        entry.next = buckets[i];
-        buckets[i] = entry;
-        size++;
+    static void put(String key, int val) {
+        int i = hash(key);
+        for (Entry e = buckets[i]; e != null; e = e.next)
+            if (e.key.equals(key)) { e.val = val; return; }
+        Entry e = new Entry(key, val);
+        e.next = buckets[i]; buckets[i] = e;
     }
 
-    public V get(K key) {
-        int i = index(key);
-        for (Entry<K, V> e = buckets[i]; e != null; e = e.next) {
-            if (e.key.equals(key)) return e.value;
-        }
+    static Integer get(String key) {
+        int i = hash(key);
+        for (Entry e = buckets[i]; e != null; e = e.next)
+            if (e.key.equals(key)) return e.val;
         return null;
     }
 
-    public int size() { return size; }
+    public static void main(String[] args) {
+        put("apple", 5);
+        put("banana", 3);
+        System.out.println("apple: " + get("apple"));
+        System.out.println("cherry: " + get("cherry"));
+    }
 }`,
-    output: `Ana: 19
-Bob: 21
-Unknown: null
-Size: 3
-
-Custom - apple: 5
-Custom - cherry: 8
-Custom - missing: null
-
-"Ana".hashCode() = 65604
-"ana".hashCode() = 97299
-`,
+        output: `apple: 5
+cherry: null`,
+      },
+      {
+        label: "2. Using Java's built-in HashMap (recommended)",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("apple", 5);
+        map.put("banana", 3);
+        map.put("cherry", 8);
+        System.out.println("apple: " + map.get("apple"));
+        System.out.println("cherry: " + map.get("cherry"));
+        System.out.println("missing: " + map.get("grape"));
+    }
+}`,
+        output: `apple: 5
+cherry: 8
+missing: null`,
+      },
+    ],
     commonMistakes: [
       "Not overriding hashCode when you override equals — equal objects end up in different buckets, breaking HashMap. The contract: equal objects must have equal hash codes.",
       "Using mutable keys and changing them after insertion — the entry becomes unfindable (it's in the wrong bucket).",
@@ -12132,53 +12044,52 @@ public class MinHeap {
       "isEmpty() — true if size == 0",
       "heapify(array) — build a heap from an unordered array, O(n)",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Min-heap with PriorityQueue (default)",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        // Using Java's PriorityQueue (min-heap by default)
         PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-        minHeap.offer(5);
-        minHeap.offer(1);
-        minHeap.offer(3);
-        minHeap.offer(8);
-        minHeap.offer(2);
-
-        System.out.println("Peek (min): " + minHeap.peek());  // 1
-        System.out.print("Extract in order: ");
+        minHeap.offer(5); minHeap.offer(1); minHeap.offer(3); minHeap.offer(8); minHeap.offer(2);
+        System.out.println("Peek (min): " + minHeap.peek());
         while (!minHeap.isEmpty()) System.out.print(minHeap.poll() + " ");
         System.out.println();
-
-        // Max-heap — use reverseOrder
+    }
+}`,
+        output: `Peek (min): 1
+1 2 3 5 8 `,
+      },
+      {
+        label: "2. Max-heap with reverseOrder",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
         PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
-        maxHeap.addAll(List.of(5, 1, 3, 8, 2));
-        System.out.print("Max-heap order: ");
+        maxHeap.offer(5); maxHeap.offer(1); maxHeap.offer(3); maxHeap.offer(8); maxHeap.offer(2);
         while (!maxHeap.isEmpty()) System.out.print(maxHeap.poll() + " ");
         System.out.println();
-
-        // Top 3 largest from a stream
+    }
+}`,
+        output: `8 5 3 2 1 `,
+      },
+      {
+        label: "3. Top K largest elements",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
         int[] data = {7, 2, 9, 1, 5, 8, 3, 6, 4};
         PriorityQueue<Integer> top3 = new PriorityQueue<>(); // min-heap of size 3
         for (int n : data) {
             top3.offer(n);
-            if (top3.size() > 3) top3.poll();  // evict smallest
+            if (top3.size() > 3) top3.poll();
         }
         System.out.println("Top 3: " + top3);
-
-        // Heap sort — insert all, extract all
-        int[] arr = {4, 10, 3, 5, 1, 8, 2};
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for (int n : arr) pq.offer(n);
-        System.out.print("Heap sorted: ");
-        while (!pq.isEmpty()) System.out.print(pq.poll() + " ");
-        System.out.println();
     }
 }`,
-    output: `Peek (min): 1
-Extract in order: 1 2 3 5 8 
-Max-heap order: 8 5 3 2 1 
-Top 3: [7, 8, 9]
-Heap sorted: 1 2 3 4 5 8 10 `,
+        output: `Top 3: [7, 8, 9]`,
+      },
+    ],
     commonMistakes: [
       "Confusing min-heap (default in Java) with max-heap — for a max-heap, pass Collections.reverseOrder() to the constructor.",
       "Iterating with a for-each and expecting sorted order — the iterator does NOT return sorted. Use poll() in a loop.",
@@ -12255,81 +12166,93 @@ class Graph {
       "dijkstra(src) — shortest distances from src in weighted graph (priority queue, O((V+E) log V))",
       "Note: Bellman-Ford handles negative weights O(VE); Floyd-Warshall all-pairs O(V³)",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Build a graph with adjacency list",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        // Graph:
-        //   1 → 2 → 3
-        //   |   |
-        //   v   v
-        //   4   5
         Map<Integer, List<Integer>> adj = new HashMap<>();
         addEdge(adj, 1, 2);
         addEdge(adj, 1, 4);
         addEdge(adj, 2, 3);
         addEdge(adj, 2, 5);
-
-        // BFS from 1
-        System.out.print("BFS from 1: ");
-        bfs(adj, 1);
-        System.out.println();
-
-        // DFS from 1
-        System.out.print("DFS from 1: ");
-        dfs(adj, 1, new HashSet<>());
-        System.out.println();
-
-        // Shortest path (BFS) from 1 to 3
-        System.out.println("Shortest path 1→3: " + bfsShortestPath(adj, 1, 3));
+        System.out.println("Graph: " + adj);
     }
-
     static void addEdge(Map<Integer, List<Integer>> adj, int from, int to) {
         adj.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
         adj.computeIfAbsent(to, k -> new ArrayList<>());
     }
-
-    static void bfs(Map<Integer, List<Integer>> adj, int start) {
+}`,
+        output: `Graph: {1=[2, 4], 2=[1, 3, 5], 3=[2], 4=[1], 5=[2]}`,
+      },
+      {
+        label: "2. BFS — breadth-first traversal",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<Integer, List<Integer>> adj = Map.of(
+            1, List.of(2, 4), 2, List.of(3, 5), 3, List.of(), 4, List.of(), 5, List.of());
         Set<Integer> visited = new HashSet<>();
         Queue<Integer> q = new LinkedList<>();
-        q.offer(start); visited.add(start);
+        q.offer(1); visited.add(1);
+        System.out.print("BFS: ");
         while (!q.isEmpty()) {
-            int node = q.poll();
-            System.out.print(node + " ");
-            for (int n : adj.getOrDefault(node, List.of())) {
-                if (visited.add(n)) q.offer(n);
-            }
+            int n = q.poll();
+            System.out.print(n + " ");
+            for (int next : adj.getOrDefault(n, List.of()))
+                if (visited.add(next)) q.offer(next);
         }
+        System.out.println();
     }
-
+}`,
+        output: `BFS: 1 2 4 3 5 `,
+      },
+      {
+        label: "3. DFS — depth-first traversal (recursive)",
+        code: `import java.util.*;
+public class Main {
     static void dfs(Map<Integer, List<Integer>> adj, int node, Set<Integer> visited) {
         if (!visited.add(node)) return;
         System.out.print(node + " ");
-        for (int n : adj.getOrDefault(node, List.of())) dfs(adj, n, visited);
+        for (int next : adj.getOrDefault(node, List.of()))
+            dfs(adj, next, visited);
     }
-
-    static List<Integer> bfsShortestPath(Map<Integer, List<Integer>> adj, int src, int dst) {
-        Map<Integer, Integer> parent = new HashMap<>();
-        Set<Integer> visited = new HashSet<>();
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(src); visited.add(src); parent.put(src, -1);
-        while (!q.isEmpty()) {
-            int node = q.poll();
-            if (node == dst) break;
-            for (int n : adj.getOrDefault(node, List.of())) {
-                if (visited.add(n)) { parent.put(n, node); q.offer(n); }
-            }
-        }
-        if (!parent.containsKey(dst)) return List.of();
-        List<Integer> path = new ArrayList<>();
-        for (int at = dst; at != -1; at = parent.get(at)) path.add(at);
-        Collections.reverse(path);
-        return path;
+    public static void main(String[] args) {
+        Map<Integer, List<Integer>> adj = Map.of(
+            1, List.of(2, 4), 2, List.of(3, 5), 3, List.of(), 4, List.of(), 5, List.of());
+        System.out.print("DFS: ");
+        dfs(adj, 1, new HashSet<>());
+        System.out.println();
     }
 }`,
-    output: `BFS from 1: 1 2 4 3 5 
-DFS from 1: 1 2 3 5 4 
-Shortest path 1→3: [1, 2, 3]`,
+        output: `DFS: 1 2 3 5 4 `,
+      },
+      {
+        label: "4. BFS shortest path in unweighted graph",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<Integer, List<Integer>> adj = Map.of(
+            1, List.of(2, 4), 2, List.of(3), 3, List.of(), 4, List.of(3));
+        Map<Integer, Integer> parent = new HashMap<>();
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(1); parent.put(1, -1);
+        while (!q.isEmpty()) {
+            int n = q.poll();
+            for (int next : adj.getOrDefault(n, List.of()))
+                if (!parent.containsKey(next)) { parent.put(next, n); q.offer(next); }
+        }
+        // Reconstruct path 1 → 3
+        List<Integer> path = new ArrayList<>();
+        for (int at = 3; at != -1; at = parent.get(at)) path.add(at);
+        Collections.reverse(path);
+        System.out.println("Path 1→3: " + path);
+    }
+}`,
+        output: `Path 1→3: [1, 2, 3]`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to mark nodes as visited — causes infinite loops in cyclic graphs.",
       "Using DFS when you need the shortest path — DFS doesn't find shortest paths; use BFS (unweighted) or Dijkstra (weighted).",
@@ -12396,43 +12319,28 @@ list.sort(Comparator.comparingInt(String::length));  // by length`,
       "Collections.sort(list) — sort a List in place",
       "list.sort(comparator) — sort with a custom comparator",
     ],
-    example: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        int[] arr = {5, 2, 8, 1, 9, 3, 7, 4, 6};
-
-        // Bubble sort (educational)
-        int[] bubble = arr.clone();
-        bubbleSort(bubble);
-        System.out.println("Bubble: " + Arrays.toString(bubble));
-
-        // Quick sort (educational)
-        int[] quick = arr.clone();
-        quickSort(quick, 0, quick.length - 1);
-        System.out.println("Quick:  " + Arrays.toString(quick));
-
-        // Merge sort (educational)
-        int[] merged = mergeSort(arr.clone());
-        System.out.println("Merge:  " + Arrays.toString(merged));
-
-        // Built-in (recommended)
-        int[] builtin = arr.clone();
-        Arrays.sort(builtin);
-        System.out.println("Built:  " + Arrays.toString(builtin));
-
-        // Sort objects with a custom comparator
-        String[] names = {"Ana", "Bob", "Cy", "Dave", "Eve"};
-        Arrays.sort(names, Comparator.comparingInt(String::length));
-        System.out.println("By length: " + Arrays.toString(names));
-    }
-
+    examples: [
+      {
+        label: "1. Bubble Sort — O(n²)",
+        code: `public class Main {
     static void bubbleSort(int[] a) {
         for (int i = 0; i < a.length; i++)
             for (int j = 0; j < a.length - 1 - i; j++)
-                if (a[j] > a[j+1]) { int t = a[j]; a[j] = a[j+1]; a[j+1] = t; }
+                if (a[j] > a[j+1]) {
+                    int t = a[j]; a[j] = a[j+1]; a[j+1] = t;
+                }
     }
-
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 1, 9, 3};
+        bubbleSort(a);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}`,
+        output: `[1, 2, 3, 5, 8, 9]`,
+      },
+      {
+        label: "2. Quick Sort — O(n log n) average",
+        code: `public class Main {
     static void quickSort(int[] a, int lo, int hi) {
         if (lo >= hi) return;
         int pivot = a[hi], i = lo;
@@ -12443,66 +12351,50 @@ public class Main {
         quickSort(a, lo, i - 1);
         quickSort(a, i + 1, hi);
     }
-
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 1, 9, 3};
+        quickSort(a, 0, a.length - 1);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}`,
+        output: `[1, 2, 3, 5, 8, 9]`,
+      },
+      {
+        label: "3. Merge Sort — O(n log n), stable",
+        code: `public class Main {
     static int[] mergeSort(int[] a) {
         if (a.length <= 1) return a;
         int mid = a.length / 2;
-        int[] left = mergeSort(Arrays.copyOfRange(a, 0, mid));
-        int[] right = mergeSort(Arrays.copyOfRange(a, mid, a.length));
-        int[] merged = new int[a.length];
+        int[] L = mergeSort(java.util.Arrays.copyOfRange(a, 0, mid));
+        int[] R = mergeSort(java.util.Arrays.copyOfRange(a, mid, a.length));
+        int[] m = new int[a.length];
         int i = 0, j = 0, k = 0;
-        while (i < left.length && j < right.length)
-            merged[k++] = left[i] <= right[j] ? left[i++] : right[j++];
-        while (i < left.length) merged[k++] = left[i++];
-        while (j < right.length) merged[k++] = right[j++];
-        return merged;
-    }
-}
-
-// Heap Sort — O(n log n), in-place, not stable
-class HeapSort {
-    static void sort(int[] arr) {
-        int n = arr.length;
-        for (int i = n/2 - 1; i >= 0; i--) heapify(arr, n, i); // build max-heap
-        for (int i = n - 1; i > 0; i--) {
-            int tmp = arr[0]; arr[0] = arr[i]; arr[i] = tmp;    // move root to end
-            heapify(arr, i, 0);
-        }
-    }
-    static void heapify(int[] arr, int n, int i) {
-        int largest = i, l = 2*i+1, r = 2*i+2;
-        if (l < n && arr[l] > arr[largest]) largest = l;
-        if (r < n && arr[r] > arr[largest]) largest = r;
-        if (largest != i) { int tmp=arr[i]; arr[i]=arr[largest]; arr[largest]=tmp; heapify(arr, n, largest); }
+        while (i < L.length && j < R.length)
+            m[k++] = L[i] <= R[j] ? L[i++] : R[j++];
+        while (i < L.length) m[k++] = L[i++];
+        while (j < R.length) m[k++] = R[j++];
+        return m;
     }
     public static void main(String[] args) {
-        int[] arr = {5, 3, 8, 1, 9, 2};
-        sort(arr);
-        System.out.println(java.util.Arrays.toString(arr)); // [1, 2, 3, 5, 8, 9]
-    }
-}
-
-// Counting Sort — O(n+k), stable, non-comparison, for bounded non-negative integers
-class CountingSort {
-    static int[] sort(int[] arr) {
-        int max = java.util.Arrays.stream(arr).max().getAsInt();
-        int[] count = new int[max + 1];
-        for (int x : arr) count[x]++;
-        for (int i = 1; i < count.length; i++) count[i] += count[i-1]; // prefix sum
-        int[] out = new int[arr.length];
-        for (int i = arr.length - 1; i >= 0; i--) out[--count[arr[i]]] = arr[i];
-        return out;
-    }
-    public static void main(String[] args) {
-        int[] arr = {4, 2, 2, 8, 3, 3, 1};
-        System.out.println(java.util.Arrays.toString(sort(arr))); // [1, 2, 2, 3, 3, 4, 8]
+        int[] a = {5, 2, 8, 1, 9, 3};
+        System.out.println(java.util.Arrays.toString(mergeSort(a)));
     }
 }`,
-    output: `Bubble: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-Quick:  [1, 2, 3, 4, 5, 6, 7, 8, 9]
-Merge:  [1, 2, 3, 4, 5, 6, 7, 8, 9]
-Built:  [1, 2, 3, 4, 5, 6, 7, 8, 9]
-By length: [Cy, Ana, Bob, Dave, Eve]`,
+        output: `[1, 2, 3, 5, 8, 9]`,
+      },
+      {
+        label: "4. Built-in Arrays.sort (recommended)",
+        code: `import java.util.Arrays;
+public class Main {
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 1, 9, 3};
+        Arrays.sort(a);
+        System.out.println(Arrays.toString(a));
+    }
+}`,
+        output: `[1, 2, 3, 5, 8, 9]`,
+      },
+    ],
     commonMistakes: [
       "Writing your own sort for production — use Arrays.sort/Collections.sort. They're highly optimized and battle-tested.",
       "Forgetting that Arrays.sort on primitives is NOT stable (uses quicksort) — if stability matters, sort objects (uses TimSort) or use a stable comparator.",
@@ -12611,47 +12503,42 @@ int binarySearch(int[] a, int target) {
       "set.contains(obj) — O(1) for HashSet, O(log n) for TreeSet",
       "map.containsKey(key) — O(1) for HashMap, O(log n) for TreeMap",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Linear search — O(n), works on unsorted",
+        code: `public class Main {
+    static int linearSearch(int[] a, int target) {
+        for (int i = 0; i < a.length; i++)
+            if (a[i] == target) return i;
+        return -1;
+    }
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 1, 9, 3};
+        System.out.println("Index of 8: " + linearSearch(a, 8));
+        System.out.println("Index of 7: " + linearSearch(a, 7));
+    }
+}`,
+        output: `Index of 8: 2
+Index of 7: -1`,
+      },
+      {
+        label: "2. Binary search — O(log n), requires sorted",
+        code: `import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
-        int[] arr = {5, 2, 8, 1, 9, 3, 7, 4, 6};
-
-        // Linear search (works on unsorted)
-        int target = 8;
-        int linearIdx = -1;
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == target) { linearIdx = i; break; }
-        }
-        System.out.println("Linear search for 8: index " + linearIdx);
-
-        // Binary search (requires sorted)
-        Arrays.sort(arr);
-        System.out.println("Sorted: " + Arrays.toString(arr));
-        int binIdx = Arrays.binarySearch(arr, 8);
-        System.out.println("Binary search for 8: index " + binIdx);
-
-        int notFound = Arrays.binarySearch(arr, 10);
-        System.out.println("Binary search for 10: " + notFound);
-        System.out.println("  Insertion point: " + (-(notFound + 1)));
-
-        // Binary search on a List
-        List<Integer> list = new ArrayList<>(List.of(1, 3, 5, 7, 9, 11));
-        int listIdx = Collections.binarySearch(list, 7);
-        System.out.println("\\nList search for 7: index " + listIdx);
-
-        // Custom binary search implementation
-        int[] sorted = {1, 3, 5, 7, 9, 11, 13, 15};
-        System.out.println("Custom search for 11: " + binarySearch(sorted, 11));
-        System.out.println("Custom search for 8: " + binarySearch(sorted, 8));
-
-        // Count elements in a range [5, 12]
-        int lo = Arrays.binarySearch(arr, 5);
-        int hi = Arrays.binarySearch(arr, 12);
-        if (hi < 0) hi = -(hi + 1);
-        System.out.println("\\nElements in [5, 12): " + (hi - (lo < 0 ? -(lo+1) : lo)));
+        int[] a = {1, 3, 5, 7, 9, 11, 13};
+        int idx = Arrays.binarySearch(a, 7);
+        System.out.println("Index of 7: " + idx);
+        int notFound = Arrays.binarySearch(a, 8);
+        System.out.println("Index of 8: " + notFound + " (negative = not found)");
     }
-
+}`,
+        output: `Index of 7: 3
+Index of 8: -5 (negative = not found)`,
+      },
+      {
+        label: "3. Custom binary search implementation",
+        code: `public class Main {
     static int binarySearch(int[] a, int target) {
         int lo = 0, hi = a.length - 1;
         while (lo <= hi) {
@@ -12662,18 +12549,16 @@ public class Main {
         }
         return -1;
     }
+    public static void main(String[] args) {
+        int[] a = {1, 3, 5, 7, 9, 11, 13};
+        System.out.println("Index of 11: " + binarySearch(a, 11));
+        System.out.println("Index of 4: " + binarySearch(a, 4));
+    }
 }`,
-    output: `Linear search for 8: index 2
-Sorted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-Binary search for 8: index 7
-Binary search for 10: -10
-  Insertion point: 9
-
-List search for 7: index 3
-Custom search for 11: 5
-Custom search for 8: -1
-
-Elements in [5, 12): 5`,
+        output: `Index of 11: 5
+Index of 4: -1`,
+      },
+    ],
     commonMistakes: [
       "Calling binarySearch on an UNSORTED array — returns garbage (wrong index). Sort first.",
       "Computing mid as (lo + hi) / 2 — overflows for large arrays. Use lo + (hi - lo) / 2.",
@@ -12793,58 +12678,52 @@ int fib(int n) {
       "O(2^n) — exponential: naive recursion (Fibonacci, subsets)",
       "O(n!) — factorial: permutations, traveling salesman (brute force)",
     ],
-    example: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        // Demonstrate the difference O(n) vs O(n²) vs O(log n)
-
-        int[] sizes = {1000, 10000, 100000};
-        for (int n : sizes) {
-            int[] arr = new int[n];
-            for (int i = 0; i < n; i++) arr[i] = i;
-
-            // O(1) — array access
-            long start = System.nanoTime();
-            int x = arr[n / 2];
-            long o1 = System.nanoTime() - start;
-
-            // O(log n) — binary search
-            start = System.nanoTime();
-            Arrays.binarySearch(arr, n - 1);
-            long ologn = System.nanoTime() - start;
-
-            // O(n) — linear search
-            start = System.nanoTime();
-            for (int i = 0; i < n; i++) if (arr[i] == n - 1) break;
-            long on = System.nanoTime() - start;
-
-            // O(n log n) — sort
-            int[] copy = arr.clone();
-            java.util.Random r = new Random();
-            for (int i = 0; i < n; i++) copy[i] = r.nextInt();
-            start = System.nanoTime();
-            Arrays.sort(copy);
-            long onlogn = System.nanoTime() - start;
-
-            System.out.printf("n=%,d: O(1)=%d ns, O(log n)=%d ns, O(n)=%,d ns, O(n log n)=%,d ns%n",
-                n, o1, ologn, on, onlogn);
-        }
-
-        // O(n²) — only for small n
-        int n = 1000;
-        long start = System.nanoTime();
-        int count = 0;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                count++;
-        System.out.printf("O(n²) for n=%d: %,d ns (just counting)%n", n, System.nanoTime() - start);
-    }
-}`,
-    output: `n=1,000: O(1)=200 ns, O(log n)=5,000 ns, O(n)=12,000 ns, O(n log n)=280,000 ns
-n=10,000: O(1)=100 ns, O(log n)=6,100 ns, O(n)=45,000 ns, O(n log n)=890,000 ns
-n=100,000: O(1)=100 ns, O(log n)=8,200 ns, O(n)=520,000 ns, O(n log n)=11,000,000 ns
-O(n²) for n=1000: 2,800,000 ns (just counting)`,
+    examples: [
+      {
+        label: "1. O(1) — constant time",
+        code: `// Array access — same time regardless of size
+int first = arr[0];  // O(1)
+map.get(key);         // O(1) average for HashMap`,
+      },
+      {
+        label: "2. O(log n) — logarithmic (halves each step)",
+        code: `// Binary search — each step halves the search space
+int lo = 0, hi = arr.length - 1;
+while (lo <= hi) {
+    int mid = (lo + hi) / 2;
+    if (arr[mid] == target) return mid;
+    else if (arr[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+}
+// O(log n) — 1 million items → ~20 comparisons`,
+      },
+      {
+        label: "3. O(n) — linear (one pass)",
+        code: `// Loop through all elements once
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] == target) return i;
+}
+// O(n) — double the input, double the time`,
+      },
+      {
+        label: "4. O(n²) — quadratic (nested loops)",
+        code: `// Nested loop over same array
+for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
+        if (arr[i] + arr[j] == target) return true;
+// O(n²) — double the input, quadruple the time`,
+      },
+      {
+        label: "5. Growth comparison at n=1,000,000",
+        code: `// Approximate operations at n = 1,000,000:
+// O(1)         →        1
+// O(log n)     →       20
+// O(n)         → 1,000,000
+// O(n log n)   → 20,000,000
+// O(n²)        → 1,000,000,000,000  (1 trillion — too slow!)
+// O(2^n)       → astronomically large (never finishes)`,
+      },
+    ],
     commonMistakes: [
       "Ignoring nested loops — two nested loops over n is O(n²), not O(2n).",
       "Forgetting that sorting is O(n log n) — if you sort then binary-search, the sort dominates.",
@@ -12962,72 +12841,61 @@ int fib(int n) {
       "Identify the transition — how do states relate?",
       "Identify base cases — the smallest subproblems with known answers",
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. Fibonacci — memoization (top-down)",
+        code: `import java.util.*;
 public class Main {
-    public static void main(String[] args) {
-        // Fibonacci — compare approaches
-        System.out.println("fib(10) memo: " + fibMemo(10));
-        System.out.println("fib(10) tabu: " + fibTabu(10));
-
-        // Coin change — fewest coins to make a sum
-        int[] coins = {1, 5, 10, 25};
-        System.out.println("\\nCoins to make 37: " + coinChange(coins, 37));
-
-        // Longest Common Subsequence
-        System.out.println("LCS(ABCBDAB, BDCAB): " + lcs("ABCBDAB", "BDCAB"));
-    }
-
-    // Fibonacci — memoization (top-down)
     static Map<Integer, Integer> memo = new HashMap<>();
-    static int fibMemo(int n) {
+    static int fib(int n) {
         if (n < 2) return n;
         if (memo.containsKey(n)) return memo.get(n);
-        int r = fibMemo(n - 1) + fibMemo(n - 2);
+        int r = fib(n - 1) + fib(n - 2);
         memo.put(n, r);
         return r;
     }
-
-    // Fibonacci — tabulation (bottom-up)
-    static int fibTabu(int n) {
+    public static void main(String[] args) {
+        System.out.println("fib(20) = " + fib(20));
+    }
+}`,
+        output: `fib(20) = 6765`,
+      },
+      {
+        label: "2. Fibonacci — tabulation (bottom-up)",
+        code: `public class Main {
+    static int fib(int n) {
         if (n < 2) return n;
         int[] dp = new int[n + 1];
         dp[0] = 0; dp[1] = 1;
         for (int i = 2; i <= n; i++) dp[i] = dp[i-1] + dp[i-2];
         return dp[n];
     }
-
-    // Coin change — minimum coins to make 'amount'
+    public static void main(String[] args) {
+        System.out.println("fib(20) = " + fib(20));
+    }
+}`,
+        output: `fib(20) = 6765`,
+      },
+      {
+        label: "3. Coin change — minimum coins",
+        code: `import java.util.*;
+public class Main {
     static int coinChange(int[] coins, int amount) {
         int[] dp = new int[amount + 1];
         Arrays.fill(dp, amount + 1);
         dp[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            for (int coin : coins) {
-                if (coin <= i) dp[i] = Math.min(dp[i], dp[i - coin] + 1);
-            }
-        }
+        for (int i = 1; i <= amount; i++)
+            for (int c : coins)
+                if (c <= i) dp[i] = Math.min(dp[i], dp[i - c] + 1);
         return dp[amount] > amount ? -1 : dp[amount];
     }
-
-    // Longest Common Subsequence
-    static int lcs(String a, String b) {
-        int m = a.length(), n = b.length();
-        int[][] dp = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (a.charAt(i-1) == b.charAt(j-1)) dp[i][j] = dp[i-1][j-1] + 1;
-                else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
-            }
-        }
-        return dp[m][n];
+    public static void main(String[] args) {
+        System.out.println("Min coins for 37: " + coinChange(new int[]{1, 5, 10, 25}, 37));
     }
 }`,
-    output: `fib(10) memo: 55
-fib(10) tabu: 55
-
-Coins to make 37: 4
-LCS(ABCBDAB, BDCAB): 4`,
+        output: `Min coins for 37: 4`,
+      },
+    ],
     commonMistakes: [
       "Forgetting the base cases — dp[0] must be set correctly or the whole table is wrong.",
       "Using the wrong iteration order — for bottom-up, you must compute smaller states before larger ones that depend on them.",
@@ -13143,60 +13011,70 @@ class PaymentProcessor {
       "Interface Segregation — many small interfaces beat one fat interface",
       "Dependency Inversion — depend on interfaces, inject concretions",
     ],
-    example: `// BEFORE: violates SOLID
+    examples: [
+      {
+        label: "1. S — Single Responsibility",
+        code: `// BAD: one class does everything
 class BadOrderService {
-    void processOrder(Order o) {
-        // Database logic (violates SRP)
-        saveToDatabase(o);
-        // Email logic (violates SRP)
-        sendEmail(o);
-        // Payment logic with hardcoded Stripe (violates OCP and DIP)
-        if (o.paymentMethod.equals("stripe")) chargeStripe(o);
-        else if (o.paymentMethod.equals("paypal")) chargePaypal(o);
+    void save(Order o) { /* DB logic */ }
+    void sendEmail(Order o) { /* email logic */ }
+    void charge(Order o) { /* payment logic */ }
+}
+
+// GOOD: each class has one job
+class OrderRepository { void save(Order o) { /* DB only */ } }
+class EmailService     { void send(Order o) { /* email only */ } }
+class PaymentGateway   { void charge(Order o) { /* payment only */ } }`,
+      },
+      {
+        label: "2. O — Open/Closed (extend without modifying)",
+        code: `// BAD: edit this class every time you add a payment type
+class PaymentProcessor {
+    void pay(String type) {
+        if (type.equals("stripe")) { /* stripe */ }
+        else if (type.equals("paypal")) { /* paypal */ }
     }
 }
 
-// AFTER: follows SOLID
-interface PaymentGateway { boolean charge(Order o); }
-class StripeGateway implements PaymentGateway { public boolean charge(Order o) { /* stripe */ return true; } }
-class PayPalGateway implements PaymentGateway { public boolean charge(Order o) { /* paypal */ return true; } }
+// GOOD: add a new class, no edits to existing code
+interface PaymentStrategy { void pay(double amt); }
+class Stripe implements PaymentStrategy { public void pay(double a) { } }
+class PayPal implements PaymentStrategy { public void pay(double a) { } }`,
+      },
+      {
+        label: "3. L — Liskov Substitution (subtypes honor the contract)",
+        code: `// GOOD: Sparrow is a proper substitute for Bird
+class Bird { void fly() { System.out.println("flying"); } }
+class Sparrow extends Bird { /* inherits fly() — works */ }
 
-interface OrderRepository { void save(Order o); }
-interface EmailService { void sendOrderConfirmation(Order o); }
+// BAD: Penguin breaks the contract
+// class Penguin extends Bird { void fly() { throw new UnsupportedOperationException(); } }`,
+      },
+      {
+        label: "4. I — Interface Segregation (small focused interfaces)",
+        code: `// BAD: fat interface forces Robot to implement eat()
+// interface Worker { void work(); void eat(); }
+// class Robot implements Worker { void work() {} void eat() { /* nonsense */ } }
 
-class GoodOrderService {
-    private final OrderRepository repo;       // DIP: depend on interface
-    private final EmailService email;
-    private final PaymentGateway payment;     // DIP + OCP: swap implementations
+// GOOD: split into focused interfaces
+interface Workable { void work(); }
+interface Eatable  { void eat(); }
+class Robot  implements Workable { public void work() { System.out.println("working"); } }
+class Human  implements Workable, Eatable { public void work() {} public void eat() {} }`,
+      },
+      {
+        label: "5. D — Dependency Inversion (depend on abstractions)",
+        code: `// GOOD: depend on interface, inject concrete
+interface PaymentGateway { boolean charge(double amt); }
+class StripeGateway implements PaymentGateway { public boolean charge(double a) { return true; } }
 
-    // Dependency injection — pass concrete impls in
-    GoodOrderService(OrderRepository r, EmailService e, PaymentGateway p) {
-        repo = r; email = e; payment = p;
-    }
-
-    void processOrder(Order o) {
-        repo.save(o);                          // SRP: only orchestration here
-        payment.charge(o);                     // OCP: new payment = new class, no edit
-        email.sendOrderConfirmation(o);        // SRP: email handled elsewhere
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        // Inject dependencies (DI)
-        GoodOrderService svc = new GoodOrderService(
-            new DatabaseOrderRepository(),      // could swap for a fake in tests
-            new SmtpEmailService(),
-            new StripeGateway()                 // swap for PayPalGateway anytime
-        );
-        svc.processOrder(new Order());
-        System.out.println("Order processed with SOLID design");
-    }
-}
-class Order {}
-class DatabaseOrderRepository implements OrderRepository { public void save(Order o) {} }
-class SmtpEmailService implements EmailService { public void sendOrderConfirmation(Order o) {} }`,
-    output: `Order processed with SOLID design`,
+class OrderService {
+    private final PaymentGateway gateway;  // interface, not concrete
+    OrderService(PaymentGateway g) { gateway = g; }
+    void process(double amt) { gateway.charge(amt); }
+}`,
+      },
+    ],
     commonMistakes: [
       "Applying SOLID religiously to small scripts — these principles are for large, evolving codebases. Don't add interfaces and DI to a 50-line utility.",
       "Violating LSP with subclasses that throw UnsupportedOperationException for inherited methods — if it can't fulfill the contract, it shouldn't extend the class.",
@@ -13318,84 +13196,101 @@ class MergeSort implements SortStrategy { ... }`,
       "Template Method — define algorithm skeleton, subclasses fill in steps",
       "State — change behavior when state changes",
     ],
-    example: `import java.util.*;
-import java.util.function.*;
-
-public class Main {
+    examples: [
+      {
+        label: "1. Singleton — one instance only",
+        code: `public class Main {
+    enum Database { INSTANCE;
+        void query(String sql) { System.out.println("Executing: " + sql); }
+    }
     public static void main(String[] args) {
-        // === Builder pattern ===
+        Database.INSTANCE.query("SELECT * FROM users");
+        System.out.println(Database.INSTANCE == Database.INSTANCE);
+    }
+}`,
+        output: `Executing: SELECT * FROM users
+true`,
+      },
+      {
+        label: "2. Builder — step-by-step construction",
+        code: `public class Main {
+    static class Pizza {
+        String size; boolean cheese, pepperoni;
+        static class Builder {
+            String size; boolean cheese, pepperoni;
+            Builder size(String s) { size = s; return this; }
+            Builder cheese() { cheese = true; return this; }
+            Builder pepperoni() { pepperoni = true; return this; }
+            Pizza build() { Pizza p = new Pizza(); p.size = size; p.cheese = cheese; p.pepperoni = pepperoni; return p; }
+        }
+        public String toString() { return "Pizza[" + size + ", cheese=" + cheese + ", pepperoni=" + pepperoni + "]"; }
+    }
+    public static void main(String[] args) {
         Pizza p = new Pizza.Builder().size("L").cheese().pepperoni().build();
         System.out.println(p);
-
-        // === Observer pattern ===
+    }
+}`,
+        output: `Pizza[L, cheese=true, pepperoni=true]`,
+      },
+      {
+        label: "3. Observer — publish/subscribe",
+        code: `import java.util.function.*;
+public class Main {
+    public static void main(String[] args) {
         NewsAgency agency = new NewsAgency();
-        agency.subscribe(e -> System.out.println("Reader 1 got: " + e));
-        agency.subscribe(e -> System.out.println("Reader 2 got: " + e));
-        agency.publish("Breaking: Java 21 released!");
-
-        // === Strategy pattern ===
-        Sorter sorter = new Sorter();
-        int[] arr = {5, 2, 8, 1, 9, 3};
-        sorter.setStrategy(a -> Arrays.sort(a));           // built-in
-        sorter.sort(arr);
-        System.out.println("\\nSorted: " + Arrays.toString(arr));
-
-        // === Factory pattern ===
-        PaymentGateway gateway = PaymentGatewayFactory.create("stripe");
-        gateway.charge(99.99);
+        agency.subscribe(e -> System.out.println("Reader 1: " + e));
+        agency.subscribe(e -> System.out.println("Reader 2: " + e));
+        agency.publish("Java 25 released!");
     }
-}
-
-// Builder
-class Pizza {
-    String size; boolean cheese, pepperoni;
-    public static class Builder {
-        private String size; private boolean cheese, pepperoni;
-        public Builder size(String s) { this.size = s; return this; }
-        public Builder cheese() { this.cheese = true; return this; }
-        public Builder pepperoni() { this.pepperoni = true; return this; }
-        public Pizza build() {
-            Pizza p = new Pizza();
-            p.size = size; p.cheese = cheese; p.pepperoni = pepperoni;
-            return p;
-        }
+    static class NewsAgency {
+        java.util.List<Consumer<String>> subs = new java.util.ArrayList<>();
+        void subscribe(Consumer<String> s) { subs.add(s); }
+        void publish(String news) { subs.forEach(s -> s.accept(news)); }
     }
-    public String toString() { return "Pizza[" + size + ", cheese=" + cheese + ", pepperoni=" + pepperoni + "]"; }
-}
-
-// Observer
-class NewsAgency {
-    private List<Consumer<String>> subscribers = new ArrayList<>();
-    void subscribe(Consumer<String> s) { subscribers.add(s); }
-    void publish(String news) { subscribers.forEach(s -> s.accept(news)); }
-}
-
-// Strategy
-class Sorter {
-    private Consumer<int[]> strategy;
-    void setStrategy(Consumer<int[]> s) { strategy = s; }
-    void sort(int[] arr) { strategy.accept(arr); }
-}
-
-// Factory
-interface PaymentGateway { void charge(double amount); }
-class StripeGateway implements PaymentGateway { public void charge(double a) { System.out.println("Stripe: $" + a); } }
-class PayPalGateway implements PaymentGateway { public void charge(double a) { System.out.println("PayPal: $" + a); } }
-class PaymentGatewayFactory {
+}`,
+        output: `Reader 1: Java 25 released!
+Reader 2: Java 25 released!`,
+      },
+      {
+        label: "4. Strategy — swap algorithms at runtime",
+        code: `import java.util.function.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 1, 9, 3};
+        Consumer<int[]> strategy = arr -> Arrays.sort(arr);
+        strategy.accept(a);
+        System.out.println("Sorted: " + Arrays.toString(a));
+    }
+}`,
+        output: `Sorted: [1, 2, 3, 5, 8, 9]`,
+      },
+      {
+        label: "5. Factory — create objects by type",
+        code: `public class Main {
+    interface PaymentGateway { void charge(double amt); }
+    static class StripeGateway implements PaymentGateway {
+        public void charge(double amt) { System.out.println("Stripe: $" + amt); }
+    }
+    static class PayPalGateway implements PaymentGateway {
+        public void charge(double amt) { System.out.println("PayPal: $" + amt); }
+    }
     static PaymentGateway create(String type) {
         return switch (type) {
             case "stripe" -> new StripeGateway();
             case "paypal" -> new PayPalGateway();
-            default -> throw new IllegalArgumentException("Unknown: " + type);
+            default -> throw new IllegalArgumentException(type);
         };
     }
+    public static void main(String[] args) {
+        create("stripe").charge(99.99);
+        create("paypal").charge(49.50);
+    }
 }`,
-    output: `Pizza[L, cheese=true, pepperoni=true]
-Reader 1 got: Breaking: Java 21 released!
-Reader 2 got: Breaking: Java 21 released!
-
-Sorted: [1, 2, 3, 5, 8, 9]
-Stripe: $99.99`,
+        output: `Stripe: $99.99
+PayPal: $49.5`,
+      },
+    ],
     commonMistakes: [
       "Forcing patterns where they don't fit — patterns exist to solve problems, not to be used everywhere. A 3-line method doesn't need Strategy.",
       "Implementing Singleton with a class when an enum would be simpler and safer — enum singletons handle serialization and thread safety for free.",
@@ -13515,86 +13410,82 @@ void process(User u) {
       "Prefer composition over inheritance",
       "Write tests — untested code is broken code",
     ],
-    example: `import java.util.*;
-
-// BEFORE: hard to read
-class BadProcessor {
-    public String p(List<String> d, String t) {
-        String r = "";
-        for (String s : d) {
-            if (s != null) {
-                if (s.length() > 0) {
-                    if (s.contains(t)) {
-                        r += s + ",";
-                    }
+    examples: [
+      {
+        label: "1. Bad: unclear names + deep nesting",
+        code: `// BAD — hard to read
+public List<int[]> p(List<int[]> d, String t) {
+    List<int[]> r = new ArrayList<>();
+    for (int[] s : d) {
+        if (s != null) {
+            if (s.length > 0) {
+                if (s[0] == 4) {
+                    r.add(s);
                 }
             }
         }
-        return r;
     }
-}
-
-// AFTER: clean code
-class CleanProcessor {
-    public String findMatchesContaining(List<String> items, String searchTerm) {
-        return items.stream()
-            .filter(Objects::nonNull)
-            .filter(s -> !s.isEmpty())
-            .filter(s -> s.contains(searchTerm))
-            .collect(Collectors.joining(", "));
-    }
-}
-
-// Another example: extract method for clarity
-class OrderProcessor {
-    // BEFORE: long method doing many things
-    void processOrder(Order order) {
-        // validate
-        if (order == null) throw new IllegalArgumentException();
-        if (order.getItems().isEmpty()) throw new IllegalStateException("empty order");
-        // calculate total
-        double total = 0;
-        for (Item item : order.getItems()) total += item.getPrice() * item.getQuantity();
-        // apply discount
-        if (total > 100) total *= 0.9;
-        // save
-        database.save(order);
-        // email
-        emailService.send(order.getEmail(), "Order confirmed, total: " + total);
-    }
-
-    // AFTER: extracted methods, each one thing
-    void processOrder(Order order) {
-        validate(order);
-        double total = calculateTotal(order);
-        total = applyDiscount(total);
-        saveOrder(order);
-        sendConfirmation(order, total);
-    }
-
-    private void validate(Order order) {
-        if (order == null) throw new IllegalArgumentException("null order");
-        if (order.getItems().isEmpty()) throw new IllegalStateException("empty order");
-    }
-
-    private double calculateTotal(Order order) {
-        return order.getItems().stream()
-            .mapToDouble(i -> i.getPrice() * i.getQuantity())
-            .sum();
-    }
-
-    private double applyDiscount(double total) {
-        return total > 100 ? total * 0.9 : total;
-    }
-
-    private void saveOrder(Order order) { database.save(order); }
-    private void sendConfirmation(Order order, double total) {
-        emailService.send(order.getEmail(), "Order confirmed, total: " + total);
-    }
+    return r;
 }`,
-    output: `// The 'after' version is longer in total lines, but each method is short,
-// named, and does one thing. Reading processOrder() tells you the STEPS
-// without the details. Each helper method can be tested independently.`,
+      },
+      {
+        label: "2. Good: clear names + stream",
+        code: `// GOOD — readable, one level
+public List<int[]> getFlaggedCells(List<int[]> cells) {
+    return cells.stream()
+        .filter(c -> c != null && c.length > 0 && c[0] == 4)
+        .toList();
+}`,
+      },
+      {
+        label: "3. Good: guard clauses instead of deep nesting",
+        code: `// BAD — deep nesting
+void process(User u) {
+    if (u != null) {
+        if (u.isActive()) {
+            if (u.hasPermission()) {
+                doWork(u);
+            }
+        }
+    }
+}
+
+// GOOD — early returns (guard clauses)
+void processClean(User u) {
+    if (u == null) return;
+    if (!u.isActive()) return;
+    if (!u.hasPermission()) return;
+    doWork(u);
+}`,
+      },
+      {
+        label: "4. Good: extract method for clarity",
+        code: `// BEFORE — one long method doing everything
+void processOrder(Order o) {
+    validate(o);
+    double total = 0;
+    for (Item i : o.getItems()) total += i.getPrice() * i.getQty();
+    if (total > 100) total *= 0.9;
+    save(o);
+    sendEmail(o);
+}
+
+// AFTER — each step is a named method
+void processOrderClean(Order o) {
+    validate(o);
+    double total = applyDiscount(calculateTotal(o));
+    save(o);
+    sendEmail(o);
+}
+double calculateTotal(Order o) {
+    return o.getItems().stream()
+        .mapToDouble(i -> i.getPrice() * i.getQty()).sum();
+}
+double applyDiscount(double total) {
+    return total > 100 ? total * 0.9 : total;
+}`,
+      },
+    ],
     commonMistakes: [
       "Over-extracting — splitting a 10-line method into 5 two-line methods can make code HARDER to read. Extract when a block has a clear purpose, not just to reduce length.",
       "Writing comments that restate the code — 'i++; // increment i' is noise. Comments should add insight the code doesn't show.",
@@ -13668,66 +13559,44 @@ try {
       "Unit tests — write a failing test that reproduces the bug, then fix",
       "Code review — have someone else look at it (fresh eyes spot bugs)",
     ],
-    example: `import java.util.*;
-
-public class Main {
+    examples: [
+      {
+        label: "1. Print debugging — quick and dirty",
+        code: `public class Main {
     public static void main(String[] args) {
-        // Bug: the average is wrong
-        List<Integer> scores = List.of(85, 90, 78, 92, 88);
-        double avg = calculateAverage(scores);
-        System.out.println("Average: " + avg);
-        // Expected: 86.6, Actual: 70.0 — there's a bug!
-
-        // Debugging step 1: print intermediate values
-        System.out.println("\\n--- Debugging ---");
-        double avg2 = calculateAverageDebug(scores);
-
-        // Bug found: the loop was 'i < list.size() - 1' (off-by-one, skipped last)
-    }
-
-    // BUGGY version
-    static double calculateAverage(List<Integer> list) {
         int sum = 0;
-        for (int i = 0; i < list.size() - 1; i++) {  // BUG: - 1 skips last element
-            sum += list.get(i);
+        for (int i = 1; i <= 5; i++) {
+            sum += i;
+            System.out.println("DEBUG: i=" + i + ", sum=" + sum);
         }
-        return (double) sum / list.size();
-    }
-
-    // DEBUG version — with prints
-    static double calculateAverageDebug(List<Integer> list) {
-        int sum = 0;
-        System.out.println("List size: " + list.size());
-        for (int i = 0; i < list.size() - 1; i++) {
-            System.out.println("  i=" + i + ", adding " + list.get(i) + ", sum=" + (sum + list.get(i)));
-            sum += list.get(i);
-        }
-        System.out.println("Final sum: " + sum + ", dividing by " + list.size());
-        System.out.println("Result: " + (double) sum / list.size());
-        System.out.println("BUG FOUND: loop skips last element (i < size - 1)");
-        return (double) sum / list.size();
-    }
-
-    // FIXED version
-    static double calculateAverageFixed(List<Integer> list) {
-        int sum = 0;
-        for (int i = 0; i < list.size(); i++) {  // FIXED: no - 1
-            sum += list.get(i);
-        }
-        return (double) sum / list.size();
+        System.out.println("Final: " + sum);
     }
 }`,
-    output: `Average: 70.0
-
---- Debugging ---
-List size: 5
-  i=0, adding 85, sum=85
-  i=1, adding 90, sum=175
-  i=2, adding 78, sum=253
-  i=3, adding 92, sum=345
-Final sum: 345, dividing by 5
-Result: 69.0
-BUG FOUND: loop skips last element (i < size - 1)`,
+        output: `DEBUG: i=1, sum=1
+DEBUG: i=2, sum=3
+DEBUG: i=3, sum=6
+DEBUG: i=4, sum=10
+DEBUG: i=5, sum=15
+Final: 15`,
+      },
+      {
+        label: "2. Read the stack trace",
+        code: `public class Main {
+    public static void main(String[] args) {
+        try {
+            String s = null;
+            s.length();  // throws NullPointerException
+        } catch (Exception e) {
+            // Read: exception type, message, file:line
+            System.out.println("Caught: " + e.getClass().getSimpleName());
+            System.out.println("At: " + e.getStackTrace()[0]);
+        }
+    }
+}`,
+        output: `Caught: NullPointerException
+At: Main.main(Main.java:4)`,
+      },
+    ],
     commonMistakes: [
       "Changing code without understanding the bug — you might 'fix' the symptom while the root cause remains, or introduce new bugs.",
       "Not reproducing the bug first — if you can't make it happen reliably, you can't verify your fix works.",
@@ -13762,52 +13631,55 @@ jagged[2] = new int[]{4, 5, 6};`,
       "Arrays.deepToString(arr) — print a 2D array as a string",
       "Arrays.deepEquals(a, b) — compare two 2D arrays by value"
     ],
-    example: `import java.util.Arrays;
-
-public class Main {
+    examples: [
+      {
+        label: "1. Create and access a 2D array",
+        code: `public class Main {
     public static void main(String[] args) {
-        // Declare and initialize
-        int[][] matrix = {
+        int[][] grid = {
             {1, 2, 3},
             {4, 5, 6},
             {7, 8, 9}
         };
-
-        // Access element
-        System.out.println("Center: " + matrix[1][1]); // 5
-
-        // Traverse with nested for-each
-        System.out.println("All elements:");
-        for (int[] row : matrix) {
-            for (int val : row) {
-                System.out.printf("%3d", val);
-            }
-            System.out.println();
-        }
-
-        // Sum of diagonal
-        int sum = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            sum += matrix[i][i];
-        }
-        System.out.println("Diagonal sum: " + sum); // 1+5+9=15
-
-        // Jagged array — rows of different lengths
-        int[][] triangle = new int[4][];
-        for (int i = 0; i < triangle.length; i++) {
-            triangle[i] = new int[i + 1];
-            Arrays.fill(triangle[i], i + 1);
-        }
-        System.out.println("Jagged: " + Arrays.deepToString(triangle));
+        System.out.println("grid[1][2] = " + grid[1][2]);
+        System.out.println("Rows: " + grid.length);
+        System.out.println("Cols: " + grid[0].length);
     }
 }`,
-    output: `Center: 5
-All elements:
-  1  2  3
-  4  5  6
-  7  8  9
-Diagonal sum: 15
-Jagged: [[1], [2, 2], [3, 3, 3], [4, 4, 4, 4]]`,
+        output: `grid[1][2] = 6
+Rows: 3
+Cols: 3`,
+      },
+      {
+        label: "2. Loop through a 2D array",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int[][] grid = {{1, 2}, {3, 4}, {5, 6}};
+        int sum = 0;
+        for (int i = 0; i < grid.length; i++)
+            for (int j = 0; j < grid[i].length; j++)
+                sum += grid[i][j];
+        System.out.println("Sum: " + sum);
+    }
+}`,
+        output: `Sum: 21`,
+      },
+      {
+        label: "3. Jagged array (rows of different lengths)",
+        code: `public class Main {
+    public static void main(String[] args) {
+        int[][] jagged = {{1}, {2, 3}, {4, 5, 6}};
+        for (int[] row : jagged) {
+            for (int v : row) System.out.print(v + " ");
+            System.out.println();
+        }
+    }
+}`,
+        output: `1 
+2 3 
+4 5 6 `,
+      },
+    ],
     commonMistakes: [
       "ArrayIndexOutOfBoundsException — switching row and column indices (grid[col][row] instead of grid[row][col]).",
       "Confusing array.length (row count) with array[0].length (column count) in nested loops.",
@@ -13843,52 +13715,41 @@ method(existingArray);`,
       "Arrays.asList(name) — convert varargs array to a List",
       "method(array) — an existing array can be passed to a varargs method directly"
     ],
-    example: `import java.util.Arrays;
-
-public class Main {
-
-    // Sum any number of ints
+    examples: [
+      {
+        label: "1. Define a varargs method",
+        code: `public class Main {
     static int sum(int... nums) {
         int total = 0;
         for (int n : nums) total += n;
         return total;
     }
-
-    // Mixed regular + varargs params
-    static void greet(String greeting, String... names) {
-        for (String name : names) {
-            System.out.println(greeting + ", " + name + "!");
-        }
-    }
-
-    // Varargs with generics — @SafeVarargs suppresses heap pollution warning
-    @SafeVarargs
-    static <T> java.util.List<T> listOf(T... items) {
-        return Arrays.asList(items);
-    }
-
     public static void main(String[] args) {
-        System.out.println(sum());           // 0
-        System.out.println(sum(5));          // 5
-        System.out.println(sum(1, 2, 3, 4)); // 10
-
-        int[] arr = {10, 20, 30};
-        System.out.println(sum(arr));        // 60 — array passed directly
-
-        greet("Hello", "Ana", "Ben", "Cy");
-
-        var names = listOf("Java", "Python", "Go");
-        System.out.println(names);
+        System.out.println(sum(1, 2, 3));
+        System.out.println(sum(10, 20, 30, 40));
+        System.out.println(sum());  // zero args — returns 0
     }
 }`,
-    output: `0
-5
-10
-60
-Hello, Ana!
-Hello, Ben!
-Hello, Cy!
-[Java, Python, Go]`,
+        output: `6
+100
+0`,
+      },
+      {
+        label: "2. Varargs is treated as an array inside",
+        code: `public class Main {
+    static String first(String... words) {
+        if (words.length == 0) return "(none)";
+        return words[0];
+    }
+    public static void main(String[] args) {
+        System.out.println(first("hello", "world"));
+        System.out.println(first());
+    }
+}`,
+        output: `hello
+(none)`,
+      },
+    ],
     commonMistakes: [
       "Putting varargs before other parameters — it must be the last parameter.",
       "Overloading a method with varargs and a single-argument version causes ambiguity: method(x) matches both method(T) and method(T...).",
@@ -13920,48 +13781,46 @@ void rename(StringBuilder sb) {
     sb.append(" Jr.");     // mutates caller's object — visible to caller
     sb = new StringBuilder("other"); // only local ref changes
 }`,
-    example: `public class Main {
-    // Primitive: copy of value
-    static void tryDouble(int n) {
-        n = n * 2;
-        System.out.println("Inside: " + n);
-    }
-
-    // Object: copy of reference — mutation is visible, reassignment is not
-    static void tryModify(int[] arr) {
-        arr[0] = 99;             // mutates the array — visible to caller
-        arr = new int[]{1, 2};   // reassigns local ref — caller unchanged
-    }
-
-    // StringBuilder to show mutation vs reassignment
-    static void tryString(StringBuilder sb) {
-        sb.append("!");          // mutates — caller sees "Hello!"
-        sb = new StringBuilder("gone"); // reassigns — caller unaffected
-    }
-
+    examples: [
+      {
+        label: "1. Primitives — copy of the value (changes don't propagate)",
+        code: `public class Main {
+    static void bump(int x) { x++; System.out.println("inside: " + x); }
     public static void main(String[] args) {
-        // Primitive
-        int x = 5;
-        tryDouble(x);
-        System.out.println("After tryDouble: " + x); // still 5
-
-        // Array (object) — mutation visible
-        int[] arr = {1, 2, 3};
-        tryModify(arr);
-        System.out.println("arr[0] after tryModify: " + arr[0]); // 99
-        System.out.println("arr.length still: " + arr.length);   // 3 (not 2)
-
-        // StringBuilder
-        StringBuilder sb = new StringBuilder("Hello");
-        tryString(sb);
-        System.out.println("sb after tryString: " + sb); // Hello!
+        int v = 10;
+        bump(v);
+        System.out.println("after: " + v);  // still 10
     }
 }`,
-    output: `Inside: 10
-After tryDouble: 5
-arr[0] after tryModify: 99
-arr.length still: 3
-sb after tryString: Hello!`,
+        output: `inside: 11
+after: 10`,
+      },
+      {
+        label: "2. References — copy of the reference (mutation visible)",
+        code: `import java.util.*;
+public class Main {
+    static void add(List<String> list) { list.add("new"); }
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        add(list);
+        System.out.println(list);  // [new] — mutation visible
+    }
+}`,
+        output: `[new]`,
+      },
+      {
+        label: "3. Reassigning the reference does NOT propagate",
+        code: `public class Main {
+    static void replace(String s) { s = "changed"; }
+    public static void main(String[] args) {
+        String name = "original";
+        replace(name);
+        System.out.println(name);  // still "original"
+    }
+}`,
+        output: `original`,
+      },
+    ],
     commonMistakes: [
       "Saying Java uses pass-by-reference for objects — it does not. It passes the reference by value.",
       "Expecting reassigning an object parameter to affect the caller: void set(MyObj o) { o = new MyObj(); } — the caller's variable is unchanged.",
@@ -14003,45 +13862,35 @@ a.equals(c) // true  — content is the same`,
       "== — compares references (memory addresses), not content",
       "String.valueOf(x) — convert primitive x to a String (uses pool for small values)"
     ],
-    example: `public class Main {
+    examples: [
+      {
+        label: "1. String literals are interned",
+        code: `public class Main {
     public static void main(String[] args) {
-        // Literals — interned automatically at compile time
         String a = "Java";
         String b = "Java";
-        System.out.println(a == b);        // true  — same pool object
-        System.out.println(a.equals(b));   // true  — same content
-
-        // new String() bypasses the pool
+        System.out.println(a == b);           // true — same pool instance
         String c = new String("Java");
-        System.out.println(a == c);        // false — c is on the heap
-        System.out.println(a.equals(c));   // true  — same content
-
-        // intern() returns the pool reference
-        String d = c.intern();
-        System.out.println(a == d);        // true  — d is the pool entry
-
-        // Concatenation at runtime creates new heap objects
-        String x = "Ja";
-        String y = "va";
-        String z = x + y;                  // computed at runtime
-        System.out.println(a == z);        // false — z is a new heap object
-        System.out.println(a.equals(z));   // true
-
-        // Compile-time constants ARE pooled
-        final String p = "Ja";
-        final String q = "va";
-        String r = p + q;                  // compiler resolves to "Java"
-        System.out.println(a == r);        // true — compiler interned it
+        System.out.println(a == c);           // false — new object on heap
+        System.out.println(a == c.intern()); // true — intern() returns pool reference
     }
 }`,
-    output: `true
-true
+        output: `true
 false
-true
-true
-false
-true
 true`,
+      },
+      {
+        label: "2. intern() — put a string into the pool",
+        code: `public class Main {
+    public static void main(String[] args) {
+        String a = "hello";
+        String b = new String("hello").intern();
+        System.out.println(a == b);
+    }
+}`,
+        output: `true`,
+      },
+    ],
     commonMistakes: [
       "Using == to compare Strings — works for pooled literals by accident, fails for new String() or runtime-computed values.",
       "Thinking intern() always improves performance — it adds GC pressure on the pool and is rarely needed in modern Java.",
@@ -14083,57 +13932,73 @@ ClassName::new`,
       "ClassName::instanceMethod — (obj, args) -> obj.instanceMethod(args)",
       "ClassName::new — (args) -> new ClassName(args)"
     ],
-    example: `import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
-
+    examples: [
+      {
+        label: "1. Static method reference — ClassName::staticMethod",
+        code: `import java.util.function.*;
 public class Main {
-    static int doubleIt(int n) { return n * 2; }
-
     public static void main(String[] args) {
-        List<String> names = List.of("Ana", "bob", "CLARA", "dave");
-
-        // 1. Static method reference
-        // Lambda:   n -> Integer.parseInt(n)
+        // Lambda:  s -> Integer.parseInt(s)
+        // Method ref: Integer::parseInt
         Function<String, Integer> parse = Integer::parseInt;
-        System.out.println(parse.apply("42")); // 42
-
-        // 2. Instance method on a specific object
-        var sb = new StringBuilder();
-        // Lambda:   s -> sb.append(s)
-        Consumer<String> appender = sb::append;
-        names.forEach(appender);
-        System.out.println(sb); // AnabobbCLARA dave... but:
-
-        // 3. Arbitrary receiver — first param becomes the object
-        // Lambda:   s -> s.toUpperCase()
-        List<String> upper = names.stream()
-            .map(String::toUpperCase)
-            .collect(Collectors.toList());
-        System.out.println(upper);
-
-        // String::compareTo: (a, b) -> a.compareTo(b)
-        List<String> sorted = new ArrayList<>(names);
-        sorted.sort(String::compareToIgnoreCase);
-        System.out.println("Sorted: " + sorted);
-
-        // 4. Constructor reference
-        // Lambda:   s -> new StringBuilder(s)
-        Function<String, StringBuilder> mkSb = StringBuilder::new;
-        System.out.println(mkSb.apply("hello"));
-
-        // Common: Collectors.toCollection
-        Supplier<List<String>> listFactory = ArrayList::new;
-        var myList = names.stream().collect(Collectors.toCollection(listFactory));
-        System.out.println(myList);
+        System.out.println(parse.apply("42"));
     }
 }`,
-    output: `42
-AnabobbCLARAd ave
-[ANA, BOB, CLARA, DAVE]
-Sorted: [Ana, bob, CLARA, dave]
-hello
-[Ana, bob, CLARA, dave]`,
+        output: `42`,
+      },
+      {
+        label: "2. Instance method on a specific object — instance::method",
+        code: `import java.util.function.*;
+public class Main {
+    public static void main(String[] args) {
+        var sb = new StringBuilder();
+        // Lambda:  s -> sb.append(s)
+        Consumer<String> appender = sb::append;
+        appender.accept("Hello, ");
+        appender.accept("World!");
+        System.out.println(sb);
+    }
+}`,
+        output: `Hello, World!`,
+      },
+      {
+        label: "3. Arbitrary receiver — ClassName::instanceMethod",
+        code: `import java.util.*;
+import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        List<String> names = List.of("ana", "bob", "cy");
+        // Lambda:  s -> s.toUpperCase()
+        // Method ref: String::toUpperCase (receiver is the lambda parameter)
+        List<String> upper = names.stream()
+            .map(String::toUpperCase)
+            .toList();
+        System.out.println(upper);
+    }
+}`,
+        output: `[ANA, BOB, CY]`,
+      },
+      {
+        label: "4. Constructor reference — ClassName::new",
+        code: `import java.util.function.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        // Lambda:  s -> new StringBuilder(s)
+        Function<String, StringBuilder> factory = StringBuilder::new;
+        System.out.println(factory.apply("hello"));
+
+        // Supplier for a factory
+        Supplier<ArrayList<String>> listFactory = ArrayList::new;
+        var list = listFactory.get();
+        list.add("item");
+        System.out.println(list);
+    }
+}`,
+        output: `hello
+[item]`,
+      },
+    ],
     commonMistakes: [
       "Confusing type-3 (arbitrary receiver) with type-2: String::toUpperCase is NOT the same as 'call toUpperCase on some specific String object' — the lambda parameter IS the receiver.",
       "Using a method reference when the lambda does more than just call the method: n -> n * 2 + 1 cannot be shortened to a method ref.",
@@ -14191,66 +14056,54 @@ IntFunction<R> / ToIntFunction<T>  // primitives avoid boxing`,
       "BiFunction.apply(T, U) — two inputs, one output",
       "UnaryOperator.identity() — returns input unchanged"
     ],
-    example: `import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
-
+    examples: [
+      {
+        label: "1. Function<T,R> — transform input to output",
+        code: `import java.util.function.*;
 public class Main {
     public static void main(String[] args) {
-        // Predicate — filter, test
-        Predicate<String> longName = s -> s.length() > 3;
-        Predicate<String> startsA  = s -> s.startsWith("A");
-        Predicate<String> longAndA = longName.and(startsA);
-        Predicate<String> shortOrA = longName.negate().or(startsA);
-
-        List<String> names = List.of("Ana", "Alice", "Bob", "Alexander");
-        names.stream().filter(longAndA).forEach(System.out::println);
-        // Alice, Alexander
-
-        // Function — transform
-        Function<String, Integer> len = String::length;
-        Function<String, String>  up  = String::toUpperCase;
-        Function<String, String>  lenStr = up.andThen(s -> "len=" + s.length());
-        System.out.println(lenStr.apply("hello")); // len=5
-
-        // Consumer — side effect
-        Consumer<String> print = System.out::println;
-        Consumer<String> shout = s -> System.out.println(s.toUpperCase());
-        Consumer<String> both  = print.andThen(shout);
-        both.accept("java"); // prints "java" then "JAVA"
-
-        // Supplier — produce
-        Supplier<List<String>> freshList = ArrayList::new;
-        List<String> list = freshList.get();
-        list.add("hello");
-        System.out.println(list);
-
-        // BiFunction
-        BiFunction<String, Integer, String> repeat =
-            (s, n) -> s.repeat(n);
-        System.out.println(repeat.apply("ab", 3)); // ababab
-
-        // Primitive specializations avoid boxing
-        IntPredicate isEven = n -> n % 2 == 0;
-        System.out.println(isEven.test(4)); // true
-
-        // Custom @FunctionalInterface
-        @FunctionalInterface
-        interface Transformer<T> { T transform(T input); }
-        Transformer<String> reverse =
-            s -> new StringBuilder(s).reverse().toString();
-        System.out.println(reverse.transform("Java")); // avaJ
+        Function<String, Integer> length = String::length;
+        System.out.println(length.apply("Java"));
     }
 }`,
-    output: `Alice
-Alexander
-len=5
-java
-JAVA
-[hello]
-ababab
-true
-avaJ`,
+        output: `4`,
+      },
+      {
+        label: "2. Predicate<T> — boolean test",
+        code: `import java.util.function.*;
+public class Main {
+    public static void main(String[] args) {
+        Predicate<Integer> isEven = n -> n % 2 == 0;
+        System.out.println(isEven.test(4));
+        System.out.println(isEven.test(5));
+    }
+}`,
+        output: `true
+false`,
+      },
+      {
+        label: "3. Consumer<T> — consume without returning",
+        code: `import java.util.function.*;
+public class Main {
+    public static void main(String[] args) {
+        Consumer<String> printer = s -> System.out.println(">> " + s);
+        printer.accept("hello");
+    }
+}`,
+        output: `>> hello`,
+      },
+      {
+        label: "4. Supplier<T> — produce a value (no input)",
+        code: `import java.util.function.*;
+public class Main {
+    public static void main(String[] args) {
+        Supplier<Double> random = Math::random;
+        System.out.println(random.get());
+    }
+}`,
+        output: `0.4837...`,
+      },
+    ],
     commonMistakes: [
       "Using boxed Function<Integer,Integer> in hot paths instead of IntUnaryOperator — boxing overhead is real for millions of calls.",
       "Forgetting that Consumer.andThen runs both consumers even if the first throws — use try/catch if needed.",
@@ -14312,79 +14165,86 @@ stream.collect(Collectors.summarizingInt(fn))`,
       "Collectors.mapping(fn, downstream) — transform then collect",
       "Collectors.teeing(c1, c2, merger) — collect into two collectors simultaneously (Java 12+)"
     ],
-    example: `import java.util.*;
+    examples: [
+      {
+        label: "1. Collect to a List",
+        code: `import java.util.*;
 import java.util.stream.*;
-
-record Product(String name, String category, double price) {}
-
 public class Main {
     public static void main(String[] args) {
-        var products = List.of(
-            new Product("Laptop",  "Electronics", 999.0),
-            new Product("Phone",   "Electronics", 699.0),
-            new Product("Desk",    "Furniture",   349.0),
-            new Product("Chair",   "Furniture",   199.0),
-            new Product("Monitor", "Electronics", 449.0)
-        );
-
-        // joining — build a comma-separated list of names
-        String names = products.stream()
-            .map(Product::name)
-            .collect(Collectors.joining(", ", "[", "]"));
-        System.out.println(names);
-
-        // groupingBy — group by category, get list of names per category
-        Map<String, List<String>> byCategory = products.stream()
-            .collect(Collectors.groupingBy(
-                Product::category,
-                Collectors.mapping(Product::name, Collectors.toList())
-            ));
-        byCategory.forEach((cat, list) ->
-            System.out.println(cat + ": " + list));
-
-        // counting per category
-        Map<String, Long> countByCategory = products.stream()
-            .collect(Collectors.groupingBy(Product::category, Collectors.counting()));
-        System.out.println("Counts: " + countByCategory);
-
-        // averagingDouble per category
-        Map<String, Double> avgPrice = products.stream()
-            .collect(Collectors.groupingBy(
-                Product::category,
-                Collectors.averagingDouble(Product::price)
-            ));
-        System.out.println("Avg prices: " + avgPrice);
-
-        // partitioningBy — expensive vs affordable
-        Map<Boolean, List<String>> partition = products.stream()
-            .collect(Collectors.partitioningBy(
-                p -> p.price() > 400,
-                Collectors.mapping(Product::name, Collectors.toList())
-            ));
-        System.out.println("Expensive: " + partition.get(true));
-        System.out.println("Affordable: " + partition.get(false));
-
-        // toMap — name → price
-        Map<String, Double> priceMap = products.stream()
-            .collect(Collectors.toMap(Product::name, Product::price));
-        System.out.println("Laptop price: " + priceMap.get("Laptop"));
-
-        // summarizingDouble — full stats
-        DoubleSummaryStatistics stats = products.stream()
-            .collect(Collectors.summarizingDouble(Product::price));
-        System.out.printf("Min=%.0f Max=%.0f Avg=%.1f%n",
-            stats.getMin(), stats.getMax(), stats.getAverage());
+        List<String> result = Stream.of("a", "b", "c")
+            .filter(s -> !s.equals("b"))
+            .collect(Collectors.toList());
+        System.out.println(result);
     }
 }`,
-    output: `[Laptop, Phone, Desk, Chair, Monitor]
-Electronics: [Laptop, Phone, Monitor]
-Furniture: [Desk, Chair]
-Counts: {Electronics=3, Furniture=2}
-Avg prices: {Electronics=715.67, Furniture=274.0}
-Expensive: [Laptop, Phone, Monitor]
-Affordable: [Desk, Chair]
-Laptop price: 999.0
-Min=199 Max=999 Avg=539.0`,
+        output: `[a, c]`,
+      },
+      {
+        label: "2. Collect to a Set (removes duplicates)",
+        code: `import java.util.*;
+import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        Set<Integer> result = Stream.of(1, 2, 2, 3, 3, 3)
+            .collect(Collectors.toSet());
+        System.out.println(result);
+    }
+}`,
+        output: `[1, 2, 3]`,
+      },
+      {
+        label: "3. Collect to a Map",
+        code: `import java.util.*;
+import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<String, Integer> result = Stream.of("Ana", "Bob")
+            .collect(Collectors.toMap(name -> name, String::length));
+        System.out.println(result);
+    }
+}`,
+        output: `{Ana=3, Bob=3}`,
+      },
+      {
+        label: "4. Joining — concatenate strings",
+        code: `import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        String result = Stream.of("apple", "banana", "cherry")
+            .collect(Collectors.joining(", "));
+        System.out.println(result);
+    }
+}`,
+        output: `apple, banana, cherry`,
+      },
+      {
+        label: "5. Grouping by a key",
+        code: `import java.util.*;
+import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<Integer, List<String>> byLength = Stream.of("a", "bb", "cc", "ddd", "ee")
+            .collect(Collectors.groupingBy(String::length));
+        System.out.println(byLength);
+    }
+}`,
+        output: `{1=[a], 2=[bb, cc, ee], 3=[ddd]}`,
+      },
+      {
+        label: "6. Counting elements per group",
+        code: `import java.util.*;
+import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        Map<Integer, Long> countByLength = Stream.of("a", "bb", "cc", "ddd", "ee")
+            .collect(Collectors.groupingBy(String::length, Collectors.counting()));
+        System.out.println(countByLength);
+    }
+}`,
+        output: `{1=1, 2=3, 3=1}`,
+      },
+    ],
     commonMistakes: [
       "toMap() throws IllegalStateException on duplicate keys — always provide a merge function: toMap(k, v, (a, b) -> a) to keep first.",
       "groupingBy() result Map has no guaranteed order — use Collectors.groupingBy(fn, TreeMap::new, downstream) for sorted keys.",
@@ -14429,56 +14289,49 @@ Gatherer.ofSequential(initializer, integrator, finisher)`,
       "integrator.integrate(state, element, downstream) — process one element; return false to short-circuit",
       "downstream.push(element) — emit an element to the next stage"
     ],
-    example: `import java.util.*;
-import java.util.stream.*;
-
+    examples: [
+      {
+        label: "1. windowFixed — group into fixed-size windows",
+        code: `import java.util.stream.*;
+import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        var numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
-        // windowFixed — process in batches of 3
-        List<List<Integer>> batches = numbers.stream()
-            .gather(Gatherers.windowFixed(3))
+        List<List<Integer>> windows = Stream.of(1, 2, 3, 4, 5, 6)
+            .gather(Gatherers.windowFixed(2))
             .toList();
-        System.out.println("Fixed windows: " + batches);
-        // [[1,2,3], [4,5,6], [7,8,9], [10]]
-
-        // windowSliding — every pair of consecutive numbers
-        List<List<Integer>> pairs = numbers.stream()
-            .gather(Gatherers.windowSliding(2))
-            .toList();
-        System.out.println("Sliding pairs: " + pairs.subList(0, 4));
-        // [[1,2], [2,3], [3,4], [4,5]]
-
-        // scan — running sum
-        List<Integer> runningSum = numbers.stream()
-            .gather(Gatherers.scan(() -> 0, Integer::sum))
-            .toList();
-        System.out.println("Running sums: " + runningSum);
-        // [1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
-
-        // Custom gatherer: take while strictly increasing
-        var prices = List.of(10, 15, 13, 20, 25, 22, 30);
-        List<Integer> increasing = prices.stream()
-            .gather(Gatherer.<Integer, int[], Integer>ofSequential(
-                () -> new int[]{Integer.MIN_VALUE},  // state: last value
-                (state, elem, downstream) -> {
-                    if (elem > state[0]) {
-                        state[0] = elem;
-                        return downstream.push(elem); // emit
-                    }
-                    return false; // stop the stream
-                }
-            ))
-            .toList();
-        System.out.println("Increasing run: " + increasing);
-        // [10, 15]
+        System.out.println(windows);
     }
 }`,
-    output: `Fixed windows: [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
-Sliding pairs: [[1, 2], [2, 3], [3, 4], [4, 5]]
-Running sums: [1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
-Increasing run: [10, 15]`,
+        output: `[[1, 2], [3, 4], [5, 6]]`,
+      },
+      {
+        label: "2. fold — running accumulation",
+        code: `import java.util.stream.*;
+public class Main {
+    public static void main(String[] args) {
+        String result = Stream.of("a", "b", "c", "d")
+            .gather(Gatherers.fold(() -> "", (acc, s) -> acc + s))
+            .findFirst().get();
+        System.out.println(result);
+    }
+}`,
+        output: `abcd`,
+      },
+      {
+        label: "3. mapConcurrent — parallel mapping",
+        code: `import java.util.stream.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> result = Stream.of(1, 2, 3, 4)
+            .gather(Gatherers.mapConcurrent(2, x -> x * 10))
+            .toList();
+        System.out.println(result);
+    }
+}`,
+        output: `[10, 20, 30, 40]`,
+      },
+    ],
     commonMistakes: [
       "Gatherers are finalized in Java 25 — earlier versions had them as preview; check your JDK version.",
       "windowFixed emits a partial window for the last batch if elements don't divide evenly — handle the smaller last list.",
@@ -14525,54 +14378,38 @@ SequencedMap<K,V> reversed()`,
       "Collections.unmodifiableSequencedSet(s)",
       "Collections.unmodifiableSequencedMap(m)"
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. SequencedCollection — first and last",
+        code: `import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        // List implements SequencedCollection
-        var list = new ArrayList<>(List.of("a", "b", "c", "d"));
-        System.out.println("First: " + list.getFirst()); // a
-        System.out.println("Last:  " + list.getLast());  // d
-        list.addFirst("z");
-        System.out.println("After addFirst: " + list);   // [z, a, b, c, d]
-        list.removeLast();
-        System.out.println("After removeLast: " + list); // [z, a, b, c]
-
-        // Reversed view — live, not a copy
-        var rev = list.reversed();
-        System.out.println("Reversed: " + rev); // [c, b, a, z]
-        list.addFirst("X");
-        System.out.println("Rev after mutation: " + rev); // [c, b, a, z, X]
-
-        // LinkedHashSet implements SequencedSet
-        var set = new LinkedHashSet<>(List.of("one", "two", "three"));
-        System.out.println("Set first: " + set.getFirst()); // one
-        System.out.println("Set last:  " + set.getLast());  // three
-
-        // LinkedHashMap implements SequencedMap
-        var map = new LinkedHashMap<String, Integer>();
-        map.put("a", 1); map.put("b", 2); map.put("c", 3);
-        System.out.println("Map first: " + map.firstEntry()); // a=1
-        System.out.println("Map last:  " + map.lastEntry());  // c=3
-        System.out.println("Map reversed: " + map.reversed());
-
-        // Deque also benefits
-        var deque = new ArrayDeque<>(List.of(1, 2, 3));
-        System.out.println("Deque first: " + deque.getFirst()); // 1
+        SequencedCollection<String> list = new LinkedHashSet<>(List.of("a", "b", "c"));
+        System.out.println("First: " + list.getFirst());
+        System.out.println("Last: " + list.getLast());
+        System.out.println("Reversed: " + list.reversed());
     }
 }`,
-    output: `First: a
-Last:  d
-After addFirst: [z, a, b, c, d]
-After removeLast: [z, a, b, c]
-Reversed: [c, b, a, z]
-Rev after mutation: [c, b, a, z, X]
-Set first: one
-Set last:  three
-Map first: a=1
-Map last:  c=3
-Map reversed: {c=3, b=2, a=1}
-Deque first: 1`,
+        output: `First: a
+Last: c
+Reversed: [c, b, a]`,
+      },
+      {
+        label: "2. SequencedMap — ordered entries",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        SequencedMap<String, Integer> map = new LinkedHashMap<>();
+        map.put("first", 1); map.put("last", 3);
+        map.putFirst("new first", 0);
+        System.out.println(map.firstEntry());
+        System.out.println(map.lastEntry());
+    }
+}`,
+        output: `new first=0
+last=3`,
+      },
+    ],
     commonMistakes: [
       "Calling getFirst() on an empty collection — throws NoSuchElementException; check isEmpty() first or use Optional.",
       "Assuming reversed() returns a copy — it returns a live view; mutations to the original are reflected in the reversed view and vice versa.",
@@ -14620,58 +14457,42 @@ var _ = sideEffectMethod(); // call for side effect, ignore return`,
       "var _ = expr — execute expression for side effects, discard result",
       "for (var _ : list) { count++; } — iterate for count, ignore element"
     ],
-    example: `import java.util.*;
-import java.util.regex.*;
-
-public class Main {
-    sealed interface Shape permits Circle, Rectangle, Triangle {}
-    record Circle(double radius) implements Shape {}
-    record Rectangle(double width, double height) implements Shape {}
-    record Triangle(double a, double b, double c) implements Shape {}
-
+    examples: [
+      {
+        label: "1. Unnamed variable _ — ignore a return value",
+        code: `public class Main {
     public static void main(String[] args) {
-        // Catch — exception message logged elsewhere, object unneeded
-        int value = 0;
+        // _ means "I don't care about this value"
         try {
-            value = Integer.parseInt("not a number");
-        } catch (NumberFormatException _) {
-            value = -1;
+            int x = 1 / 0;
+        } catch (Exception _) {
+            System.out.println("Caught, but I don't need the exception object");
         }
-        System.out.println("value: " + value); // -1
-
-        // Lambda — index unused in forEach
-        var items = List.of("a", "b", "c");
-        int[] count = {0};
-        items.forEach(_ -> count[0]++);
-        System.out.println("count: " + count[0]); // 3
-
-        // Pattern matching — ignore some record components
-        List<Shape> shapes = List.of(
-            new Circle(5),
-            new Rectangle(3, 4),
-            new Triangle(3, 4, 5)
-        );
-        for (var shape : shapes) {
-            String desc = switch (shape) {
-                case Circle(double r) -> "circle r=" + r;
-                case Rectangle(_, double h) -> "rect h=" + h;
-                case Triangle(_, _, _) -> "triangle";
-            };
-            System.out.println(desc);
-        }
-
-        // for loop — iterate for side effect, ignore element
-        var log = new ArrayList<String>();
-        for (var _ : items) { log.add("visited"); }
-        System.out.println("log: " + log);
     }
 }`,
-    output: `value: -1
-count: 3
-circle r=5.0
-rect h=4.0
-triangle
-log: [visited, visited, visited]`,
+        output: `Caught, but I don't need the exception object`,
+      },
+      {
+        label: "2. Unnamed pattern _ — match any type",
+        code: `public class Main {
+    static String describe(Object obj) {
+        return switch (obj) {
+            case String s -> "string: " + s;
+            case Integer _ -> "an integer (value ignored)";
+            case _ -> "something else";
+        };
+    }
+    public static void main(String[] args) {
+        System.out.println(describe("hi"));
+        System.out.println(describe(42));
+        System.out.println(describe(3.14));
+    }
+}`,
+        output: `string: hi
+an integer (value ignored)
+something else`,
+      },
+    ],
     commonMistakes: [
       "Trying to read _ — it is not accessible, compile error: '_' refers to a hidden variable.",
       "Using _ as a regular variable name in older code (Java <9 deprecated it, Java 16 made it an error, Java 23 repurposed it for this feature).",
@@ -14719,64 +14540,38 @@ try (var scope = new StructuredTaskScope.ShutdownOnSuccess<T>()) {
       "subtask.state() — RUNNING, SUCCESS, FAILED, UNAVAILABLE",
       "subtask.exception() — the exception if state == FAILED"
     ],
-    example: `import java.util.concurrent.StructuredTaskScope;
-import java.time.Instant;
-
+    examples: [
+      {
+        label: "1. ShutdownOnFailure — run tasks, fail together",
+        code: `import java.util.concurrent.*;
 public class Main {
-    record User(String name, String email) {}
-    record Orders(int count, double total) {}
-    record Dashboard(User user, Orders orders) {}
-
-    // Simulate fetching user from a service
-    static User fetchUser(long id) throws Exception {
-        Thread.sleep(50);
-        return new User("Ana", "ana@example.com");
-    }
-
-    // Simulate fetching orders
-    static Orders fetchOrders(long userId) throws Exception {
-        Thread.sleep(80);
-        return new Orders(5, 349.99);
-    }
-
-    // Both tasks run concurrently — total ~80ms, not 130ms
-    static Dashboard loadDashboard(long userId) throws Exception {
-        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-            var userTask   = scope.fork(() -> fetchUser(userId));
-            var orderTask  = scope.fork(() -> fetchOrders(userId));
-
-            scope.join()           // wait for both (or first failure)
-                 .throwIfFailed(); // rethrow if any subtask failed
-
-            return new Dashboard(userTask.get(), orderTask.get());
-        }
-    }
-
-    // ShutdownOnSuccess — use whichever cache responds first
-    static String queryFastestCache(String key) throws Exception {
-        try (var scope = new StructuredTaskScope.ShutdownOnSuccess<String>()) {
-            scope.fork(() -> { Thread.sleep(100); return "local-" + key; });
-            scope.fork(() -> { Thread.sleep(30);  return "redis-" + key; });
-            scope.join();
-            return scope.result();
-        }
-    }
-
     public static void main(String[] args) throws Exception {
-        long start = System.currentTimeMillis();
-        Dashboard d = loadDashboard(42);
-        System.out.println("User: " + d.user().name());
-        System.out.println("Orders: " + d.orders().count() + " items, $" + d.orders().total());
-        System.out.printf("Loaded in ~%dms%n", System.currentTimeMillis() - start);
-
-        String cached = queryFastestCache("session:abc");
-        System.out.println("Fastest cache: " + cached);
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            var user = scope.fork(() -> "Ana");
+            var age  = scope.fork(() -> 19);
+            scope.join();
+            System.out.println(user.get() + " is " + age.get());
+        }
     }
 }`,
-    output: `User: Ana
-Orders: 5 items, $349.99
-Loaded in ~83ms
-Fastest cache: redis-session:abc`,
+        output: `Ana is 19`,
+      },
+      {
+        label: "2. ShutdownOnSuccess — first result wins",
+        code: `import java.util.concurrent.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        try (var scope = new StructuredTaskScope.ShutdownOnSuccess<String>()) {
+            scope.fork(() -> { Thread.sleep(100); return "slow"; });
+            scope.fork(() -> { Thread.sleep(30);  return "fast"; });
+            scope.join();
+            System.out.println("Winner: " + scope.result());
+        }
+    }
+}`,
+        output: `Winner: fast`,
+      },
+    ],
     commonMistakes: [
       "Calling subtask.get() before scope.join() — the subtask may not be done yet; always join first.",
       "Forgetting scope.throwIfFailed() — if you don't call it, a failed subtask is silently ignored.",
@@ -14822,65 +14617,22 @@ boolean bound = CURRENT_USER.isBound(); // check if a value is set`,
       "ScopedValue.orElse(default) — get value or default if unbound",
       "ScopedValue.where(sv1, v1).where(sv2, v2).run(...) — bind multiple at once"
     ],
-    example: `import java.lang.ScopedValue;
-import java.util.concurrent.StructuredTaskScope;
-
+    examples: [
+      {
+        label: "1. ScopedValue — thread-local replacement (Java 21+)",
+        code: `import java.util.concurrent.*;
 public class Main {
-    // Declared at class level — readable anywhere without passing as parameter
-    static final ScopedValue<String> REQUEST_ID = ScopedValue.newInstance();
-    static final ScopedValue<String> USERNAME   = ScopedValue.newInstance();
-
-    static void processPayment(double amount) {
-        // Both values readable without being passed as arguments
-        System.out.printf("[%s] %s paying $%.2f%n",
-            REQUEST_ID.get(), USERNAME.get(), amount);
-        validateUser();
-    }
-
-    static void validateUser() {
-        System.out.println("Validating: " + USERNAME.get());
-    }
-
-    static void handleRequest(String reqId, String user, double amount) {
-        ScopedValue
-            .where(REQUEST_ID, reqId)
-            .where(USERNAME, user)
-            .run(() -> processPayment(amount));
-    }
-
-    // ScopedValues work naturally with virtual threads and structured concurrency
-    static void processOrders() throws Exception {
-        ScopedValue.where(USERNAME, "ana").run(() -> {
-            try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-                scope.fork(() -> {
-                    System.out.println("Task 1 user: " + USERNAME.get()); // ana
-                    return null;
-                });
-                scope.fork(() -> {
-                    System.out.println("Task 2 user: " + USERNAME.get()); // ana
-                    return null;
-                });
-                scope.join().throwIfFailed();
-            } catch (Exception e) { throw new RuntimeException(e); }
+    static final ScopedValue<String> USER = ScopedValue.newInstance();
+    public static void main(String[] args) {
+        ScopedValue.where(USER, "Ana").run(() -> {
+            System.out.println("Current user: " + USER.get());
         });
-    }
-
-    public static void main(String[] args) throws Exception {
-        handleRequest("req-001", "ana", 49.99);
-        handleRequest("req-002", "bob", 129.00);
-
-        System.out.println("Bound outside scope: " + REQUEST_ID.isBound()); // false
-
-        processOrders();
+        // USER is no longer bound here
     }
 }`,
-    output: `[req-001] ana paying $49.99
-Validating: ana
-[req-002] bob paying $129.00
-Validating: bob
-Bound outside scope: false
-Task 1 user: ana
-Task 2 user: ana`,
+        output: `Current user: Ana`,
+      },
+    ],
     commonMistakes: [
       "Calling .get() outside a bound scope — throws NoSuchElementException; use isBound() or orElse() if the binding might not exist.",
       "Trying to mutate a ScopedValue — they are immutable; use rebinding (where...run) to shadow with a new value in a nested scope.",
@@ -14933,66 +14685,43 @@ public void someMethod() { }`,
       "method.isAnnotationPresent(Type.class) — check if annotation is present",
       "clazz.getAnnotatedMethods() — get all methods, then filter by annotation"
     ],
-    example: `import java.lang.annotation.*;
-import java.lang.reflect.*;
-import java.util.*;
-
-// A simple @Validate annotation for methods
+    examples: [
+      {
+        label: "1. Define a custom annotation",
+        code: `import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@interface Validate {
-    String description() default "validation";
-    boolean failFast() default false;
+@Target(ElementType.TYPE)
+public @interface Author {
+    String name();
+    String date() default "";
 }
-
-// A @RequiresRole annotation for access control
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
-@interface RequiresRole {
-    String value();  // single-element: @RequiresRole("ADMIN")
-}
-
-class UserService {
-    @Validate(description = "check user creation", failFast = true)
-    @RequiresRole("ADMIN")
-    public void createUser(String name) {
-        System.out.println("Creating user: " + name);
-    }
-
-    @Validate(description = "check read access")
-    public void getUser(long id) {
-        System.out.println("Getting user: " + id);
-    }
-
-    public void helperMethod() {}
-}
-
+@Author(name = "Kirby", date = "2025-01-01")
 public class Main {
-    // Minimal annotation processor — finds all @Validate methods
-    static void processAnnotations(Object obj) throws Exception {
-        for (Method m : obj.getClass().getDeclaredMethods()) {
-            if (m.isAnnotationPresent(Validate.class)) {
-                Validate v = m.getAnnotation(Validate.class);
-                System.out.printf("  [VALIDATE] %s — '%s' failFast=%b%n",
-                    m.getName(), v.description(), v.failFast());
-            }
-            if (m.isAnnotationPresent(RequiresRole.class)) {
-                RequiresRole r = m.getAnnotation(RequiresRole.class);
-                System.out.printf("  [ROLE] %s requires role: %s%n",
-                    m.getName(), r.value());
-            }
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        System.out.println("Annotated methods in UserService:");
-        processAnnotations(new UserService());
+    public static void main(String[] args) {
+        Author a = Main.class.getAnnotation(Author.class);
+        if (a != null) System.out.println(a.name() + " on " + a.date());
     }
 }`,
-    output: `Annotated methods in UserService:
-  [VALIDATE] createUser — 'check user creation' failFast=true
-  [ROLE] createUser requires role: ADMIN
-  [VALIDATE] getUser — 'check read access'`,
+        output: `Kirby on 2025-01-01`,
+      },
+      {
+        label: "2. Annotation with default values",
+        code: `import java.lang.annotation.*;
+@Retention(RetentionPolicy.RUNTIME)
+@interface Config {
+    String env() default "dev";
+    int timeout() default 30;
+}
+@Config(env = "prod", timeout = 60)
+public class Main {
+    public static void main(String[] args) {
+        Config c = Main.class.getAnnotation(Config.class);
+        System.out.println("env=" + c.env() + ", timeout=" + c.timeout());
+    }
+}`,
+        output: `env=prod, timeout=60`,
+      },
+    ],
     commonMistakes: [
       "Forgetting @Retention(RUNTIME) — without it the annotation is not available via reflection at runtime (CLASS is the default, not RUNTIME).",
       "Annotation elements cannot be null — use a sentinel like empty string \"\" or -1 as the default to represent 'not set'.",
@@ -15044,61 +14773,32 @@ var set = new LinkedHashSet<String>();`,
       "firstEntry() / lastEntry() — Java 21+ SequencedMap methods",
       "getFirst() / getLast() — Java 21+ SequencedSet methods"
     ],
-    example: `import java.util.*;
-
+    examples: [
+      {
+        label: "1. LinkedHashMap — insertion order",
+        code: `import java.util.*;
 public class Main {
-    // LRU cache using LinkedHashMap access order + removeEldestEntry
-    static <K, V> Map<K, V> lruCache(int capacity) {
-        return new LinkedHashMap<>(capacity, 0.75f, true) {
-            protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-                return size() > capacity;
-            }
-        };
-    }
-
     public static void main(String[] args) {
-        // LinkedHashMap — insertion order preserved
-        var scores = new LinkedHashMap<String, Integer>();
-        scores.put("Ana",  95);
-        scores.put("Bob",  82);
-        scores.put("Cara", 91);
-        scores.put("Dan",  78);
-        System.out.println("Insertion order: " + scores);
-        // HashMap would give unpredictable order; LinkedHashMap does not
-
-        // Get first/last (Java 21+)
-        System.out.println("First: " + scores.firstEntry());
-        System.out.println("Last:  " + scores.lastEntry());
-
-        // Reversed view
-        System.out.println("Reversed: " + scores.reversed());
-
-        // LinkedHashSet — insertion order, no duplicates
-        var visited = new LinkedHashSet<String>();
-        visited.add("home");
-        visited.add("shop");
-        visited.add("home");   // duplicate — ignored
-        visited.add("park");
-        System.out.println("Visited: " + visited); // [home, shop, park]
-        System.out.println("First: " + visited.getFirst()); // home
-
-        // LRU Cache — capacity 3
-        var cache = lruCache(3);
-        cache.put("A", 1); cache.put("B", 2); cache.put("C", 3);
-        System.out.println("Cache: " + cache); // {A=1, B=2, C=3}
-        cache.get("A");                          // access A — moves to tail
-        cache.put("D", 4);                       // evicts B (least recently used)
-        System.out.println("After D: " + cache); // {C=3, A=1, D=4}
+        Map<String, Integer> map = new LinkedHashMap<>();
+        map.put("banana", 2); map.put("apple", 5); map.put("cherry", 10);
+        System.out.println(map);  // insertion order preserved
     }
 }`,
-    output: `Insertion order: {Ana=95, Bob=82, Cara=91, Dan=78}
-First: Ana=95
-Last:  Dan=78
-Reversed: {Dan=78, Cara=91, Bob=82, Ana=95}
-Visited: [home, shop, park]
-First: home
-Cache: {A=1, B=2, C=3}
-After D: {C=3, A=1, D=4}`,
+        output: `{banana=2, apple=5, cherry=10}`,
+      },
+      {
+        label: "2. LinkedHashSet — insertion order",
+        code: `import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Set<String> set = new LinkedHashSet<>();
+        set.add("banana"); set.add("apple"); set.add("cherry");
+        System.out.println(set);  // insertion order preserved
+    }
+}`,
+        output: `[banana, apple, cherry]`,
+      },
+    ],
     commonMistakes: [
       "Forgetting to pass true for access-order when building an LRU cache — without it, the map uses insertion order and removeEldestEntry evicts by insertion, not by access.",
       "Calling get() on an access-order LinkedHashMap during iteration — modifying the order while iterating throws ConcurrentModificationException; use getOrDefault or a copy.",
@@ -15150,51 +14850,29 @@ Runtime.getRuntime().freeMemory();  // current free heap bytes`,
       "-Xms<size> — initial heap size, e.g. -Xms512m",
       "-Xmx<size> — maximum heap size, e.g. -Xmx4g"
     ],
-    example: `import java.lang.ref.*;
-
-public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        // 1. Show heap stats
-        var rt = Runtime.getRuntime();
-        System.out.printf("Heap: %dMB used / %dMB max%n",
-            (rt.totalMemory() - rt.freeMemory()) / 1_048_576,
-            rt.maxMemory() / 1_048_576);
-
-        // 2. Object becomes GC-eligible when no references remain
-        Object obj = new Object();    // referenced — not eligible
-        obj = null;                   // reference dropped — now eligible
-
-        // 3. WeakReference — cleared when GC runs (good for caches)
-        var weakMap = new java.util.WeakHashMap<String, byte[]>();
-        String key = new String("cache-key"); // NOT pooled (heap object)
-        weakMap.put(key, new byte[1024]);
-        System.out.println("Before GC: " + weakMap.size()); // 1
-        key = null;            // drop strong reference to key
-        System.gc();           // suggest GC
-        System.out.println("After GC: " + weakMap.size());  // 0 (key collected)
-
-        // 4. Cleaner — safe resource cleanup without finalize()
-        var cleaner = java.lang.ref.Cleaner.create();
-        Object resource = new Object();
-        cleaner.register(resource, () ->
-            System.out.println("Cleanup: resource released"));
-        resource = null;
-        System.gc();
-        Thread.sleep(100); // give GC time to run
-
-        // 5. Memory pressure — creating large objects
-        try {
-            // Intentionally exhaust heap (comment out in production)
-            // byte[] big = new byte[Integer.MAX_VALUE];
-        } catch (OutOfMemoryError e) {
-            System.out.println("OutOfMemoryError — increase -Xmx");
-        }
+    examples: [
+      {
+        label: "1. Object becomes eligible for GC when unreachable",
+        code: `public class Main {
+    public static void main(String[] args) {
+        String a = new String("temp");
+        a = null;  // the String object is now eligible for GC
+        System.gc(); // hint — not a command, JVM decides
     }
 }`,
-    output: `Heap: 8MB used / 256MB max
-Before GC: 1
-After GC: 0
-Cleanup: resource released`,
+        output: `(no output — GC runs silently)`,
+      },
+      {
+        label: "2. try-with-resources vs manual cleanup",
+        code: `// GOOD: try-with-resources auto-closes (not GC, but prevents leaks)
+try (var reader = new java.io.FileReader("file.txt")) {
+    // use reader
+}  // reader.close() called automatically
+
+// BAD: relying on finalize() (deprecated)
+// class Bad { @Override protected void finalize() { close(); } }`,
+      },
+    ],
     commonMistakes: [
       "Calling System.gc() to manage memory — it is a hint, not a command; the JVM ignores it when inconvenient. Fix memory issues with proper object scoping.",
       "Overriding finalize() — deprecated since Java 9, removed Java 21. Use Cleaner or try-with-resources instead.",
