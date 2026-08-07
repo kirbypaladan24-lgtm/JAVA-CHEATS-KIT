@@ -238,35 +238,6 @@ button { font-family: inherit; cursor: pointer; }
 [data-theme="dark"] .toggle-thumb { left: 21px; }
 .toggle-label { color: var(--text); }
 
-/* ---------- Mode toggle (Easy / Pro) ---------- */
-.mode-toggle {
-  display: flex; align-items: center; gap: 10px;
-  height: 40px;
-  border: var(--border-w) solid var(--border);
-  background: var(--bg-elev); color: var(--text);
-  padding: 0 12px;
-  box-shadow: 3px 3px 0 var(--border);
-  font-family: var(--font-pixel); font-size: 9px;
-  transition: transform 0.05s, box-shadow 0.05s;
-}
-.mode-toggle:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--border); }
-.mode-toggle:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--border); }
-.mode-toggle .toggle-track {
-  width: 40px; height: 20px;
-  background: var(--bg-code);
-  border: 2px solid var(--border);
-  position: relative; display: inline-block;
-}
-.mode-toggle .toggle-thumb {
-  position: absolute;
-  width: 14px; height: 14px;
-  background: var(--accent-2, var(--accent));
-  top: 1px; left: 1px;
-  transition: left 0.12s steps(2, end);
-}
-[data-mode="pro"] .mode-toggle .toggle-thumb { left: 21px; }
-.mode-label { color: var(--text); }
-
 /* ---------- LAYOUT ---------- */
 .layout {
   display: grid;
@@ -558,11 +529,6 @@ table.info-table {
   background: var(--green); color: #ffffff;
   border-color: var(--border);
 }
-/* The "Pro Mode" badge — shown when Easy mode is off */
-.topic-tag.tag-pro {
-  background: var(--accent-2, #5836bf); color: #ffffff;
-  border-color: var(--border);
-}
 
 /* ---------- BOOK REFERENCE FOOTER ---------- */
 .book-ref-section {
@@ -800,4 +766,117 @@ table.info-table {
   .prev-next { flex-direction: column; }
   .prev-next a { max-width: none; text-align: left !important; }
   .search-kbd { display: none; }
+}
+
+/* ===================================================================
+   ADDITIONS — mode toggle, simple mode styles, print, misc fixes
+   =================================================================== */
+
+/* ---------- MODE TOGGLE (mirrors .theme-toggle) ---------- */
+.mode-toggle {
+  display: flex; align-items: center; gap: 10px;
+  height: 40px;
+  border: var(--border-w) solid var(--border);
+  background: var(--bg-elev); color: var(--text);
+  padding: 0 12px;
+  box-shadow: 3px 3px 0 var(--border);
+  font-family: var(--font-pixel); font-size: 9px;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+.mode-toggle:hover  { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--border); }
+.mode-toggle:active { transform: translate(3px, 3px);   box-shadow: 0 0 0 var(--border); }
+.mode-track {
+  width: 40px; height: 20px;
+  background: var(--bg-code);
+  border: 2px solid var(--border);
+  position: relative; display: inline-block;
+}
+.mode-thumb {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: var(--accent);
+  top: 1px; left: 1px;
+  transition: left 0.12s steps(2, end);
+}
+/* Thumb shifts right and turns green in simple mode */
+[data-mode="simple"] .mode-thumb {
+  left: 21px;
+  background: var(--green);
+}
+.mode-label { color: var(--text); }
+
+/* ---------- SIMPLE MODE tag ---------- */
+.topic-tag.tag-simple {
+  background: var(--green); color: #ffffff;
+  border-color: var(--border);
+}
+
+/* ---------- SIMPLE MODE overview section ---------- */
+.simple-overview {
+  background: var(--bg-elev);
+  border: var(--border-w) solid var(--border);
+  border-left: 6px solid var(--green);
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+.simple-overview h2 {
+  margin: 0 0 14px;
+  font-family: var(--font-pixel); font-size: 11px;
+  color: #ffffff;
+  background: var(--green);
+  display: inline-block;
+  padding: 6px 12px;
+  border: 2px solid var(--border);
+}
+
+/* ---------- SIMPLE MODE nudge banner ---------- */
+.mode-nudge {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: var(--bg-elev);
+  border: var(--border-w) solid var(--border);
+  border-left: 6px solid var(--accent);
+  font-family: var(--font-body); font-size: 17px;
+  color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.mode-nudge-btn {
+  font-family: var(--font-pixel); font-size: 9px;
+  padding: 8px 14px;
+  background: var(--accent); color: var(--accent-text);
+  border: var(--border-w) solid var(--border);
+  box-shadow: 3px 3px 0 var(--border);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.05s, box-shadow 0.05s;
+  flex-shrink: 0;
+}
+.mode-nudge-btn:hover  { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--border); }
+.mode-nudge-btn:active { transform: translate(2px, 2px);   box-shadow: 0 0 0 var(--border); }
+
+/* ---------- PRINT STYLESHEET ---------- */
+@media print {
+  .topbar, .sidebar, .sidebar-overlay, .prev-next,
+  .code-btns, .topic-fav-btn, .mode-nudge, .book-ref-link,
+  #drawer, #drawerOverlay, #toast { display: none !important; }
+
+  body { font-size: 13px; background: #fff; color: #000; }
+  .layout { display: block; }
+  .main { padding: 0; max-width: none; }
+  .section {
+    border: 1px solid #999; box-shadow: none;
+    page-break-inside: avoid; margin-bottom: 12px;
+  }
+  .code-block { border: 1px solid #999; box-shadow: none; }
+  .code-body  { max-height: none; background: #f5f5f5; color: #000; font-size: 11px; }
+  .topic-header h1 { font-size: 16px; }
+  a[href]::after { content: ""; }   /* suppress URL printing for nav links */
+}
+
+/* ---------- RESPONSIVE additions ---------- */
+@media (max-width: 900px) {
+  .mode-toggle { padding: 0 8px; }
+  .mode-label  { display: none; }
 }
