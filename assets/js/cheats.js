@@ -14888,6 +14888,301 @@ try (var reader = new java.io.FileReader("file.txt")) {
       "logging"
     ],
   },
+
+  /* ============================================================ REFERENCE */
+  "java-libraries": {
+    title: "Java Libraries Overview",
+    category: "Reference",
+    beginnerExplanation: `Java comes with a huge collection of built-in libraries — like a toolbox that's already filled with tools for almost every job. Instead of building everything from scratch, you import the right tool and use it.
+
+Think of it like a kitchen: java.lang is your basic stove and knives (always available), java.util is your blender and food processor (collections, dates, random), java.io is your pantry (reading and writing files), java.net is your delivery service (networking), and java.sql is your recipe database (database access).
+
+Each library (called a "package" in Java) focuses on one area. You import what you need at the top of your file, and only what you use. The JVM loads it automatically — no installation required.
+
+Knowing what's available in the standard library saves you from reinventing the wheel. Need to sort a list? There's Collections.sort(). Need to parse a date? There's java.time. Need to make an HTTP request? There's java.net.http.HttpClient. The more you know about the libraries, the less code you write.`,
+    description: "Java's standard library (the Java Class Library, JCL) is organized into packages, each focused on a specific domain. This topic catalogs the major packages, their purpose, key classes, and usage patterns. Knowing what's available prevents reinventing the wheel and is essential for writing efficient, idiomatic Java.",
+    syntax: `// Import a specific class
+import java.util.List;
+import java.time.LocalDate;
+
+// Import all classes in a package
+import java.util.*;
+import java.io.*;
+
+// Static import (for constants and static methods)
+import static java.lang.Math.*;
+import static java.util.Collections.*;`,
+    parameters: [
+      ["java.lang", "Core language classes — automatically imported (String, Math, System, Object, Thread, Exception, wrapper classes)"],
+      ["java.util", "Collections (List, Set, Map, Queue), dates (legacy Date/Calendar), Random, Scanner, Comparator, Objects, Formatter"],
+      ["java.io", "File I/O — File, FileInputStream/FileOutputStream, BufferedReader/BufferedWriter, InputStreamReader, PrintStream, Serializable"],
+      ["java.nio.file", "Modern file I/O (Java 7+) — Path, Files, FileSystem. Replaces java.io.File for new code"],
+      ["java.time", "Modern date/time (Java 8+) — LocalDate, LocalTime, LocalDateTime, ZonedDateTime, Instant, Duration, Period, DateTimeFormatter"],
+      ["java.net", "Networking — Socket, ServerSocket, URL, URI, InetAddress (low-level TCP/UDP)"],
+      ["java.net.http", "HTTP client (Java 11+) — HttpClient, HttpRequest, HttpResponse. Modern replacement for HttpURLConnection"],
+      ["java.sql", "JDBC — Connection, DriverManager, Statement, PreparedStatement, ResultSet"],
+      ["java.math", "BigDecimal, BigInteger — arbitrary-precision arithmetic for financial/scientific calculations"],
+      ["java.text", "MessageFormat, NumberFormat, DateFormat, Collator — formatting and parsing text/numbers/dates"],
+      ["java.util.concurrent", "Concurrency utilities — ExecutorService, CompletableFuture, ConcurrentHashMap, AtomicXxx, Locks"],
+      ["java.util.concurrent.atomic", "Atomic variables — AtomicInteger, AtomicLong, AtomicReference, LongAdder"],
+      ["java.util.concurrent.locks", "Advanced locks — ReentrantLock, ReadWriteLock, Condition"],
+      ["java.util.stream", "Stream API (Java 8+) — Stream, Collector, Collectors"],
+      ["java.util.function", "Functional interfaces (Java 8+) — Function, Predicate, Consumer, Supplier, BiFunction"],
+      ["java.util.regex", "Regular expressions — Pattern, Matcher"],
+      ["java.lang.reflect", "Reflection — Class, Method, Field, Constructor. Inspect classes at runtime"],
+      ["java.security", "Security — SecureRandom, MessageDigest, Signature, KeyStore"],
+      ["javax.crypto", "Encryption — Cipher, KeyGenerator, Mac, SecretKey"],
+      ["java.util.zip", "Compression — ZipInputStream, ZipOutputStream, GZIPInputStream, GZIPOutputStream"],
+      ["java.util.logging", "Built-in logging — Logger, LogRecord, Handler, Level"],
+      ["java.util.prefs", "Preferences API — store user settings in OS-specific backing store"],
+      ["javax.swing", "Swing GUI — JFrame, JButton, JLabel, JPanel, JTable, JOptionPane"],
+      ["javafx.*", "Modern GUI (Java 11+, separate module) — Stage, Scene, Button, TableView"],
+    ],
+    returnValue: "Libraries provide classes and methods you call. Each class's methods have their own return types documented in the Java API docs at https://docs.oracle.com/en/java/javase/21/docs/api/.",
+    methods: [
+      "java.lang.String — text manipulation, immutable, string pool",
+      "java.lang.Math — abs, max, min, sqrt, pow, round, random, PI, E",
+      "java.lang.System — out, err, in, currentTimeMillis, nanoTime, getProperty, exit",
+      "java.lang.Object — toString, equals, hashCode, getClass, wait, notify",
+      "java.lang.Thread — currentThread, sleep, start, join, isVirtual",
+      "java.util.List/ArrayList/LinkedList — add, get, set, remove, size, indexOf",
+      "java.util.Set/HashSet/TreeSet — add, remove, contains, size",
+      "java.util.Map/HashMap/TreeMap — put, get, remove, containsKey, keySet, entrySet, merge",
+      "java.util.Queue/Deque/ArrayDeque — offer, poll, peek, push, pop",
+      "java.util.Collections — sort, reverse, shuffle, binarySearch, unmodifiableList",
+      "java.util.Arrays — sort, binarySearch, fill, copyOf, toString, asList, stream",
+      "java.util.Scanner — nextInt, nextLine, nextDouble, hasNext",
+      "java.util.Random/ThreadLocalRandom/SecureRandom — nextInt, nextDouble, nextBoolean",
+      "java.util.Objects — equals, hashCode, requireNonNull, toString",
+      "java.util.Optional — of, ofNullable, map, filter, orElse, orElseThrow",
+      "java.time.LocalDate/LocalTime/LocalDateTime — now, of, parse, format, plusDays",
+      "java.time.Instant/Duration/Period — now, between, ofDays, parse, plus, minus",
+      "java.io.BufferedReader/BufferedWriter — readLine, write, newLine, lines",
+      "java.nio.file.Path/Files — readString, writeString, readAllLines, copy, move, delete",
+      "java.net.http.HttpClient — newHttpClient, send, sendAsync",
+      "java.sql.Connection — createStatement, prepareStatement, close, commit",
+      "java.sql.PreparedStatement — setInt, setString, executeQuery, executeUpdate",
+      "java.util.concurrent.ExecutorService — submit, invokeAll, shutdown, newFixedThreadPool",
+      "java.util.concurrent.CompletableFuture — supplyAsync, thenApply, exceptionally, allOf",
+      "java.util.concurrent.ConcurrentHashMap — put, get, merge, computeIfAbsent",
+      "java.util.concurrent.atomic.AtomicInteger — get, incrementAndGet, compareAndSet",
+      "java.util.stream.Stream — filter, map, sorted, distinct, reduce, collect, toList",
+      "java.util.stream.Collectors — toList, toSet, toMap, joining, groupingBy",
+      "java.util.regex.Pattern/Matcher — compile, matcher, find, group, replaceAll, split",
+      "java.math.BigDecimal — add, subtract, multiply, divide, setScale, compareTo",
+      "java.security.SecureRandom — nextInt, nextBytes (cryptographically strong)",
+      "java.security.MessageDigest — getInstance, update, digest (SHA-256 hashing)",
+      "javax.crypto.Cipher — getInstance, init, doFinal (AES/RSA encryption)",
+      "java.util.logging.Logger — info, warning, severe, fine, getLogger",
+      "java.util.zip.ZipOutputStream — putNextEntry, write, closeEntry",
+    ],
+    examples: [
+      {
+        label: "1. java.util — Collections (List, Set, Map)",
+        code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>(List.of("a", "b", "c"));
+        list.add("d");
+        System.out.println("List: " + list);
+
+        Set<Integer> set = new HashSet<>(List.of(1, 2, 2, 3));
+        System.out.println("Set: " + set);
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("Ana", 19);
+        map.put("Bob", 21);
+        System.out.println("Map: " + map);
+    }
+}`,
+        output: `List: [a, b, c, d]
+Set: [1, 2, 3]
+Map: {Ana=19, Bob=21}`,
+      },
+      {
+        label: "2. java.time — Modern date and time",
+        code: `import java.time.*;
+import java.time.format.*;
+
+public class Main {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+        System.out.println("Today: " + today);
+
+        LocalDate nextWeek = today.plusWeeks(1);
+        System.out.println("Next week: " + nextWeek);
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
+        System.out.println("Formatted: " + today.format(fmt));
+    }
+}`,
+        output: `Today: 2026-08-07
+Next week: 2026-08-14
+Formatted: Aug 7, 2026`,
+      },
+      {
+        label: "3. java.nio.file — Modern file I/O",
+        code: `import java.nio.file.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Path file = Path.of("demo.txt");
+        Files.writeString(file, "Hello, files!");
+        System.out.println("Read: " + Files.readString(file));
+        Files.delete(file);
+    }
+}`,
+        output: `Read: Hello, files!`,
+      },
+      {
+        label: "4. java.net.http — HTTP client (Java 11+)",
+        code: `import java.net.*;
+import java.net.http.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest req = HttpRequest.newBuilder()
+            .uri(URI.create("https://httpbin.org/get"))
+            .GET().build();
+        HttpResponse<String> resp = client.send(req,
+            HttpResponse.BodyHandlers.ofString());
+        System.out.println("Status: " + resp.statusCode());
+    }
+}`,
+        output: `Status: 200`,
+      },
+      {
+        label: "5. java.util.concurrent — Thread pools",
+        code: `import java.util.concurrent.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            Future<Integer> f = pool.submit(() -> 42);
+            System.out.println("Result: " + f.get());
+        }
+    }
+}`,
+        output: `Result: 42`,
+      },
+      {
+        label: "6. java.util.stream — Stream API",
+        code: `import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> result = Stream.of("ana", "bob", "cy", "dave")
+            .filter(s -> s.length() <= 3)
+            .map(String::toUpperCase)
+            .sorted()
+            .toList();
+        System.out.println(result);
+    }
+}`,
+        output: `[ANA, BOB, CY]`,
+      },
+      {
+        label: "7. java.math — BigDecimal for precise arithmetic",
+        code: `import java.math.*;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(0.1 + 0.2);  // 0.30000000000000004
+
+        BigDecimal a = new BigDecimal("0.1");
+        BigDecimal b = new BigDecimal("0.2");
+        System.out.println(a.add(b));   // 0.3
+
+        BigDecimal price = new BigDecimal("19.999");
+        System.out.println(price.setScale(2, RoundingMode.HALF_UP));  // 20.00
+    }
+}`,
+        output: `0.30000000000000004
+0.3
+20.00`,
+      },
+      {
+        label: "8. java.util.regex — Pattern matching",
+        code: `import java.util.regex.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Matcher m = Pattern.compile("\\d+").matcher("I have 3 cats and 2 dogs");
+        while (m.find()) System.out.println("Found: " + m.group());
+
+        String swapped = "2025-08-07".replaceAll(
+            "(\\d{4})-(\\d{2})-(\\d{2})", "$3/$2/$1");
+        System.out.println("Date swapped: " + swapped);
+    }
+}`,
+        output: `Found: 3
+Found: 2
+Date swapped: 07/08/2025`,
+      },
+      {
+        label: "9. java.security — Hashing",
+        code: `import java.security.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest("Hello".getBytes());
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hash) sb.append(String.format("%02x", b));
+        System.out.println("SHA-256: " + sb.toString().substring(0, 16) + "...");
+
+        SecureRandom sr = new SecureRandom();
+        byte[] token = new byte[16];
+        sr.nextBytes(token);
+        System.out.println("Token generated: " + token.length + " bytes");
+    }
+}`,
+        output: `SHA-256: 185f8db32271...
+Token generated: 16 bytes`,
+      },
+      {
+        label: "10. java.util.zip — Compression",
+        code: `import java.util.zip.*;
+import java.nio.file.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Path gzipFile = Path.of("data.gz");
+        try (var gos = new GZIPOutputStream(Files.newOutputStream(gzipFile))) {
+            gos.write("Hello, compressed world!".getBytes());
+        }
+        try (var gis = new GZIPInputStream(Files.newInputStream(gzipFile))) {
+            System.out.println("Decompressed: " + new String(gis.readAllBytes()));
+        }
+        Files.delete(gzipFile);
+    }
+}`,
+        output: `Decompressed: Hello, compressed world!`,
+      },
+    ],
+    commonMistakes: [
+      "Using java.util.Date/Calendar (legacy) instead of java.time (Java 8+).",
+      "Using java.io.File instead of java.nio.file.Path/Files (Java 7+).",
+      "Using HttpURLConnection instead of java.net.http.HttpClient (Java 11+).",
+      "Using double for money — use BigDecimal to avoid floating-point errors.",
+      "Using java.util.Random for security — use SecureRandom for passwords/tokens.",
+      "Not knowing what's in the standard library and reinventing the wheel.",
+      "Importing java.awt/javax.swing for new GUIs — prefer JavaFX.",
+    ],
+    cpp: `// C++ equivalents:
+// java.util  -> STL (vector, map, set, queue)
+// java.io    -> <fstream>
+// java.net   -> no built-in; use Boost.Asio
+// java.sql   -> no built-in; use libpqxx
+// java.time  -> <chrono>
+// java.math  -> no built-in; use GMP
+// java.util.regex -> <regex>
+// java.util.concurrent -> <thread>, <mutex>, <future>`,
+    related: ["collections", "file-handling", "date-time", "networking", "jdbc", "multithreading", "streams-api", "regular-expressions", "generics", "exception-handling"],
+  },
 };
 
 /* ===================================================================
@@ -15020,5 +15315,6 @@ const bookRefs = {
   "custom-annotations":            ["Ch 43: Annotation Types (online)"],
   "linkedhashmap-linkedhashset":   ["Ch 21: Sets and Maps (p.805)"],
   "garbage-collection":            [],
+  "java-libraries":                [],
 
 };
