@@ -19,7 +19,7 @@ const cheats = {
   "java-basics": {
     beginnerExplanation: `Think of Java like a recipe book for a computer. Just like a recipe tells you step-by-step how to bake a cake, a Java program tells the computer step-by-step how to do a task. The 'class' is like the recipe card itself, and 'main' is the first instruction the computer reads — like 'Step 1: Preheat the oven.' When you run the program, the computer follows those instructions exactly, one by one, and shows you the result on the screen. That's all programming really is: writing instructions a computer can follow.
 
-Why does it matter? Every app on your phone, every website, every video game — they all started as instructions like these. Java is special because you write it once, and it can run on any device: Windows, Mac, Linux, Android. That's why it's one of the most popular programming languages in the world.`,
+Why does it matter? Every app on your phone, every website, every video game — they all started as instructions like these. Java is special because you write it once, and it can run on any device: Windows, Mac, Linux, Android. The current LTS version is Java 25 (released 2025). That's why it's one of the most popular programming languages in the world — Android, enterprise back-ends, and countless tools all run on it.`,
     methods: [
       "public class Name { ... } — declares a class (the recipe card)",
       "public static void main(String[] args) — the entry point (Step 1)",
@@ -30,7 +30,7 @@ Why does it matter? Every app on your phone, every website, every video game —
     ],
     title: "Java Basics",
     category: "Basics",
-    description: "Java is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. It follows the Write Once, Run Anywhere (WORA) principle — compiled Java bytecode runs on any JVM without recompilation. A Java program is organized into classes, and execution begins from the main() method. The current long-term support (LTS) releases are Java 21 (Sept 2023) and Java 25 (Sept 2025); new features like records, sealed classes, pattern matching, and virtual threads ship in every 6-month non-LTS release.",
+    description: "Java is a high-level, class-based, object-oriented language built on the Write Once, Run Anywhere (WORA) principle — compiled bytecode runs on any JVM without recompilation. Programs are organized into classes; execution starts at main(). The current LTS release is Java 25 (Sept 2025); Java 26 (March 2026) is the latest non-LTS release. Java 21 LTS is still widely used in production.",
     syntax: `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, Java!");
@@ -46,14 +46,20 @@ Why does it matter? Every app on your phone, every website, every video game —
     returnValue: "A basic Java program prints output to the console. main() returns void. The JVM exits with code 0 on success.",
     example: `public class Main {
     public static void main(String[] args) {
+        // Classic entry point
         System.out.println("Hello, Java!");
-        System.out.println("Java version: " + System.getProperty("java.version"));
-        // Java 21 LTS is the current long-term support release.
-        // Java 25 (Sept 2025) is the latest LTS — check your installed version.
+
+        // Runtime info
+        String version = System.getProperty("java.version");
+        System.out.println("Java version: " + version);
+
+        // var (Java 10+) — type inferred as String
+        var greeting = "Write Once, Run Anywhere";
+        System.out.println(greeting);
     }
 }`,
     output: `Hello, Java!
-Java version: 21.0.5`,
+Java version: 25.0.3`,
     commonMistakes: [
       "Filename must match the public class name (Main.java for class Main).",
       "Forgetting String[] args in the main signature — JVM will not find the entry point.",
@@ -2630,7 +2636,7 @@ The danger: when multiple threads share data, things can go wrong. If two thread
 Why does it matter? Modern CPUs have many cores. Multithreading lets you use them all — for faster downloads, responsive UIs, handling thousands of users at once. But it adds complexity, so use it when the speedup is worth it.`,
     title: "Multithreading",
     category: "Advanced",
-    description: "Java has built-in multithreading — every program runs on at least one thread. Create threads by extending Thread, implementing Runnable, or submitting Callable tasks to an ExecutorService (preferred). Shared mutable state must be synchronized — use synchronized methods/blocks, atomic variables (AtomicInteger), or higher-level concurrency utilities from java.util.concurrent: Lock, ConcurrentHashMap, CountDownLatch, CompletableFuture. The modern way is to use virtual threads (Project Loom, Java 21+) for cheap massive concurrency.",
+    description: "Java's multithreading: every program starts with the main thread; you create more to do work concurrently. This topic covers the thread lifecycle and how to choose the right concurrency tool. Thread states: NEW (created, not started), RUNNABLE (running or ready), BLOCKED (waiting for a monitor lock), WAITING (parked indefinitely), TIMED_WAITING (parked with timeout), TERMINATED (finished). Tool selection: raw Thread for one-offs or learning; Runnable/Callable for separating task from execution; ExecutorService for pooled reuse; CompletableFuture for async pipelines; virtual threads (Thread.ofVirtual()) for high-concurrency I/O; StructuredTaskScope for grouped tasks with automatic cancellation. Shared mutable state must be protected — see synchronized, volatile, atomic-variables, and locks topics. AtomicInteger), or higher-level concurrency utilities from java.util.concurrent: Lock, ConcurrentHashMap, CountDownLatch, CompletableFuture. The modern way is to use virtual threads (Project Loom, Java 21+) for cheap massive concurrency.",
     syntax: `// 1. Extend Thread
 class MyThread extends Thread {
     public void run() { System.out.println("running"); }
@@ -3091,7 +3097,7 @@ java -cp .:lib/gson.jar Main`,
     parameters: [
       ["filename", "Must match the public class name (Main.java for class Main)"],
       ["classpath", "Where to find classes — current dir by default; add -cp for jars"],
-      ["JDK version", "Most examples here target Java 17+ (LTS)"],
+      ["JDK version", "Most examples target Java 21+ LTS; current LTS is Java 25 (Sept 2025)"],
     ],
     returnValue: "These are runnable programs — each has a main() entry point and prints to the console. Modify and rerun to experiment.",
     example: `// Example 1 — FizzBuzz
@@ -3144,6 +3150,112 @@ class WordCount {
             .sorted((a, b) -> b.getValue() - a.getValue())
             .limit(5)
             .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
+    }
+}
+
+// Example 5 — Binary search (iterative)
+class BinarySearch {
+    static int search(int[] arr, int target) {
+        int lo = 0, hi = arr.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;   // avoids int overflow vs (lo+hi)/2
+            if      (arr[mid] == target) return mid;
+            else if (arr[mid] <  target) lo = mid + 1;
+            else                          hi = mid - 1;
+        }
+        return -1; // not found
+    }
+    public static void main(String[] args) {
+        int[] arr = {1, 3, 5, 7, 9, 11, 15, 23};
+        System.out.println(search(arr, 11));  // 5
+        System.out.println(search(arr, 6));   // -1
+    }
+}
+
+// Example 6 — Mini bank account (OOP + exceptions)
+class BankAccount {
+    private final String owner;
+    private double balance;
+
+    BankAccount(String owner, double initial) {
+        if (initial < 0) throw new IllegalArgumentException("Initial balance cannot be negative");
+        this.owner = owner; this.balance = initial;
+    }
+    void deposit(double amount) {
+        if (amount <= 0) throw new IllegalArgumentException("Deposit must be positive");
+        balance += amount;
+    }
+    void withdraw(double amount) {
+        if (amount > balance)
+            throw new IllegalArgumentException("Insufficient funds: have $" + balance);
+        balance -= amount;
+    }
+    @Override public String toString() {
+        return owner + ": $" + String.format("%.2f", balance);
+    }
+
+    public static void main(String[] args) {
+        var acc = new BankAccount("Ana", 1000.0);
+        acc.deposit(500.0);
+        acc.withdraw(200.0);
+        System.out.println(acc); // Ana: $1300.00
+        try { acc.withdraw(2000.0); }
+        catch (IllegalArgumentException e) { System.out.println("Error: " + e.getMessage()); }
+    }
+}
+
+// Example 7 — Fibonacci via Stream (modern Java)
+import java.util.stream.*;
+class FibStream {
+    public static void main(String[] args) {
+        // Infinite Fibonacci stream — take first 10
+        Stream.iterate(new long[]{0, 1}, f -> new long[]{f[1], f[0] + f[1]})
+              .limit(10)
+              .map(f -> f[0])
+              .forEach(n -> System.out.print(n + " "));
+        System.out.println();  // 0 1 1 2 3 5 8 13 21 34
+    }
+}
+
+// Example 8 — Anagram check (Streams + sorted)
+class Anagram {
+    static boolean isAnagram(String a, String b) {
+        return a.chars().sorted().toArray().equals(
+                   b.chars().sorted().toArray())   // arrays can't use .equals, use:
+               ? true : java.util.Arrays.equals(
+                   a.chars().sorted().toArray(),
+                   b.chars().sorted().toArray());
+    }
+    // Cleaner version:
+    static boolean anagram(String a, String b) {
+        char[] ca = a.toLowerCase().toCharArray();
+        char[] cb = b.toLowerCase().toCharArray();
+        java.util.Arrays.sort(ca);
+        java.util.Arrays.sort(cb);
+        return java.util.Arrays.equals(ca, cb);
+    }
+    public static void main(String[] args) {
+        System.out.println(anagram("listen", "silent")); // true
+        System.out.println(anagram("hello",  "world"));  // false
+        System.out.println(anagram("Triangle", "Integral")); // true
+    }
+}
+
+// Example 9 — Generic Pair record + Comparable
+record Pair<A extends Comparable<A>, B>(A first, B second)
+    implements Comparable<Pair<A, B>> {
+    @Override public int compareTo(Pair<A, B> other) {
+        return this.first.compareTo(other.first);
+    }
+}
+class PairDemo {
+    public static void main(String[] args) {
+        var pairs = new java.util.ArrayList<Pair<Integer, String>>();
+        pairs.add(new Pair<>(3, "three"));
+        pairs.add(new Pair<>(1, "one"));
+        pairs.add(new Pair<>(2, "two"));
+        java.util.Collections.sort(pairs);
+        pairs.forEach(p -> System.out.println(p.first() + " = " + p.second()));
     }
 }`,
     output: `// FizzBuzz output:
@@ -3953,7 +4065,7 @@ Example: 'names.stream().filter(n -> n.startsWith("A")).map(String::toUpperCase)
 Key gotcha: streams are single-use. Once you call a terminal operation, the stream is consumed — you can't reuse it. Generate a new stream from the source if you need to process again. And don't modify the source collection during streaming — you'll get a ConcurrentModificationException.`,
     title: "Streams API",
     category: "Modern Java",
-    description: "The Streams API (java.util.stream, Java 8+) lets you process sequences of elements — collections, arrays, I/O channels — declaratively. A pipeline has a source, zero or more intermediate operations (lazy: filter, map, sorted, distinct, limit), and one terminal operation (eager: forEach, collect, reduce, count, toList). Streams don't store data; they pipeline it through operations.",
+    description: "The Streams API (Java 8+, enhanced through Java 25) lets you process sequences declaratively. A pipeline has a source, zero or more lazy intermediate operations (filter, map, sorted, distinct, flatMap, limit), and one eager terminal operation (forEach, collect, toList, reduce, count). Stream.toList() (Java 16+) is the preferred short form over Collectors.toUnmodifiableList(). Streams are lazy and don't store data; they pipeline elements through operations on demand.",
     syntax: `collection.stream()
     .intermediateOp1(...)
     .intermediateOp2(...)
@@ -4013,6 +4125,7 @@ public class Main {
         List<Integer> nums = List.of(5, 2, 8, 1, 9, 3, 7, 4, 6);
 
         // Filter even, sort, collect
+        // .toList() — Java 16+ shorthand for unmodifiable list
         List<Integer> evens = nums.stream()
             .filter(n -> n % 2 == 0)
             .sorted()
@@ -4087,7 +4200,7 @@ Why does it matter? Records eliminate boilerplate for data-carrying classes — 
     ],
     title: "Records",
     category: "Modern Java",
-    description: "Records (Java 16+) are transparent data carriers — classes whose main job is to hold data. A record auto-generates the constructor, field accessors, equals, hashCode, and toString. They're immutable, final, and concise. Use records for DTOs, value objects, and any class that's mostly state. They can implement interfaces but cannot extend other classes.",
+    description: "Records (finalized in Java 16) are transparent data carriers — classes whose main job is to hold immutable data. A record auto-generates the canonical constructor, accessors, equals, hashCode, and toString. They're final and concise. As of Java 25 they work seamlessly with pattern matching deconstruction. Use records for DTOs, value objects, and any class that's mostly state. They can implement interfaces but cannot extend other classes.",
     syntax: `public record Name(Type1 field1, Type2 field2, ...) {
     // optional compact constructor for validation
     public Name {
@@ -6870,7 +6983,7 @@ Before var: 'HashMap<String, List<Integer>> map = new HashMap<>();' — you writ
 Important: var is NOT dynamic typing. Java is still 100% statically typed — the variable's type is fixed at declaration, you just didn't have to write it. Once 'var x = 5;', x is an int forever; you can't later do 'x = "hello"'. The type is inferred, not absent.
 
 var only works for LOCAL variables inside methods — not fields, not parameters, not return types. Use it when the type is obvious from the right side ('var name = "Ana"', 'var list = new ArrayList<>()'). Don't use it when the type isn't clear ('var result = process(data)' — what type is result?). Readability is the goal; if var makes code less clear, write the explicit type.`,
-    description: "var (Java 10+) allows local variable type inference — the compiler determines the type from the initializer. var is NOT dynamic typing; the variable is still statically typed. It only works for local variables (not fields, parameters, or return types). Use it when the type is obvious from the right-hand side; use explicit types when the type isn't clear.",
+    description: "var (Java 10+) enables local variable type inference — the compiler infers the type from the initializer. var is statically typed; it is NOT dynamic typing. It works for local variables only (not fields, parameters, return types, or lambda params). Use it when the type is obvious from context — e.g. complex generic types. Use explicit types when clarity matters. The right-hand side; use explicit types when the type isn't clear.",
     syntax: `// Before var (Java 9 and earlier)
 HashMap<String, List<Integer>> map = new HashMap<>();
 ArrayList<String> names = new ArrayList<>();
@@ -6980,7 +7093,7 @@ The new arrow syntax 'case X -> result' doesn't fall through — each case is in
 You can also combine multiple values with commas: 'case 1, 2, 3 -> "Q1"'. And if a case needs multiple statements, use a block with 'yield': 'case 0 -> { log("zero"); yield "nothing"; }'. The switch must be exhaustive — for enums, you need a default or all cases; for ints/Strings, a default is required.
 
 This is one of the most popular modern Java features — it makes code shorter, safer (no fall-through bugs), and more expressive. If you're on Java 14+, prefer the arrow form over the classic colon form.`,
-    description: "Switch expressions (standardized in Java 14) modernize the switch statement. The arrow form 'case X -> value' doesn't fall through (no break needed) and the switch can be used as an expression that returns a value. Multiple case labels can be combined with commas. Multi-line cases use 'yield' to return a value. The switch must be exhaustive.",
+    description: "Switch expressions (standard since Java 14) modernize the classic switch. Arrow syntax 'case X -> value' never falls through — no break needed. The whole switch can be an expression that returns a value. Multiple labels are comma-separated. Multi-line cases use 'yield' to return a value. The switch must be exhaustive.",
     syntax: `// Switch expression — returns a value, no fall-through
 String day = switch (n) {
     case 1 -> "Monday";
@@ -7222,7 +7335,7 @@ For switch (Java 21+): you can switch on types, not just values. 'switch (obj) {
 The 'null' case is new — you can now handle null directly in switch instead of always needing an outer null check. And switch patterns must be exhaustive (cover all types or have a default).
 
 Pattern matching makes code that processes mixed types much cleaner — no more cascading if-else chains with casts. It's especially useful for sealed class hierarchies and records, where the compiler can verify exhaustiveness.`,
-    description: "Pattern matching (instanceof since Java 16, switch since Java 21) simplifies type checking and casting. 'instanceof Type var' binds the cast value to var in one step. Switch patterns match on types, not just values, with 'when' guards for conditions. The null case is supported. Switch patterns must be exhaustive (especially powerful with sealed classes and records).",
+    description: "Pattern matching has two forms: instanceof (Java 16, stable) and switch (Java 21, stable). 'instanceof Type var' binds the cast value to var in one step. Switch patterns match on types, not just values, with 'when' guards for conditions. Record patterns (Java 21+) deconstruct record fields directly in patterns. The null case is supported. Switch patterns must be exhaustive (especially powerful with sealed classes and records).",
     syntax: `// instanceof pattern (Java 16+)
 if (obj instanceof String s) {
     System.out.println(s.length());  // s is already cast
@@ -7336,7 +7449,7 @@ Why would you want this? Normally, when you write an interface or abstract class
 Use 'sealed' on the parent, and 'permits' to list the allowed children: 'public sealed interface Shape permits Circle, Rectangle, Triangle {}'. The children must be 'final' (no further subclassing), 'sealed' (they also restrict their children), or 'non-sealed' (open to anyone). This creates a closed hierarchy.
 
 Sealed classes shine with records and pattern matching. A typical setup: 'sealed interface Shape permits Circle, Rectangle {}' + 'record Circle(double r) implements Shape {}' + 'record Rectangle(double w, double h) implements Shape {}'. Now 'switch (shape) { case Circle c -> ...; case Rectangle r -> ... }' is exhaustive — the compiler verifies you covered all cases. No default needed.`,
-    description: "Sealed classes and interfaces (Java 17+) restrict which classes can extend or implement them. Declare with 'sealed' and list permitted subtypes with 'permits'. Permitted subtypes must be final, sealed, or non-sealed. This enables closed hierarchies where the compiler can verify exhaustiveness in switch pattern matching — no default case needed. Especially powerful when combined with records.",
+    description: "Sealed classes and interfaces (standard since Java 17) restrict which classes can extend them. Declare with 'sealed' and list permitted subtypes with 'permits'. Each permitted subtype must be final, sealed, or non-sealed. This enables closed algebraic-data-type hierarchies where the compiler verifies exhaustiveness in switch pattern matching — no default case needed. Especially powerful when combined with records.",
     syntax: `// Sealed interface with three permitted implementations
 public sealed interface Shape permits Circle, Rectangle, Triangle {}
 
@@ -7420,14 +7533,14 @@ Circle(r=1.0) → area = 3.14`,
   "virtual-threads": {
     title: "Virtual Threads (Java 21+)",
     category: "Modern Java",
-    beginnerExplanation: `Virtual threads (Java 21+) are a game-changer for concurrent programming. Regular 'platform threads' (the kind Java has always had) are expensive — each one takes about 1MB of memory and is tied to an OS thread. You can maybe have a few thousand of them before running out of memory. Virtual threads are ultra-lightweight — they take a few hundred bytes each, so you can have MILLIONS of them.
+    beginnerExplanation: `Virtual threads (finalized in Java 21) are a game-changer for concurrent programming. Regular 'platform threads' (the kind Java has always had) are expensive — each one takes about 1MB of memory and is tied to an OS thread. You can maybe have a few thousand before running out of memory. Virtual threads are ultra-lightweight — they take a few hundred bytes each, so you can have MILLIONS of them.
 
 The magic: virtual threads are managed by the JVM, not the OS. When a virtual thread blocks (waits for I/O, sleeps, waits on a lock), the JVM parks it and runs another virtual thread on the same OS thread. It's like a restaurant with one chef (OS thread) but millions of orders (virtual threads) — the chef switches between orders whenever one is waiting for the oven.
 
 Why does this matter? Server applications that handle thousands of concurrent connections used to need complex async/reactive code (CompletableFuture, reactive frameworks) to avoid running out of threads. With virtual threads, you can write simple, blocking, straightforward code — 'Thread.sleep(1000)' or 'httpClient.send(...)' — and the JVM handles the concurrency efficiently. One virtual thread per request, millions of requests, simple code.
 
 Create virtual threads with 'Thread.startVirtualThread(() -> { ... })' or use 'Executors.newVirtualThreadPerTaskExecutor()'. You use the same Thread API you already know — virtual threads just make blocking cheap. They're NOT for CPU-intensive work (that still needs platform threads); they're for I/O-bound work (network, files, database).`,
-    description: "Virtual threads (Java 21+) are lightweight threads managed by the JVM, not the OS. They take ~200 bytes each (vs ~1MB for platform threads), so you can have millions. When a virtual thread blocks, the JVM parks it and runs another on the same carrier thread. Ideal for I/O-bound concurrent work — write simple blocking code at massive scale. Not for CPU-intensive work (use platform threads).",
+    description: "Virtual threads (Java 21, finalized) are lightweight threads managed by the JVM, not the OS. They use ~200 bytes each vs ~1 MB for platform threads, so you can have millions concurrently. When a virtual thread blocks on I/O, the JVM parks it and immediately re-uses the carrier thread for another. Ideal for I/O-bound server work — write simple blocking code at massive scale. Not for CPU-intensive work (use platform threads).",
     syntax: `import java.util.concurrent.*;
 
 // Start a single virtual thread
@@ -10560,9 +10673,11 @@ class Graph {
       "addEdge(from, to, weight) — add a weighted edge",
       "bfs(start) — breadth-first traversal (queue, shortest path)",
       "dfs(start) — depth-first traversal (recursion or stack)",
-      "shortestPath(src, dst) — BFS for unweighted, Dijkstra for weighted",
+      "shortestPath(src, dst) — BFS for unweighted; Dijkstra for weighted (greedy, non-negative weights)",
       "hasCycle() — DFS-based cycle detection",
       "topologicalSort() — DFS-based ordering (DAG only)",
+      "dijkstra(src) — shortest distances from src in weighted graph (priority queue, O((V+E) log V))",
+      "Note: Bellman-Ford handles negative weights O(VE); Floyd-Warshall all-pairs O(V³)",
     ],
     example: `import java.util.*;
 
@@ -10673,7 +10788,7 @@ The main algorithms to know:
 'Heap Sort' — build a heap, repeatedly extract the min/max. O(n log n) always, in-place, but not stable and slower than quicksort in practice.
 
 In real Java code, just use Arrays.sort() (which uses a tuned quicksort for primitives and merge sort for objects) or Collections.sort(). But understanding the algorithms helps you make smart choices and ace interviews.`,
-    description: "Sorting algorithms put elements in order. Main types: Bubble (O(n²), simple), Insertion (O(n²), good for small/nearly-sorted), Merge (O(n log n), stable, O(n) space), Quick (O(n log n) avg, O(n²) worst, in-place, fast in practice), Heap (O(n log n), in-place, not stable). Java's Arrays.sort uses dual-pivot quicksort (primitives) and TimSort (objects). Use Arrays.sort/Collections.sort in production.",
+    description: "Sorting algorithms put elements in order. Main types: Bubble (O(n²), simple), Insertion (O(n²), good for small/nearly-sorted), Merge (O(n log n), stable, O(n) space), Quick (O(n log n) avg, O(n²) worst, in-place, fast in practice), Heap (O(n log n), in-place, not stable). Java's Arrays.sort uses dual-pivot Quicksort for primitive arrays and Timsort (stable, O(n log n) worst case) for object arrays — Collections.sort() and List.sort() also use Timsort. Non-comparison sorts: Counting sort O(n+k) for bounded integers, Radix sort O(nk) for fixed-width keys — these beat O(n log n) when applicable.",
     syntax: `// Use Java's built-in (recommended for production)
 int[] arr = {5, 2, 8, 1, 9, 3};
 Arrays.sort(arr);                          // [1, 2, 3, 5, 8, 9]
@@ -10765,6 +10880,46 @@ public class Main {
         while (i < left.length) merged[k++] = left[i++];
         while (j < right.length) merged[k++] = right[j++];
         return merged;
+    }
+}
+
+// Heap Sort — O(n log n), in-place, not stable
+class HeapSort {
+    static void sort(int[] arr) {
+        int n = arr.length;
+        for (int i = n/2 - 1; i >= 0; i--) heapify(arr, n, i); // build max-heap
+        for (int i = n - 1; i > 0; i--) {
+            int tmp = arr[0]; arr[0] = arr[i]; arr[i] = tmp;    // move root to end
+            heapify(arr, i, 0);
+        }
+    }
+    static void heapify(int[] arr, int n, int i) {
+        int largest = i, l = 2*i+1, r = 2*i+2;
+        if (l < n && arr[l] > arr[largest]) largest = l;
+        if (r < n && arr[r] > arr[largest]) largest = r;
+        if (largest != i) { int tmp=arr[i]; arr[i]=arr[largest]; arr[largest]=tmp; heapify(arr, n, largest); }
+    }
+    public static void main(String[] args) {
+        int[] arr = {5, 3, 8, 1, 9, 2};
+        sort(arr);
+        System.out.println(java.util.Arrays.toString(arr)); // [1, 2, 3, 5, 8, 9]
+    }
+}
+
+// Counting Sort — O(n+k), stable, non-comparison, for bounded non-negative integers
+class CountingSort {
+    static int[] sort(int[] arr) {
+        int max = java.util.Arrays.stream(arr).max().getAsInt();
+        int[] count = new int[max + 1];
+        for (int x : arr) count[x]++;
+        for (int i = 1; i < count.length; i++) count[i] += count[i-1]; // prefix sum
+        int[] out = new int[arr.length];
+        for (int i = arr.length - 1; i >= 0; i--) out[--count[arr[i]]] = arr[i];
+        return out;
+    }
+    public static void main(String[] args) {
+        int[] arr = {4, 2, 2, 8, 3, 3, 1};
+        System.out.println(java.util.Arrays.toString(sort(arr))); // [1, 2, 2, 3, 3, 4, 8]
     }
 }`,
     output: `Bubble: [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -11776,6 +11931,1475 @@ BUG FOUND: loop skips last element (i < size - 1)`,
 // AddressSanitizer and Valgrind catch memory bugs (leaks, out-of-bounds, use-after-free).`,
     related: ["logging","junit-testing","exception-handling","clean-code","methods"],
   },
+
+  "two-dimensional-arrays": {
+    title: "2D Arrays",
+    category: "Basics",
+    description: "A 2D array in Java is an array of arrays — each row is itself an array object. Declare with type[][] name = new type[rows][cols]. Elements are accessed with array[row][col]. Rows can have different lengths (jagged arrays). The .length of a 2D array is its row count; each row has its own .length. 2D arrays are stored in row-major order. Multidimensional arrays (3D+) follow the same pattern.",
+    beginnerExplanation: `Think of a 2D array as a spreadsheet grid — rows and columns. You need two indexes to reach any cell: first the row, then the column. In Java, a 2D array is really an array of 1D arrays, which means each row can actually be a different length (called a jagged array), though usually you keep them uniform.
+
+Picture int[][] grid = new int[3][4] as a 3-row, 4-column table of numbers, all starting at 0. To read or write cell (row 1, col 2) you write grid[1][2].`,
+    syntax: `int[][] grid = new int[rows][cols];           // all zeros
+int[][] filled = {{1,2,3}, {4,5,6}, {7,8,9}}; // literal init
+int[][] jagged = new int[3][];                 // rows allocated separately
+jagged[0] = new int[]{1};
+jagged[1] = new int[]{2, 3};
+jagged[2] = new int[]{4, 5, 6};`,
+    methods: [
+      "array.length — number of rows",
+      "array[i].length — number of columns in row i",
+      "array[row][col] — access or set a single element",
+      "Arrays.deepToString(arr) — print a 2D array as a string",
+      "Arrays.deepEquals(a, b) — compare two 2D arrays by value"
+    ],
+    example: `import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        // Declare and initialize
+        int[][] matrix = {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
+        };
+
+        // Access element
+        System.out.println("Center: " + matrix[1][1]); // 5
+
+        // Traverse with nested for-each
+        System.out.println("All elements:");
+        for (int[] row : matrix) {
+            for (int val : row) {
+                System.out.printf("%3d", val);
+            }
+            System.out.println();
+        }
+
+        // Sum of diagonal
+        int sum = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            sum += matrix[i][i];
+        }
+        System.out.println("Diagonal sum: " + sum); // 1+5+9=15
+
+        // Jagged array — rows of different lengths
+        int[][] triangle = new int[4][];
+        for (int i = 0; i < triangle.length; i++) {
+            triangle[i] = new int[i + 1];
+            Arrays.fill(triangle[i], i + 1);
+        }
+        System.out.println("Jagged: " + Arrays.deepToString(triangle));
+    }
+}`,
+    output: `Center: 5
+All elements:
+  1  2  3
+  4  5  6
+  7  8  9
+Diagonal sum: 15
+Jagged: [[1], [2, 2], [3, 3, 3], [4, 4, 4, 4]]`,
+    commonMistakes: [
+      "ArrayIndexOutOfBoundsException — switching row and column indices (grid[col][row] instead of grid[row][col]).",
+      "Confusing array.length (row count) with array[0].length (column count) in nested loops.",
+      "For jagged arrays, always check array[i].length in the inner loop, not array[0].length.",
+      "Arrays.toString() prints addresses for 2D arrays — use Arrays.deepToString() instead.",
+      "int[][] a = new int[3][]; — rows are null until you allocate them; accessing before allocation throws NullPointerException."
+    ],
+    related: [
+      "arrays",
+      "loops",
+      "collections",
+      "arraylist"
+    ],
+  },
+  "varargs": {
+    title: "Varargs",
+    category: "Basics",
+    description: "Varargs (variable-argument methods, Java 5+) let a method accept zero or more arguments of the same type. Declared with type... name, the parameter is treated as an array inside the method. A method can have at most one varargs parameter, and it must be last. Java compiles a varargs call by creating an array behind the scenes. Varargs work with generics and overloading but have edge cases.",
+    beginnerExplanation: `Varargs let you call a method with any number of arguments without manually creating an array. You've already used this: System.out.printf("%s is %d", name, age) — printf takes varargs. The ... in the declaration means 'zero or more of this type.'
+
+Inside the method, the varargs parameter is just a normal array. You can loop over it, check its length, or pass it to another method that takes an array. The caller never needs to create an array — just pass the values directly.`,
+    syntax: `returnType methodName(Type... paramName) { /* paramName is an array */ }
+// Call with 0, 1, or many args:
+method();
+method(a);
+method(a, b, c);
+// Or pass an existing array:
+method(existingArray);`,
+    methods: [
+      "Type... name — declares a varargs parameter (last parameter only)",
+      "name.length — number of arguments passed",
+      "name[i] — access individual argument",
+      "Arrays.asList(name) — convert varargs array to a List",
+      "method(array) — an existing array can be passed to a varargs method directly"
+    ],
+    example: `import java.util.Arrays;
+
+public class Main {
+
+    // Sum any number of ints
+    static int sum(int... nums) {
+        int total = 0;
+        for (int n : nums) total += n;
+        return total;
+    }
+
+    // Mixed regular + varargs params
+    static void greet(String greeting, String... names) {
+        for (String name : names) {
+            System.out.println(greeting + ", " + name + "!");
+        }
+    }
+
+    // Varargs with generics — @SafeVarargs suppresses heap pollution warning
+    @SafeVarargs
+    static <T> java.util.List<T> listOf(T... items) {
+        return Arrays.asList(items);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(sum());           // 0
+        System.out.println(sum(5));          // 5
+        System.out.println(sum(1, 2, 3, 4)); // 10
+
+        int[] arr = {10, 20, 30};
+        System.out.println(sum(arr));        // 60 — array passed directly
+
+        greet("Hello", "Ana", "Ben", "Cy");
+
+        var names = listOf("Java", "Python", "Go");
+        System.out.println(names);
+    }
+}`,
+    output: `0
+5
+10
+60
+Hello, Ana!
+Hello, Ben!
+Hello, Cy!
+[Java, Python, Go]`,
+    commonMistakes: [
+      "Putting varargs before other parameters — it must be the last parameter.",
+      "Overloading a method with varargs and a single-argument version causes ambiguity: method(x) matches both method(T) and method(T...).",
+      "Passing null to a varargs method: method(null) is ambiguous — cast to the type explicitly: method((String) null) or method(new String[]{null}).",
+      "Expecting varargs to accept mixed types — all args must be the same type (or subtypes).",
+      "Forgetting @SafeVarargs on generic varargs methods causing unchecked warnings."
+    ],
+    related: [
+      "methods",
+      "arrays",
+      "lambda-expressions",
+      "generics"
+    ],
+  },
+  "pass-by-value": {
+    title: "Pass by Value",
+    category: "Basics",
+    description: "Java is strictly pass-by-value — it always passes a copy of the variable's value to a method. For primitives, this is a copy of the number/boolean/char itself. For objects, this is a copy of the reference (memory address) — not a copy of the object. This means: reassigning a parameter inside a method never affects the caller's variable, but mutating an object through the copied reference does affect the original object, because both references point to the same heap object.",
+    beginnerExplanation: `This is one of Java's most misunderstood concepts. People say 'Java passes objects by reference' but that's not quite right.
+
+Think of it like this: your method is a friend you send an errand. For primitives, you hand them a piece of paper with a number written on it. They can scribble on their copy — your original paper is untouched.
+
+For objects, you hand them a copy of a key to your house. They can walk into the house and rearrange the furniture (mutate the object's fields) — those changes are real and you'll see them. But if they throw away their key and get a different one (reassign the parameter), your key still works. You gave them a copy of the key, not the house.`,
+    syntax: `// Primitive — caller's variable unchanged
+void increment(int x) { x++; }          // only local copy changes
+
+// Object — fields can change, reassignment cannot
+void rename(StringBuilder sb) {
+    sb.append(" Jr.");     // mutates caller's object — visible to caller
+    sb = new StringBuilder("other"); // only local ref changes
+}`,
+    example: `public class Main {
+    // Primitive: copy of value
+    static void tryDouble(int n) {
+        n = n * 2;
+        System.out.println("Inside: " + n);
+    }
+
+    // Object: copy of reference — mutation is visible, reassignment is not
+    static void tryModify(int[] arr) {
+        arr[0] = 99;             // mutates the array — visible to caller
+        arr = new int[]{1, 2};   // reassigns local ref — caller unchanged
+    }
+
+    // StringBuilder to show mutation vs reassignment
+    static void tryString(StringBuilder sb) {
+        sb.append("!");          // mutates — caller sees "Hello!"
+        sb = new StringBuilder("gone"); // reassigns — caller unaffected
+    }
+
+    public static void main(String[] args) {
+        // Primitive
+        int x = 5;
+        tryDouble(x);
+        System.out.println("After tryDouble: " + x); // still 5
+
+        // Array (object) — mutation visible
+        int[] arr = {1, 2, 3};
+        tryModify(arr);
+        System.out.println("arr[0] after tryModify: " + arr[0]); // 99
+        System.out.println("arr.length still: " + arr.length);   // 3 (not 2)
+
+        // StringBuilder
+        StringBuilder sb = new StringBuilder("Hello");
+        tryString(sb);
+        System.out.println("sb after tryString: " + sb); // Hello!
+    }
+}`,
+    output: `Inside: 10
+After tryDouble: 5
+arr[0] after tryModify: 99
+arr.length still: 3
+sb after tryString: Hello!`,
+    commonMistakes: [
+      "Saying Java uses pass-by-reference for objects — it does not. It passes the reference by value.",
+      "Expecting reassigning an object parameter to affect the caller: void set(MyObj o) { o = new MyObj(); } — the caller's variable is unchanged.",
+      "Forgetting that mutating object state through a parameter IS visible to the caller — the two references point to the same object.",
+      "Immutable objects (String, Integer, etc.) make it look like pass-by-value for objects too — because you cannot mutate them, you can only reassign."
+    ],
+    related: [
+      "variables",
+      "methods",
+      "objects",
+      "strings",
+      "wrapper-classes"
+    ],
+  },
+  "string-pool": {
+    title: "String Pool",
+    category: "Basics",
+    description: "The String constant pool (or string intern pool) is a special memory area in the Java heap where the JVM stores unique String literals. When you write String s = \"hello\", the JVM checks the pool first — if \"hello\" already exists there, it reuses the same object. This makes == comparison work for literals (they share a reference) but fail for Strings created with new String(...). String.intern() manually adds a String to the pool or returns the existing pooled instance. Understanding the pool explains Java's most common beginner bug: comparing strings with ==.",
+    beginnerExplanation: `The String pool is why == works for some String comparisons but not others, and why people always tell you to use .equals() for Strings.
+
+Imagine the JVM has a dictionary of every string literal it has ever seen. When you write 'String a = "hello"' and then 'String b = "hello"', the JVM looks in its dictionary, sees "hello" is already there, and gives both a and b a pointer to the same entry. So a == b is true — they're literally the same object.
+
+But if you write 'String c = new String("hello")', you're telling Java to create a brand-new object on the heap, bypassing the dictionary. Now c is a different object even though it contains the same text, so c == a is false even though c.equals(a) is true.
+
+Always use .equals() to compare string content — never ==.`,
+    syntax: `String a = "hello";             // from pool
+String b = "hello";             // same object as a
+String c = new String("hello"); // new heap object, bypasses pool
+String d = c.intern();          // returns pool reference for "hello"
+
+a == b      // true  — both point to pool entry
+a == c      // false — c is a separate heap object
+a == d      // true  — d is the pool entry
+a.equals(c) // true  — content is the same`,
+    methods: [
+      "str.intern() — return pool reference: adds str to pool if absent, returns existing pool entry if present",
+      "str.equals(other) — always use for content comparison",
+      "str.equalsIgnoreCase(other) — case-insensitive content comparison",
+      "== — compares references (memory addresses), not content",
+      "String.valueOf(x) — convert primitive x to a String (uses pool for small values)"
+    ],
+    example: `public class Main {
+    public static void main(String[] args) {
+        // Literals — interned automatically at compile time
+        String a = "Java";
+        String b = "Java";
+        System.out.println(a == b);        // true  — same pool object
+        System.out.println(a.equals(b));   // true  — same content
+
+        // new String() bypasses the pool
+        String c = new String("Java");
+        System.out.println(a == c);        // false — c is on the heap
+        System.out.println(a.equals(c));   // true  — same content
+
+        // intern() returns the pool reference
+        String d = c.intern();
+        System.out.println(a == d);        // true  — d is the pool entry
+
+        // Concatenation at runtime creates new heap objects
+        String x = "Ja";
+        String y = "va";
+        String z = x + y;                  // computed at runtime
+        System.out.println(a == z);        // false — z is a new heap object
+        System.out.println(a.equals(z));   // true
+
+        // Compile-time constants ARE pooled
+        final String p = "Ja";
+        final String q = "va";
+        String r = p + q;                  // compiler resolves to "Java"
+        System.out.println(a == r);        // true — compiler interned it
+    }
+}`,
+    output: `true
+true
+false
+true
+true
+false
+true
+true`,
+    commonMistakes: [
+      "Using == to compare Strings — works for pooled literals by accident, fails for new String() or runtime-computed values.",
+      "Thinking intern() always improves performance — it adds GC pressure on the pool and is rarely needed in modern Java.",
+      "Expecting runtime concatenation (x + y) to be pooled — only compile-time constant expressions are interned automatically.",
+      "Assuming String.valueOf() or toString() results are pooled — they are not."
+    ],
+    related: [
+      "strings",
+      "pass-by-value",
+      "variables",
+      "objects",
+      "wrapper-classes"
+    ],
+  },
+  "method-references": {
+    title: "Method References",
+    category: "Modern Java",
+    description: "Method references (Java 8+, :: syntax) are shorthand for lambdas that do nothing but call an existing method. Four kinds: (1) Static — ClassName::staticMethod; (2) Instance on a specific object — instance::method; (3) Instance on an arbitrary parameter — ClassName::instanceMethod (first lambda param becomes the receiver); (4) Constructor — ClassName::new. They work wherever a functional interface is expected and produce cleaner code than equivalent lambdas.",
+    beginnerExplanation: `A method reference is just a shorter way to write a lambda that calls exactly one existing method. Instead of 'x -> System.out.println(x)' you write 'System.out::println' — same thing, less noise.
+
+There are four patterns:
+1. A static method: Integer::parseInt means (s) -> Integer.parseInt(s)
+2. An instance method on a specific object: myList::add means (x) -> myList.add(x)
+3. An instance method on whatever gets passed in: String::toUpperCase means (s) -> s.toUpperCase()
+4. A constructor: ArrayList::new means () -> new ArrayList<>()
+
+The tricky one is #3 — the lambda parameter becomes the object the method is called on, not an argument to it.`,
+    syntax: `// 1. Static method
+ClassName::staticMethod
+// 2. Instance method on a specific object
+objectRef::instanceMethod
+// 3. Instance method on the lambda's first parameter (arbitrary receiver)
+ClassName::instanceMethod
+// 4. Constructor
+ClassName::new`,
+    methods: [
+      "ClassName::staticMethod — (args) -> ClassName.staticMethod(args)",
+      "instance::method — (args) -> instance.method(args)",
+      "ClassName::instanceMethod — (obj, args) -> obj.instanceMethod(args)",
+      "ClassName::new — (args) -> new ClassName(args)"
+    ],
+    example: `import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
+public class Main {
+    static int doubleIt(int n) { return n * 2; }
+
+    public static void main(String[] args) {
+        List<String> names = List.of("Ana", "bob", "CLARA", "dave");
+
+        // 1. Static method reference
+        // Lambda:   n -> Integer.parseInt(n)
+        Function<String, Integer> parse = Integer::parseInt;
+        System.out.println(parse.apply("42")); // 42
+
+        // 2. Instance method on a specific object
+        var sb = new StringBuilder();
+        // Lambda:   s -> sb.append(s)
+        Consumer<String> appender = sb::append;
+        names.forEach(appender);
+        System.out.println(sb); // AnabobbCLARA dave... but:
+
+        // 3. Arbitrary receiver — first param becomes the object
+        // Lambda:   s -> s.toUpperCase()
+        List<String> upper = names.stream()
+            .map(String::toUpperCase)
+            .collect(Collectors.toList());
+        System.out.println(upper);
+
+        // String::compareTo: (a, b) -> a.compareTo(b)
+        List<String> sorted = new ArrayList<>(names);
+        sorted.sort(String::compareToIgnoreCase);
+        System.out.println("Sorted: " + sorted);
+
+        // 4. Constructor reference
+        // Lambda:   s -> new StringBuilder(s)
+        Function<String, StringBuilder> mkSb = StringBuilder::new;
+        System.out.println(mkSb.apply("hello"));
+
+        // Common: Collectors.toCollection
+        Supplier<List<String>> listFactory = ArrayList::new;
+        var myList = names.stream().collect(Collectors.toCollection(listFactory));
+        System.out.println(myList);
+    }
+}`,
+    output: `42
+AnabobbCLARAd ave
+[ANA, BOB, CLARA, DAVE]
+Sorted: [Ana, bob, CLARA, dave]
+hello
+[Ana, bob, CLARA, dave]`,
+    commonMistakes: [
+      "Confusing type-3 (arbitrary receiver) with type-2: String::toUpperCase is NOT the same as 'call toUpperCase on some specific String object' — the lambda parameter IS the receiver.",
+      "Using a method reference when the lambda does more than just call the method: n -> n * 2 + 1 cannot be shortened to a method ref.",
+      "Constructor refs with multiple constructors — the functional interface signature determines which constructor is chosen.",
+      "Trying to reference an overloaded method — the compiler picks based on the target functional interface's signature, which can be surprising."
+    ],
+    related: [
+      "lambda-expressions",
+      "functional-interfaces",
+      "streams-api",
+      "collectors"
+    ],
+  },
+  "functional-interfaces": {
+    title: "Functional Interfaces",
+    category: "Modern Java",
+    description: "A functional interface has exactly one abstract method (SAM — Single Abstract Method) and can be the target of a lambda or method reference. The java.util.function package (Java 8+) provides a standard library of functional interfaces covering the common patterns: Predicate<T> (boolean test), Function<T,R> (transform), Consumer<T> (side effect), Supplier<T> (produce), and their many variants (Bi-, Int/Long/Double-specialized, Unary/Binary operators). Compose them with default methods like .andThen(), .compose(), .and(), .negate(). Use @FunctionalInterface to declare your own.",
+    beginnerExplanation: `A functional interface is just an interface with one job — one abstract method. That makes it a perfect slot for a lambda to plug into. The lambda IS the implementation of that one method.
+
+Java ships with ready-made functional interfaces for the four basic patterns:
+- Got an input, want a true/false answer? → Predicate
+- Got an input, want a transformed output? → Function
+- Got an input, want to do something with it but not return anything? → Consumer
+- Want to produce a value out of thin air? → Supplier
+
+You use these constantly with Streams: stream.filter(Predicate), stream.map(Function), stream.forEach(Consumer).`,
+    syntax: `@FunctionalInterface
+interface MyFunc<T, R> { R apply(T input); }
+
+// Built-ins from java.util.function:
+Predicate<T>          // test(T t): boolean
+Function<T, R>        // apply(T t): R
+Consumer<T>           // accept(T t): void
+Supplier<T>           // get(): T
+BiFunction<T, U, R>   // apply(T t, U u): R
+UnaryOperator<T>      // extends Function<T,T>: apply(T t): T
+BinaryOperator<T>     // extends BiFunction<T,T,T>: apply(T t1, T t2): T
+BiPredicate<T, U>     // test(T t, U u): boolean
+BiConsumer<T, U>      // accept(T t, U u): void
+IntPredicate / LongPredicate / DoublePredicate
+IntFunction<R> / ToIntFunction<T>  // primitives avoid boxing`,
+    methods: [
+      "Predicate.test(T) — evaluate the condition",
+      "Predicate.and(other) — logical AND: both must be true",
+      "Predicate.or(other) — logical OR: at least one true",
+      "Predicate.negate() — logical NOT",
+      "Predicate.not(pred) — static factory for negation (Java 11+)",
+      "Function.apply(T) — transform input to output",
+      "Function.andThen(after) — chain: this, then after",
+      "Function.compose(before) — chain: before, then this",
+      "Function.identity() — static: returns its input unchanged",
+      "Consumer.accept(T) — consume input with side effect",
+      "Consumer.andThen(after) — run this consumer then after",
+      "Supplier.get() — produce a value",
+      "BiFunction.apply(T, U) — two inputs, one output",
+      "UnaryOperator.identity() — returns input unchanged"
+    ],
+    example: `import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Predicate — filter, test
+        Predicate<String> longName = s -> s.length() > 3;
+        Predicate<String> startsA  = s -> s.startsWith("A");
+        Predicate<String> longAndA = longName.and(startsA);
+        Predicate<String> shortOrA = longName.negate().or(startsA);
+
+        List<String> names = List.of("Ana", "Alice", "Bob", "Alexander");
+        names.stream().filter(longAndA).forEach(System.out::println);
+        // Alice, Alexander
+
+        // Function — transform
+        Function<String, Integer> len = String::length;
+        Function<String, String>  up  = String::toUpperCase;
+        Function<String, String>  lenStr = up.andThen(s -> "len=" + s.length());
+        System.out.println(lenStr.apply("hello")); // len=5
+
+        // Consumer — side effect
+        Consumer<String> print = System.out::println;
+        Consumer<String> shout = s -> System.out.println(s.toUpperCase());
+        Consumer<String> both  = print.andThen(shout);
+        both.accept("java"); // prints "java" then "JAVA"
+
+        // Supplier — produce
+        Supplier<List<String>> freshList = ArrayList::new;
+        List<String> list = freshList.get();
+        list.add("hello");
+        System.out.println(list);
+
+        // BiFunction
+        BiFunction<String, Integer, String> repeat =
+            (s, n) -> s.repeat(n);
+        System.out.println(repeat.apply("ab", 3)); // ababab
+
+        // Primitive specializations avoid boxing
+        IntPredicate isEven = n -> n % 2 == 0;
+        System.out.println(isEven.test(4)); // true
+
+        // Custom @FunctionalInterface
+        @FunctionalInterface
+        interface Transformer<T> { T transform(T input); }
+        Transformer<String> reverse =
+            s -> new StringBuilder(s).reverse().toString();
+        System.out.println(reverse.transform("Java")); // avaJ
+    }
+}`,
+    output: `Alice
+Alexander
+len=5
+java
+JAVA
+[hello]
+ababab
+true
+avaJ`,
+    commonMistakes: [
+      "Using boxed Function<Integer,Integer> in hot paths instead of IntUnaryOperator — boxing overhead is real for millions of calls.",
+      "Forgetting that Consumer.andThen runs both consumers even if the first throws — use try/catch if needed.",
+      "Adding a second abstract method to a @FunctionalInterface — the annotation causes a compile error, which is the point.",
+      "Confusing Function.compose() and Function.andThen(): f.compose(g) applies g first then f; f.andThen(g) applies f first then g.",
+      "Using Supplier where Callable is needed — Supplier.get() cannot declare checked exceptions; Callable.call() can."
+    ],
+    related: [
+      "lambda-expressions",
+      "method-references",
+      "streams-api",
+      "collectors",
+      "optional"
+    ],
+  },
+  "collectors": {
+    title: "Collectors",
+    category: "Modern Java",
+    description: "Collectors (java.util.stream.Collectors) provides factory methods for terminal Stream operations that accumulate elements into collections or summaries. Key collectors: toList()/toSet()/toUnmodifiableList(), joining() for strings, groupingBy() for partitioning into a Map<K,List<V>>, partitioningBy() for a Map<Boolean,List<T>>, toMap() for arbitrary key-value mapping, counting()/summarizingInt()/averagingInt() for statistics, and downstream collectors for nested aggregation. Collectors compose: groupingBy can take a downstream collector to further process each group.",
+    beginnerExplanation: `After you've filtered and mapped a stream, Collectors tell Java what to do with the surviving elements at the end. The simplest collector gathers them into a List. But Collectors can do much more.
+
+The most useful ones are:
+- joining() — glue strings together with a separator
+- groupingBy() — split elements into buckets by a key, like GROUP BY in SQL
+- partitioningBy() — split into two groups: those that pass a test and those that don't
+- toMap() — build a Map where you specify what each element's key and value should be
+- counting() — just count the elements
+
+groupingBy is particularly powerful because you can chain another collector inside it to process each group further, like 'group by category, then count each group'.`,
+    syntax: `import java.util.stream.Collectors;
+
+stream.collect(Collectors.toList())
+stream.collect(Collectors.toUnmodifiableList())
+stream.collect(Collectors.toSet())
+stream.collect(Collectors.joining(", ", "[", "]"))
+stream.collect(Collectors.groupingBy(classifier))
+stream.collect(Collectors.groupingBy(classifier, downstream))
+stream.collect(Collectors.partitioningBy(predicate))
+stream.collect(Collectors.toMap(keyFn, valueFn))
+stream.collect(Collectors.counting())
+stream.collect(Collectors.averagingInt(fn))
+stream.collect(Collectors.summarizingInt(fn))`,
+    methods: [
+      "Collectors.toList() — mutable List; prefer .toList() on stream directly (Java 16+) for unmodifiable",
+      "Collectors.toUnmodifiableList() — unmodifiable List (Java 10+)",
+      "Collectors.toSet() — HashSet (order not guaranteed)",
+      "Collectors.toCollection(Supplier) — any Collection type: Collectors.toCollection(TreeSet::new)",
+      "Collectors.joining() — concatenate strings; joining(delim); joining(delim, prefix, suffix)",
+      "Collectors.groupingBy(classifier) — Map<K, List<T>> grouping",
+      "Collectors.groupingBy(classifier, downstream) — Map<K, R> with downstream aggregation",
+      "Collectors.partitioningBy(predicate) — Map<Boolean, List<T>>",
+      "Collectors.partitioningBy(predicate, downstream) — Map<Boolean, R>",
+      "Collectors.toMap(keyFn, valueFn) — Map<K,V>; throws on duplicate keys",
+      "Collectors.toMap(keyFn, valueFn, mergeFunction) — handles duplicate keys",
+      "Collectors.counting() — Long count; useful as downstream",
+      "Collectors.averagingInt/Double/Long(fn) — double average",
+      "Collectors.summingInt/Double/Long(fn) — sum",
+      "Collectors.summarizingInt(fn) — IntSummaryStatistics (count, sum, min, max, avg)",
+      "Collectors.mapping(fn, downstream) — transform then collect",
+      "Collectors.teeing(c1, c2, merger) — collect into two collectors simultaneously (Java 12+)"
+    ],
+    example: `import java.util.*;
+import java.util.stream.*;
+
+record Product(String name, String category, double price) {}
+
+public class Main {
+    public static void main(String[] args) {
+        var products = List.of(
+            new Product("Laptop",  "Electronics", 999.0),
+            new Product("Phone",   "Electronics", 699.0),
+            new Product("Desk",    "Furniture",   349.0),
+            new Product("Chair",   "Furniture",   199.0),
+            new Product("Monitor", "Electronics", 449.0)
+        );
+
+        // joining — build a comma-separated list of names
+        String names = products.stream()
+            .map(Product::name)
+            .collect(Collectors.joining(", ", "[", "]"));
+        System.out.println(names);
+
+        // groupingBy — group by category, get list of names per category
+        Map<String, List<String>> byCategory = products.stream()
+            .collect(Collectors.groupingBy(
+                Product::category,
+                Collectors.mapping(Product::name, Collectors.toList())
+            ));
+        byCategory.forEach((cat, list) ->
+            System.out.println(cat + ": " + list));
+
+        // counting per category
+        Map<String, Long> countByCategory = products.stream()
+            .collect(Collectors.groupingBy(Product::category, Collectors.counting()));
+        System.out.println("Counts: " + countByCategory);
+
+        // averagingDouble per category
+        Map<String, Double> avgPrice = products.stream()
+            .collect(Collectors.groupingBy(
+                Product::category,
+                Collectors.averagingDouble(Product::price)
+            ));
+        System.out.println("Avg prices: " + avgPrice);
+
+        // partitioningBy — expensive vs affordable
+        Map<Boolean, List<String>> partition = products.stream()
+            .collect(Collectors.partitioningBy(
+                p -> p.price() > 400,
+                Collectors.mapping(Product::name, Collectors.toList())
+            ));
+        System.out.println("Expensive: " + partition.get(true));
+        System.out.println("Affordable: " + partition.get(false));
+
+        // toMap — name → price
+        Map<String, Double> priceMap = products.stream()
+            .collect(Collectors.toMap(Product::name, Product::price));
+        System.out.println("Laptop price: " + priceMap.get("Laptop"));
+
+        // summarizingDouble — full stats
+        DoubleSummaryStatistics stats = products.stream()
+            .collect(Collectors.summarizingDouble(Product::price));
+        System.out.printf("Min=%.0f Max=%.0f Avg=%.1f%n",
+            stats.getMin(), stats.getMax(), stats.getAverage());
+    }
+}`,
+    output: `[Laptop, Phone, Desk, Chair, Monitor]
+Electronics: [Laptop, Phone, Monitor]
+Furniture: [Desk, Chair]
+Counts: {Electronics=3, Furniture=2}
+Avg prices: {Electronics=715.67, Furniture=274.0}
+Expensive: [Laptop, Phone, Monitor]
+Affordable: [Desk, Chair]
+Laptop price: 999.0
+Min=199 Max=999 Avg=539.0`,
+    commonMistakes: [
+      "toMap() throws IllegalStateException on duplicate keys — always provide a merge function: toMap(k, v, (a, b) -> a) to keep first.",
+      "groupingBy() result Map has no guaranteed order — use Collectors.groupingBy(fn, TreeMap::new, downstream) for sorted keys.",
+      "Collectors.toList() returns a mutable list; .toList() (stream method, Java 16+) returns unmodifiable — choose intentionally.",
+      "Using Collectors.joining() on a non-String stream without mapping first — the stream must be Stream<String>.",
+      "Chaining a downstream collector incorrectly: counting() returns Long, not int — store in Map<String, Long>."
+    ],
+    related: [
+      "streams-api",
+      "lambda-expressions",
+      "functional-interfaces",
+      "method-references",
+      "optional"
+    ],
+  },
+  "gatherers": {
+    title: "Gatherers",
+    category: "Modern Java",
+    description: "Gatherers (Stream.gather(), java.util.stream.Gatherer, finalized Java 25) extend Streams with custom stateful intermediate operations — something previously impossible without custom spliterators. A Gatherer has four optional components: initializer (creates state), integrator (processes each element, emits to downstream), combiner (for parallel), finisher (flush remaining state). Built-in Gatherers: windowFixed(n) (non-overlapping windows), windowSliding(n) (overlapping windows), scan (like reduce but emits intermediates), fold (like reduce but emits only final), mapConcurrent (concurrent mapping with virtual threads).",
+    beginnerExplanation: `Streams had a gap: you could filter, map, and sort, but you couldn't write your own stateful intermediate operation. Gatherers fill that gap. A Gatherer is to intermediate operations what a Collector is to terminal ones — it lets you define custom processing with state that persists across elements.
+
+The built-in ones are immediately useful: windowFixed(3) groups your stream into chunks of 3. windowSliding(3) gives you every overlapping window of 3 consecutive elements. scan() is like a running total — it emits the accumulated value after each element. These patterns used to require loops or complex collectors.`,
+    syntax: `import java.util.stream.Gatherers;
+
+// Built-in Gatherers
+stream.gather(Gatherers.windowFixed(n))     // List<List<T>> in chunks of n
+stream.gather(Gatherers.windowSliding(n))   // List<List<T>> every n consecutive
+stream.gather(Gatherers.scan(init, fn))     // running accumulation
+stream.gather(Gatherers.fold(init, fn))     // like reduce, emits only final value
+stream.gather(Gatherers.mapConcurrent(n, fn)) // parallel map with n virtual threads
+
+// Custom Gatherer
+Gatherer.of(initializer, integrator, combiner, finisher)
+Gatherer.ofSequential(initializer, integrator, finisher)`,
+    methods: [
+      "Gatherers.windowFixed(n) — emit non-overlapping lists of n elements",
+      "Gatherers.windowSliding(n) — emit every sliding window of n consecutive elements",
+      "Gatherers.scan(identity, accumulator) — emit running accumulation after each element",
+      "Gatherers.fold(identity, accumulator) — emit only the final accumulated value",
+      "Gatherers.mapConcurrent(maxConcurrency, mapper) — concurrent stateless mapping using virtual threads",
+      "Gatherer.of(init, integrator) — build custom gatherer with state",
+      "integrator.integrate(state, element, downstream) — process one element; return false to short-circuit",
+      "downstream.push(element) — emit an element to the next stage"
+    ],
+    example: `import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        var numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        // windowFixed — process in batches of 3
+        List<List<Integer>> batches = numbers.stream()
+            .gather(Gatherers.windowFixed(3))
+            .toList();
+        System.out.println("Fixed windows: " + batches);
+        // [[1,2,3], [4,5,6], [7,8,9], [10]]
+
+        // windowSliding — every pair of consecutive numbers
+        List<List<Integer>> pairs = numbers.stream()
+            .gather(Gatherers.windowSliding(2))
+            .toList();
+        System.out.println("Sliding pairs: " + pairs.subList(0, 4));
+        // [[1,2], [2,3], [3,4], [4,5]]
+
+        // scan — running sum
+        List<Integer> runningSum = numbers.stream()
+            .gather(Gatherers.scan(() -> 0, Integer::sum))
+            .toList();
+        System.out.println("Running sums: " + runningSum);
+        // [1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
+
+        // Custom gatherer: take while strictly increasing
+        var prices = List.of(10, 15, 13, 20, 25, 22, 30);
+        List<Integer> increasing = prices.stream()
+            .gather(Gatherer.<Integer, int[], Integer>ofSequential(
+                () -> new int[]{Integer.MIN_VALUE},  // state: last value
+                (state, elem, downstream) -> {
+                    if (elem > state[0]) {
+                        state[0] = elem;
+                        return downstream.push(elem); // emit
+                    }
+                    return false; // stop the stream
+                }
+            ))
+            .toList();
+        System.out.println("Increasing run: " + increasing);
+        // [10, 15]
+    }
+}`,
+    output: `Fixed windows: [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
+Sliding pairs: [[1, 2], [2, 3], [3, 4], [4, 5]]
+Running sums: [1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
+Increasing run: [10, 15]`,
+    commonMistakes: [
+      "Gatherers are finalized in Java 25 — earlier versions had them as preview; check your JDK version.",
+      "windowFixed emits a partial window for the last batch if elements don't divide evenly — handle the smaller last list.",
+      "Custom gatherers with mutable state must use an array or holder object — lambdas cannot close over non-final variables.",
+      "mapConcurrent preserves order but runs tasks concurrently — don't use it for operations with side effects that depend on order."
+    ],
+    related: [
+      "streams-api",
+      "collectors",
+      "functional-interfaces",
+      "virtual-threads",
+      "lambda-expressions"
+    ],
+  },
+  "sequenced-collections": {
+    title: "Sequenced Collections",
+    category: "Modern Java",
+    description: "Java 21 added three interfaces to the collections hierarchy: SequencedCollection<E> (extends Collection), SequencedSet<E> (extends SequencedCollection, Set), and SequencedMap<K,V> (extends Map). They add getFirst(), getLast(), addFirst(), addLast(), removeFirst(), removeLast(), and reversed() — a view of the collection in reverse order. These operations work uniformly on List, Deque, LinkedHashSet, LinkedHashMap, and SortedSet/SortedMap without casting or workarounds.",
+    beginnerExplanation: `Before Java 21, getting the first or last element of a List required list.get(0) and list.get(list.size()-1). For a LinkedHashSet you had to create an iterator and advance it. There was no consistent way to access ends or iterate backwards across different collection types.
+
+Java 21 fixed this by adding new interfaces that every ordered collection now implements. Now any List, Deque, LinkedHashSet, or sorted collection has getFirst(), getLast(), and reversed() — one API that works everywhere.`,
+    syntax: `// Methods added to all SequencedCollections:
+E getFirst()           // first element, throws NoSuchElementException if empty
+E getLast()            // last element
+void addFirst(E e)     // insert at front (not for unmodifiable)
+void addLast(E e)      // insert at back (not for unmodifiable)
+E removeFirst()        // remove and return first
+E removeLast()         // remove and return last
+SequencedCollection<E> reversed()  // reverse-order view (live, not a copy)
+
+// SequencedMap additions:
+Map.Entry<K,V> firstEntry()
+Map.Entry<K,V> lastEntry()
+SequencedMap<K,V> reversed()`,
+    methods: [
+      "getFirst() — first element (replaces get(0) for List)",
+      "getLast() — last element (replaces get(size()-1) for List)",
+      "addFirst(e) — prepend element",
+      "addLast(e) — append element",
+      "removeFirst() — remove and return first element",
+      "removeLast() — remove and return last element",
+      "reversed() — live reversed view — iteration in reverse, mutations visible",
+      "Collections.unmodifiableSequencedCollection(c) — unmodifiable wrapper",
+      "Collections.unmodifiableSequencedSet(s)",
+      "Collections.unmodifiableSequencedMap(m)"
+    ],
+    example: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // List implements SequencedCollection
+        var list = new ArrayList<>(List.of("a", "b", "c", "d"));
+        System.out.println("First: " + list.getFirst()); // a
+        System.out.println("Last:  " + list.getLast());  // d
+        list.addFirst("z");
+        System.out.println("After addFirst: " + list);   // [z, a, b, c, d]
+        list.removeLast();
+        System.out.println("After removeLast: " + list); // [z, a, b, c]
+
+        // Reversed view — live, not a copy
+        var rev = list.reversed();
+        System.out.println("Reversed: " + rev); // [c, b, a, z]
+        list.addFirst("X");
+        System.out.println("Rev after mutation: " + rev); // [c, b, a, z, X]
+
+        // LinkedHashSet implements SequencedSet
+        var set = new LinkedHashSet<>(List.of("one", "two", "three"));
+        System.out.println("Set first: " + set.getFirst()); // one
+        System.out.println("Set last:  " + set.getLast());  // three
+
+        // LinkedHashMap implements SequencedMap
+        var map = new LinkedHashMap<String, Integer>();
+        map.put("a", 1); map.put("b", 2); map.put("c", 3);
+        System.out.println("Map first: " + map.firstEntry()); // a=1
+        System.out.println("Map last:  " + map.lastEntry());  // c=3
+        System.out.println("Map reversed: " + map.reversed());
+
+        // Deque also benefits
+        var deque = new ArrayDeque<>(List.of(1, 2, 3));
+        System.out.println("Deque first: " + deque.getFirst()); // 1
+    }
+}`,
+    output: `First: a
+Last:  d
+After addFirst: [z, a, b, c, d]
+After removeLast: [z, a, b, c]
+Reversed: [c, b, a, z]
+Rev after mutation: [c, b, a, z, X]
+Set first: one
+Set last:  three
+Map first: a=1
+Map last:  c=3
+Map reversed: {c=3, b=2, a=1}
+Deque first: 1`,
+    commonMistakes: [
+      "Calling getFirst() on an empty collection — throws NoSuchElementException; check isEmpty() first or use Optional.",
+      "Assuming reversed() returns a copy — it returns a live view; mutations to the original are reflected in the reversed view and vice versa.",
+      "addFirst()/addLast() are unsupported on unmodifiable or fixed-size collections — they throw UnsupportedOperationException.",
+      "Arrays.asList() returns a fixed-size list — addFirst/removeLast throw; use new ArrayList<>(List.of(...)) for a mutable copy."
+    ],
+    related: [
+      "collections",
+      "arraylist",
+      "linkedlist",
+      "linkedhashmap-linkedhashset",
+      "stack-deque",
+      "treemap"
+    ],
+  },
+  "unnamed-variables": {
+    title: "Unnamed Variables & Patterns",
+    category: "Modern Java",
+    description: "Unnamed variables (finalized Java 23, JEP 456) use the underscore _ to indicate that a variable is declared but intentionally not used. This applies to: local variables, catch parameters, lambda parameters, pattern variables, and resource variables in try-with-resources. The _ cannot be read or assigned — it exists only to satisfy syntax that requires a variable name. This eliminates unused-variable warnings, documents intent, and cleans up patterns where a binding is needed but the value is irrelevant.",
+    beginnerExplanation: `Sometimes you have to declare a variable to satisfy the language syntax, even though you don't care about its value. Before Java 23, you'd write something like 'catch (IOException e)' where e is never used, then get a compiler warning about it. Or in a lambda: 'list.forEach(x -> counter++)' where x is ignored.
+
+The underscore _ says clearly: 'Yes, I know there's a variable here, but I don't need it.' It's a signal to both the compiler and other programmers — no warning, no confusion, just explicit intent. It works in catch blocks, lambdas, patterns, and local variable declarations.`,
+    syntax: `// Catch block — exception object not needed
+try { ... } catch (IOException _) { retry(); }
+
+// Lambda — parameter not used
+list.forEach(_ -> count++);
+
+// Pattern matching — component not needed
+if (obj instanceof Point(int x, _)) { ... }
+switch (shape) {
+    case Circle(double r) -> ...;
+    case Rectangle(_, double h) -> ...;  // width unused
+}
+
+// try-with-resources — resource not used directly
+try (var _ = SomeResource.open()) { ... }
+
+// Local variable
+var _ = sideEffectMethod(); // call for side effect, ignore return`,
+    methods: [
+      "catch (ExType _) — catch without naming the exception",
+      "(_ , b) -> b — lambda ignoring first parameter",
+      "case Type(_, T field) — deconstruct pattern ignoring some components",
+      "var _ = expr — execute expression for side effects, discard result",
+      "for (var _ : list) { count++; } — iterate for count, ignore element"
+    ],
+    example: `import java.util.*;
+import java.util.regex.*;
+
+public class Main {
+    sealed interface Shape permits Circle, Rectangle, Triangle {}
+    record Circle(double radius) implements Shape {}
+    record Rectangle(double width, double height) implements Shape {}
+    record Triangle(double a, double b, double c) implements Shape {}
+
+    public static void main(String[] args) {
+        // Catch — exception message logged elsewhere, object unneeded
+        int value = 0;
+        try {
+            value = Integer.parseInt("not a number");
+        } catch (NumberFormatException _) {
+            value = -1;
+        }
+        System.out.println("value: " + value); // -1
+
+        // Lambda — index unused in forEach
+        var items = List.of("a", "b", "c");
+        int[] count = {0};
+        items.forEach(_ -> count[0]++);
+        System.out.println("count: " + count[0]); // 3
+
+        // Pattern matching — ignore some record components
+        List<Shape> shapes = List.of(
+            new Circle(5),
+            new Rectangle(3, 4),
+            new Triangle(3, 4, 5)
+        );
+        for (var shape : shapes) {
+            String desc = switch (shape) {
+                case Circle(double r) -> "circle r=" + r;
+                case Rectangle(_, double h) -> "rect h=" + h;
+                case Triangle(_, _, _) -> "triangle";
+            };
+            System.out.println(desc);
+        }
+
+        // for loop — iterate for side effect, ignore element
+        var log = new ArrayList<String>();
+        for (var _ : items) { log.add("visited"); }
+        System.out.println("log: " + log);
+    }
+}`,
+    output: `value: -1
+count: 3
+circle r=5.0
+rect h=4.0
+triangle
+log: [visited, visited, visited]`,
+    commonMistakes: [
+      "Trying to read _ — it is not accessible, compile error: '_' refers to a hidden variable.",
+      "Using _ as a regular variable name in older code (Java <9 deprecated it, Java 16 made it an error, Java 23 repurposed it for this feature).",
+      "Thinking multiple _ in the same scope conflict — they don't, each is an independent unnamed slot."
+    ],
+    related: [
+      "pattern-matching",
+      "lambda-expressions",
+      "exception-handling",
+      "records",
+      "sealed-classes"
+    ],
+  },
+  "structured-concurrency": {
+    title: "Structured Concurrency",
+    category: "Concurrency",
+    description: "Structured Concurrency (finalized Java 25, JEP 505) treats a group of related concurrent tasks as a single unit of work. StructuredTaskScope ensures that if any subtask fails, the remaining tasks are cancelled and the failure is propagated — a major improvement over CompletableFuture chains where failures can be silently lost or require complex chaining. Two built-in policies: ShutdownOnFailure (cancel all if any fails, surface first exception), ShutdownOnSuccess (cancel remaining once any succeeds). Works naturally with virtual threads.",
+    beginnerExplanation: `Imagine you need to fetch a user's profile AND their order history at the same time, and only proceed if BOTH succeed. With CompletableFuture this is possible but error-prone — if one task fails midway, the other might keep running and you might miss the error.
+
+Structured Concurrency solves this with a scope: you open a StructuredTaskScope, fork your tasks inside it, then join — and the scope guarantees that either all tasks completed successfully, or all are cancelled and the error is available. Tasks cannot outlive the scope. It's like having a parent that is responsible for all its children's work — when the parent leaves, everyone is done.`,
+    syntax: `import java.util.concurrent.StructuredTaskScope;
+
+try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+    var task1 = scope.fork(callable1);  // returns Subtask<T>
+    var task2 = scope.fork(callable2);
+    scope.join();           // wait for all
+    scope.throwIfFailed();  // rethrow if any subtask failed
+    // use task1.get(), task2.get() — both succeeded
+}
+
+// ShutdownOnSuccess — first to succeed wins
+try (var scope = new StructuredTaskScope.ShutdownOnSuccess<T>()) {
+    scope.fork(candidate1);
+    scope.fork(candidate2);
+    scope.join();
+    T result = scope.result(); // whichever finished first
+}`,
+    methods: [
+      "scope.fork(Callable<T>) — start a subtask, returns Subtask<T>",
+      "scope.join() — block until all subtasks finish (or scope shuts down)",
+      "scope.joinUntil(Instant) — join with a deadline",
+      "scope.throwIfFailed() — rethrow if any subtask threw (ShutdownOnFailure)",
+      "scope.result() — get the winning result (ShutdownOnSuccess)",
+      "subtask.get() — get the subtask's result (only call after join + throwIfFailed)",
+      "subtask.state() — RUNNING, SUCCESS, FAILED, UNAVAILABLE",
+      "subtask.exception() — the exception if state == FAILED"
+    ],
+    example: `import java.util.concurrent.StructuredTaskScope;
+import java.time.Instant;
+
+public class Main {
+    record User(String name, String email) {}
+    record Orders(int count, double total) {}
+    record Dashboard(User user, Orders orders) {}
+
+    // Simulate fetching user from a service
+    static User fetchUser(long id) throws Exception {
+        Thread.sleep(50);
+        return new User("Ana", "ana@example.com");
+    }
+
+    // Simulate fetching orders
+    static Orders fetchOrders(long userId) throws Exception {
+        Thread.sleep(80);
+        return new Orders(5, 349.99);
+    }
+
+    // Both tasks run concurrently — total ~80ms, not 130ms
+    static Dashboard loadDashboard(long userId) throws Exception {
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            var userTask   = scope.fork(() -> fetchUser(userId));
+            var orderTask  = scope.fork(() -> fetchOrders(userId));
+
+            scope.join()           // wait for both (or first failure)
+                 .throwIfFailed(); // rethrow if any subtask failed
+
+            return new Dashboard(userTask.get(), orderTask.get());
+        }
+    }
+
+    // ShutdownOnSuccess — use whichever cache responds first
+    static String queryFastestCache(String key) throws Exception {
+        try (var scope = new StructuredTaskScope.ShutdownOnSuccess<String>()) {
+            scope.fork(() -> { Thread.sleep(100); return "local-" + key; });
+            scope.fork(() -> { Thread.sleep(30);  return "redis-" + key; });
+            scope.join();
+            return scope.result();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        long start = System.currentTimeMillis();
+        Dashboard d = loadDashboard(42);
+        System.out.println("User: " + d.user().name());
+        System.out.println("Orders: " + d.orders().count() + " items, $" + d.orders().total());
+        System.out.printf("Loaded in ~%dms%n", System.currentTimeMillis() - start);
+
+        String cached = queryFastestCache("session:abc");
+        System.out.println("Fastest cache: " + cached);
+    }
+}`,
+    output: `User: Ana
+Orders: 5 items, $349.99
+Loaded in ~83ms
+Fastest cache: redis-session:abc`,
+    commonMistakes: [
+      "Calling subtask.get() before scope.join() — the subtask may not be done yet; always join first.",
+      "Forgetting scope.throwIfFailed() — if you don't call it, a failed subtask is silently ignored.",
+      "Using a try-without-resources — the scope must be closed; use try-with-resources to guarantee cleanup.",
+      "Nesting scopes deeply without purpose — flat concurrent tasks within one scope is usually clearer than nested scopes."
+    ],
+    related: [
+      "virtual-threads",
+      "completable-future",
+      "executor-service",
+      "scoped-values",
+      "locks"
+    ],
+  },
+  "scoped-values": {
+    title: "Scoped Values",
+    category: "Concurrency",
+    description: "ScopedValue<T> (finalized Java 25, JEP 487) provides an immutable, thread-local-like value that is bound for the duration of a specific scope — a single method call tree. Unlike ThreadLocal, which is mutable and can leak across tasks, a ScopedValue is written once per scope and can be read anywhere in that call tree without being passed as a parameter. It is the recommended replacement for ThreadLocal when working with virtual threads and structured concurrency, where thousands of tasks may share carrier threads.",
+    beginnerExplanation: `ThreadLocal lets you store a value that is different for each thread — often used to pass the current user or request context through a call chain without adding parameters to every method. But it has problems: it's mutable (anyone can change it), it leaks between tasks when using thread pools, and it's hard to reason about.
+
+ScopedValue fixes this. You declare a ScopedValue, bind it to a value for a scope (a specific block of code and everything called from it), and it's readable from anywhere in that scope — but only that scope. It cannot be changed once bound. When the scope ends, the binding disappears automatically. Think of it as 'read-only context that is automatically scoped to a task.'`,
+    syntax: `import java.lang.ScopedValue;
+
+// 1. Declare (usually a public static final field)
+public static final ScopedValue<User> CURRENT_USER = ScopedValue.newInstance();
+
+// 2. Bind a value for a scope
+ScopedValue.where(CURRENT_USER, user).run(() -> {
+    // CURRENT_USER.get() returns user anywhere in this call tree
+    processRequest();
+});
+
+// 3. Read inside the scope
+User u = CURRENT_USER.get();        // reads the bound value
+boolean bound = CURRENT_USER.isBound(); // check if a value is set`,
+    methods: [
+      "ScopedValue.newInstance() — create a new ScopedValue handle",
+      "ScopedValue.where(sv, value) — prepare a binding (returns a Carrier)",
+      "carrier.run(Runnable) — run with the binding active",
+      "carrier.call(Callable<T>) — run and return a value",
+      "ScopedValue.get() — read the bound value in current scope",
+      "ScopedValue.isBound() — true if a value is bound in this scope",
+      "ScopedValue.orElse(default) — get value or default if unbound",
+      "ScopedValue.where(sv1, v1).where(sv2, v2).run(...) — bind multiple at once"
+    ],
+    example: `import java.lang.ScopedValue;
+import java.util.concurrent.StructuredTaskScope;
+
+public class Main {
+    // Declared at class level — readable anywhere without passing as parameter
+    static final ScopedValue<String> REQUEST_ID = ScopedValue.newInstance();
+    static final ScopedValue<String> USERNAME   = ScopedValue.newInstance();
+
+    static void processPayment(double amount) {
+        // Both values readable without being passed as arguments
+        System.out.printf("[%s] %s paying $%.2f%n",
+            REQUEST_ID.get(), USERNAME.get(), amount);
+        validateUser();
+    }
+
+    static void validateUser() {
+        System.out.println("Validating: " + USERNAME.get());
+    }
+
+    static void handleRequest(String reqId, String user, double amount) {
+        ScopedValue
+            .where(REQUEST_ID, reqId)
+            .where(USERNAME, user)
+            .run(() -> processPayment(amount));
+    }
+
+    // ScopedValues work naturally with virtual threads and structured concurrency
+    static void processOrders() throws Exception {
+        ScopedValue.where(USERNAME, "ana").run(() -> {
+            try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+                scope.fork(() -> {
+                    System.out.println("Task 1 user: " + USERNAME.get()); // ana
+                    return null;
+                });
+                scope.fork(() -> {
+                    System.out.println("Task 2 user: " + USERNAME.get()); // ana
+                    return null;
+                });
+                scope.join().throwIfFailed();
+            } catch (Exception e) { throw new RuntimeException(e); }
+        });
+    }
+
+    public static void main(String[] args) throws Exception {
+        handleRequest("req-001", "ana", 49.99);
+        handleRequest("req-002", "bob", 129.00);
+
+        System.out.println("Bound outside scope: " + REQUEST_ID.isBound()); // false
+
+        processOrders();
+    }
+}`,
+    output: `[req-001] ana paying $49.99
+Validating: ana
+[req-002] bob paying $129.00
+Validating: bob
+Bound outside scope: false
+Task 1 user: ana
+Task 2 user: ana`,
+    commonMistakes: [
+      "Calling .get() outside a bound scope — throws NoSuchElementException; use isBound() or orElse() if the binding might not exist.",
+      "Trying to mutate a ScopedValue — they are immutable; use rebinding (where...run) to shadow with a new value in a nested scope.",
+      "Using ThreadLocal when working with virtual threads — prefer ScopedValue; ThreadLocal may hold values longer than expected on pooled carrier threads.",
+      "Declaring ScopedValue as a local variable — it should be a public static final field, accessible wherever reading is needed."
+    ],
+    related: [
+      "virtual-threads",
+      "structured-concurrency",
+      "multithreading",
+      "executor-service"
+    ],
+  },
+  "custom-annotations": {
+    title: "Custom Annotations",
+    category: "OOP",
+    description: "Custom annotations are created with the @interface keyword. They are a form of metadata you attach to classes, methods, fields, or parameters. Three meta-annotations control behavior: @Retention (how long the annotation survives: SOURCE, CLASS, RUNTIME), @Target (where it can be applied: TYPE, METHOD, FIELD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE, etc.), and @Inherited (subtypes inherit the annotation). @Documented includes it in Javadoc. Annotation elements are declared like abstract methods. At runtime, annotations are read via the Reflection API.",
+    beginnerExplanation: `An annotation is a label you stick on code to attach metadata — information about the code that isn't part of the logic itself. @Override tells the compiler 'this method overrides a superclass method.' @Deprecated says 'don't use this anymore.' @Test in JUnit says 'this is a test method, run it.'
+
+You can create your own labels. Define what the label looks like with @interface, control where it can be used with @Target, and decide if it's available at runtime with @Retention(RUNTIME). Then code can read your annotations using reflection to drive behavior — that's exactly how JUnit, Spring, Jackson, and most Java frameworks work under the hood.`,
+    syntax: `import java.lang.annotation.*;
+
+@Retention(RetentionPolicy.RUNTIME)  // survive to runtime
+@Target(ElementType.METHOD)          // only on methods
+@Documented                          // appears in Javadoc
+public @interface MyAnnotation {
+    // Elements (like methods — must have default or callers supply a value)
+    String value() default "";         // single-element: @MyAnnotation("hi")
+    int priority() default 1;
+    String[] tags() default {};
+}
+
+// Applying:
+@MyAnnotation(value = "desc", priority = 3, tags = {"a","b"})
+public void someMethod() { }`,
+    methods: [
+      "@Retention(RetentionPolicy.SOURCE) — annotation discarded by compiler; for doc/lint tools only",
+      "@Retention(RetentionPolicy.CLASS) — kept in .class file but not loaded at runtime (default)",
+      "@Retention(RetentionPolicy.RUNTIME) — available at runtime via reflection",
+      "@Target(ElementType.TYPE) — interfaces, classes, enums",
+      "@Target(ElementType.METHOD) — methods",
+      "@Target(ElementType.FIELD) — instance and class fields",
+      "@Target(ElementType.PARAMETER) — method/constructor parameters",
+      "@Target(ElementType.CONSTRUCTOR) — constructors",
+      "@Target(ElementType.LOCAL_VARIABLE) — local variables (SOURCE retention only)",
+      "@Target(ElementType.ANNOTATION_TYPE) — meta-annotations (annotations on annotations)",
+      "@Inherited — annotation on a class is inherited by subclasses",
+      "@Documented — annotation appears in generated Javadoc",
+      "method.getAnnotation(Type.class) — read annotation from method at runtime",
+      "method.isAnnotationPresent(Type.class) — check if annotation is present",
+      "clazz.getAnnotatedMethods() — get all methods, then filter by annotation"
+    ],
+    example: `import java.lang.annotation.*;
+import java.lang.reflect.*;
+import java.util.*;
+
+// A simple @Validate annotation for methods
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@interface Validate {
+    String description() default "validation";
+    boolean failFast() default false;
+}
+
+// A @RequiresRole annotation for access control
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+@interface RequiresRole {
+    String value();  // single-element: @RequiresRole("ADMIN")
+}
+
+class UserService {
+    @Validate(description = "check user creation", failFast = true)
+    @RequiresRole("ADMIN")
+    public void createUser(String name) {
+        System.out.println("Creating user: " + name);
+    }
+
+    @Validate(description = "check read access")
+    public void getUser(long id) {
+        System.out.println("Getting user: " + id);
+    }
+
+    public void helperMethod() {}
+}
+
+public class Main {
+    // Minimal annotation processor — finds all @Validate methods
+    static void processAnnotations(Object obj) throws Exception {
+        for (Method m : obj.getClass().getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Validate.class)) {
+                Validate v = m.getAnnotation(Validate.class);
+                System.out.printf("  [VALIDATE] %s — '%s' failFast=%b%n",
+                    m.getName(), v.description(), v.failFast());
+            }
+            if (m.isAnnotationPresent(RequiresRole.class)) {
+                RequiresRole r = m.getAnnotation(RequiresRole.class);
+                System.out.printf("  [ROLE] %s requires role: %s%n",
+                    m.getName(), r.value());
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("Annotated methods in UserService:");
+        processAnnotations(new UserService());
+    }
+}`,
+    output: `Annotated methods in UserService:
+  [VALIDATE] createUser — 'check user creation' failFast=true
+  [ROLE] createUser requires role: ADMIN
+  [VALIDATE] getUser — 'check read access'`,
+    commonMistakes: [
+      "Forgetting @Retention(RUNTIME) — without it the annotation is not available via reflection at runtime (CLASS is the default, not RUNTIME).",
+      "Annotation elements cannot be null — use a sentinel like empty string \"\" or -1 as the default to represent 'not set'.",
+      "Annotation element types are restricted: primitives, String, Class, enum, annotation, or arrays of these — no List, no custom classes.",
+      "Arrays in annotations require curly braces: @MyAnnotation(tags = {\"a\", \"b\"}) — not @MyAnnotation(tags = [\"a\", \"b\"]).",
+      "Forgetting that @Inherited only works for class-level annotations, not method or field annotations."
+    ],
+    related: [
+      "annotations",
+      "reflection",
+      "interfaces",
+      "enums",
+      "static-keyword"
+    ],
+  },
+  "linkedhashmap-linkedhashset": {
+    title: "LinkedHashMap & LinkedHashSet",
+    category: "Collections",
+    description: "LinkedHashMap<K,V> (extends HashMap) maintains a doubly-linked list of entries in insertion order (default) or access order (for LRU caches). LinkedHashSet<E> (extends HashSet, backed by LinkedHashMap) maintains insertion-order iteration for a Set. Both have the same O(1) average performance as their unordered counterparts (HashMap, HashSet) with a small constant overhead for maintaining the linked list. Use them when you need a Map or Set with predictable iteration order.",
+    beginnerExplanation: `HashMap is fast but has no order — if you put in {c, a, b} and iterate, you might get them in any sequence. LinkedHashMap is the same speed but remembers the order you inserted things. When you iterate, you get them back in exactly the order you put them in.
+
+LinkedHashSet does the same for sets — no duplicates, but the order of first insertion is preserved.
+
+LinkedHashMap has a special trick: you can create one that sorts by access order instead of insertion order. The most recently accessed key moves to the end. This is the basis of a classic interview question: implementing an LRU (Least Recently Used) cache, where you evict the entry that hasn't been accessed for the longest time.`,
+    syntax: `// Insertion-order (default)
+var map = new LinkedHashMap<String, Integer>();
+
+// Access-order (for LRU cache)
+var lruMap = new LinkedHashMap<String, Integer>(16, 0.75f, true);
+
+// LRU cache via removeEldestEntry override
+var cache = new LinkedHashMap<String, String>(16, 0.75f, true) {
+    protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+        return size() > MAX_CAPACITY;
+    }
+};
+
+// LinkedHashSet
+var set = new LinkedHashSet<String>();`,
+    methods: [
+      "new LinkedHashMap<>() — insertion-order map, O(1) put/get",
+      "new LinkedHashMap<>(capacity, loadFactor, true) — access-order: get() moves key to tail",
+      "removeEldestEntry(eldest) — override to auto-evict (for LRU cache pattern)",
+      "All Map methods: put, get, remove, containsKey, size — same as HashMap",
+      "entrySet().iterator() — iterates in insertion (or access) order",
+      "new LinkedHashSet<>() — insertion-order set",
+      "All Set methods: add, remove, contains, size — same as HashSet",
+      "reversed() — reverse-order view (Java 21+ SequencedMap/SequencedSet)",
+      "firstEntry() / lastEntry() — Java 21+ SequencedMap methods",
+      "getFirst() / getLast() — Java 21+ SequencedSet methods"
+    ],
+    example: `import java.util.*;
+
+public class Main {
+    // LRU cache using LinkedHashMap access order + removeEldestEntry
+    static <K, V> Map<K, V> lruCache(int capacity) {
+        return new LinkedHashMap<>(capacity, 0.75f, true) {
+            protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+                return size() > capacity;
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        // LinkedHashMap — insertion order preserved
+        var scores = new LinkedHashMap<String, Integer>();
+        scores.put("Ana",  95);
+        scores.put("Bob",  82);
+        scores.put("Cara", 91);
+        scores.put("Dan",  78);
+        System.out.println("Insertion order: " + scores);
+        // HashMap would give unpredictable order; LinkedHashMap does not
+
+        // Get first/last (Java 21+)
+        System.out.println("First: " + scores.firstEntry());
+        System.out.println("Last:  " + scores.lastEntry());
+
+        // Reversed view
+        System.out.println("Reversed: " + scores.reversed());
+
+        // LinkedHashSet — insertion order, no duplicates
+        var visited = new LinkedHashSet<String>();
+        visited.add("home");
+        visited.add("shop");
+        visited.add("home");   // duplicate — ignored
+        visited.add("park");
+        System.out.println("Visited: " + visited); // [home, shop, park]
+        System.out.println("First: " + visited.getFirst()); // home
+
+        // LRU Cache — capacity 3
+        var cache = lruCache(3);
+        cache.put("A", 1); cache.put("B", 2); cache.put("C", 3);
+        System.out.println("Cache: " + cache); // {A=1, B=2, C=3}
+        cache.get("A");                          // access A — moves to tail
+        cache.put("D", 4);                       // evicts B (least recently used)
+        System.out.println("After D: " + cache); // {C=3, A=1, D=4}
+    }
+}`,
+    output: `Insertion order: {Ana=95, Bob=82, Cara=91, Dan=78}
+First: Ana=95
+Last:  Dan=78
+Reversed: {Dan=78, Cara=91, Bob=82, Ana=95}
+Visited: [home, shop, park]
+First: home
+Cache: {A=1, B=2, C=3}
+After D: {C=3, A=1, D=4}`,
+    commonMistakes: [
+      "Forgetting to pass true for access-order when building an LRU cache — without it, the map uses insertion order and removeEldestEntry evicts by insertion, not by access.",
+      "Calling get() on an access-order LinkedHashMap during iteration — modifying the order while iterating throws ConcurrentModificationException; use getOrDefault or a copy.",
+      "Expecting LinkedHashMap to be thread-safe — it is not; wrap with Collections.synchronizedMap() or use ConcurrentHashMap (which won't preserve order).",
+      "Confusing LinkedHashMap with TreeMap — LinkedHashMap preserves insertion order; TreeMap keeps keys in natural sorted order."
+    ],
+    related: [
+      "hashmap",
+      "treemap",
+      "hashset",
+      "treeset",
+      "sequenced-collections",
+      "collections-utility"
+    ],
+  },
+  "garbage-collection": {
+    title: "Garbage Collection",
+    category: "Advanced",
+    description: "Java's garbage collector (GC) automatically reclaims memory occupied by objects that are no longer reachable from any GC root (active threads, static fields, JVM internals). The heap is divided into young generation (Eden + two Survivor spaces, short-lived objects) and old generation (long-lived objects). GC algorithms in Java: Serial (single-threaded, small apps), Parallel (throughput-focused, Java 8 default), G1 (Garbage-First, balanced, Java 9+ default), ZGC (ultra-low pause, Java 15+ production-ready), Shenandoah (similar to ZGC). finalize() was deprecated in Java 9 and removed in Java 21 — use Cleaner instead.",
+    beginnerExplanation: `In languages like C or C++, you manually allocate and free memory. Forget to free it and you have a memory leak; free it too early and your program crashes. Java handles this automatically through garbage collection — a background process that periodically finds objects nobody is using anymore and frees their memory.
+
+An object is 'eligible for garbage collection' when no variable or field anywhere in your running program still holds a reference to it. The GC finds these orphaned objects and reclaims their space.
+
+You don't need to manage this — but understanding it helps you:
+- Know why creating millions of short-lived objects can cause GC pauses
+- Understand -Xmx (max heap) and -Xms (starting heap) JVM flags
+- Choose the right GC algorithm for your app (G1 for general use, ZGC for low latency)`,
+    syntax: `# JVM flags for GC control
+java -Xms256m -Xmx2g MyApp        # 256MB initial heap, 2GB max
+java -XX:+UseZGC MyApp            # use ZGC (low pause)
+java -XX:+UseG1GC MyApp           # use G1 (default Java 9+)
+java -XX:+PrintGCDetails MyApp    # verbose GC log
+java -Xlog:gc MyApp               # unified GC logging (Java 9+)
+
+# Programmatic hints (not guaranteed)
+System.gc();            // suggest GC run (JVM may ignore)
+Runtime.getRuntime().freeMemory();  // current free heap bytes`,
+    methods: [
+      "System.gc() — hint to run GC; JVM may ignore; don't rely on it",
+      "Runtime.getRuntime().totalMemory() — current heap size in bytes",
+      "Runtime.getRuntime().maxMemory() — max heap (-Xmx)",
+      "Runtime.getRuntime().freeMemory() — free heap bytes",
+      "java.lang.ref.WeakReference<T> — reference that doesn't prevent GC; useful for caches",
+      "java.lang.ref.SoftReference<T> — cleared before OutOfMemoryError; for memory-sensitive caches",
+      "java.lang.ref.PhantomReference<T> — post-finalization cleanup hook",
+      "java.lang.ref.Cleaner — replacement for finalize(); register cleanup actions (Java 9+)",
+      "-XX:+UseZGC — enable ZGC (sub-millisecond pauses, Java 15+)",
+      "-XX:+UseG1GC — enable G1 (default Java 9+)",
+      "-Xms<size> — initial heap size, e.g. -Xms512m",
+      "-Xmx<size> — maximum heap size, e.g. -Xmx4g"
+    ],
+    example: `import java.lang.ref.*;
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        // 1. Show heap stats
+        var rt = Runtime.getRuntime();
+        System.out.printf("Heap: %dMB used / %dMB max%n",
+            (rt.totalMemory() - rt.freeMemory()) / 1_048_576,
+            rt.maxMemory() / 1_048_576);
+
+        // 2. Object becomes GC-eligible when no references remain
+        Object obj = new Object();    // referenced — not eligible
+        obj = null;                   // reference dropped — now eligible
+
+        // 3. WeakReference — cleared when GC runs (good for caches)
+        var weakMap = new java.util.WeakHashMap<String, byte[]>();
+        String key = new String("cache-key"); // NOT pooled (heap object)
+        weakMap.put(key, new byte[1024]);
+        System.out.println("Before GC: " + weakMap.size()); // 1
+        key = null;            // drop strong reference to key
+        System.gc();           // suggest GC
+        System.out.println("After GC: " + weakMap.size());  // 0 (key collected)
+
+        // 4. Cleaner — safe resource cleanup without finalize()
+        var cleaner = java.lang.ref.Cleaner.create();
+        Object resource = new Object();
+        cleaner.register(resource, () ->
+            System.out.println("Cleanup: resource released"));
+        resource = null;
+        System.gc();
+        Thread.sleep(100); // give GC time to run
+
+        // 5. Memory pressure — creating large objects
+        try {
+            // Intentionally exhaust heap (comment out in production)
+            // byte[] big = new byte[Integer.MAX_VALUE];
+        } catch (OutOfMemoryError e) {
+            System.out.println("OutOfMemoryError — increase -Xmx");
+        }
+    }
+}`,
+    output: `Heap: 8MB used / 256MB max
+Before GC: 1
+After GC: 0
+Cleanup: resource released`,
+    commonMistakes: [
+      "Calling System.gc() to manage memory — it is a hint, not a command; the JVM ignores it when inconvenient. Fix memory issues with proper object scoping.",
+      "Overriding finalize() — deprecated since Java 9, removed Java 21. Use Cleaner or try-with-resources instead.",
+      "Memory leaks in Java — yes, they exist: static collections that grow without bound, listeners never deregistered, ThreadLocal never removed. These prevent GC from collecting objects even though you're 'done' with them.",
+      "Setting -Xmx too high — a large max heap means longer GC pauses when full GC runs, not faster performance.",
+      "Confusing GC pause with throughput: ZGC has near-zero pauses but slightly lower throughput; Parallel GC has high throughput but longer pauses. Choose based on your latency requirements."
+    ],
+    related: [
+      "virtual-threads",
+      "multithreading",
+      "reflection",
+      "serialization",
+      "logging"
+    ],
+  },
 };
 
 /* ===================================================================
@@ -11893,4 +13517,20 @@ const bookRefs = {
   "design-patterns": [],
   "clean-code": [],
   "debugging": ["Ch 3: Selections (p.77) — §3.16 Debugging (p.108)"],
+  "two-dimensional-arrays":       ["Ch 7: Single-Dimensional Arrays (p.249) — §7.9 Multi-Dimensional Arrays (p.265)"],
+  "varargs":                       ["Ch 6: Methods (p.213) — §6.8 Variable-Length Argument Lists (p.236)"],
+  "pass-by-value":                 ["Ch 6: Methods (p.213) — §6.4 Passing Arguments by Values (p.222)"],
+  "string-pool":                   ["Ch 4: Mathematical Functions, Characters, and Strings (p.131) — §4.4 String Type (p.157)"],
+  "method-references":             ["Ch 15: Abstract Classes and Interfaces (p.573) — §15.6 Lambda Expressions (p.595)"],
+  "functional-interfaces":         ["Ch 15: Abstract Classes and Interfaces (p.573) — §15.6 Lambda Expressions (p.595)"],
+  "collectors":                    ["Ch 23: Sorting (p.887) — Supplement: Java 8 Streams"],
+  "gatherers":                     [],
+  "sequenced-collections":         [],
+  "unnamed-variables":             [],
+  "structured-concurrency":        [],
+  "scoped-values":                 [],
+  "custom-annotations":            ["Ch 43: Annotation Types (online)"],
+  "linkedhashmap-linkedhashset":   ["Ch 21: Sets and Maps (p.805)"],
+  "garbage-collection":            [],
+
 };
