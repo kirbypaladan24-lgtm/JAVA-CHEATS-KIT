@@ -71,6 +71,56 @@ int main() {
     return 0;
 }`,
     related: ["variables", "data-types", "methods", "input-output"],
+    quiz: [
+      {
+        question: "What is the entry point of every Java program?",
+        options: ["start()","main(String[] args)","run()","init()"],
+        answer: 1,
+        explanation: "The JVM looks for 'public static void main(String[] args)' as the entry point.",
+      },
+      {
+        question: "Which keyword declares a class in Java?",
+        options: ["class","struct","def","function"],
+        answer: 0,
+        explanation: "The 'class' keyword declares a class in Java.",
+      },
+      {
+        question: "What does 'Write Once, Run Anywhere' (WORA) mean?",
+        options: ["Java code runs on any OS without recompilation","You only write code once","Java is the only language you need","Java programs never need updates"],
+        answer: 0,
+        explanation: "Java compiles to bytecode that runs on any JVM, regardless of the underlying OS.",
+      },
+      {
+        question: "What is the JVM?",
+        options: ["A Java compiler","Java Virtual Machine — runs bytecode","A Java library","A development tool"],
+        answer: 1,
+        explanation: "The JVM (Java Virtual Machine) executes compiled Java bytecode. It's what makes WORA possible.",
+      },
+      {
+        question: "Which command compiles a Java file?",
+        options: ["java Main.java","javac Main.java","compile Main","build Main"],
+        answer: 1,
+        explanation: "javac compiles .java to .class bytecode. java runs the compiled class.",
+      },
+      {
+        question: "What must match the public class name?",
+        options: ["Nothing","The filename","The package name","The method name"],
+        answer: 1,
+        explanation: "A public class named Main must be in a file named Main.java. Non-public classes can have any filename.",
+      },
+      {
+        question: "Which is NOT a Java keyword?",
+        options: ["class","interface","function","enum"],
+        answer: 2,
+        explanation: "'function' is not a Java keyword. Java uses 'method' (not a keyword) — methods are declared inside classes.",
+      },
+      {
+        question: "What does System.out.println() do?",
+        options: ["Reads input","Prints a line to the console","Compiles code","Starts the JVM"],
+        answer: 1,
+        explanation: "System.out.println() prints text to the standard output (console) followed by a newline.",
+      },
+    ],
   },
 
   "data-types": {
@@ -148,6 +198,50 @@ char grade = 'A';
 bool isJavaFun = true;
 std::string lang = "Java";`,
     related: ["variables", "operators", "java-basics"],
+    quiz: [
+      {
+        question: "Which data type would you use for a decimal number like 3.14?",
+        options: ["int","double","char","boolean"],
+        answer: 1,
+        explanation: "double is for decimal numbers. int is for whole numbers, char for single characters, boolean for true/false.",
+      },
+      {
+        question: "What is the size of an int in Java?",
+        options: ["16 bits","32 bits","64 bits","Depends on the machine"],
+        answer: 1,
+        explanation: "Java int is always 32 bits, regardless of the machine — unlike C/C++ where it can vary.",
+      },
+      {
+        question: "Which of these is a primitive type?",
+        options: ["String","int","ArrayList","Scanner"],
+        answer: 1,
+        explanation: "int is a primitive. String, ArrayList, and Scanner are reference types (objects).",
+      },
+      {
+        question: "What is the range of a byte?",
+        options: ["0 to 255","-128 to 127","-32768 to 32767","-2B to 2B"],
+        answer: 1,
+        explanation: "byte is an 8-bit SIGNED integer: -128 to 127. It's not unsigned like in some languages.",
+      },
+      {
+        question: "Which suffix is required for a long literal?",
+        options: ["L","f","d","No suffix"],
+        answer: 0,
+        explanation: "long literals need an L suffix: 'long x = 9000000000L;'. Without L, it's treated as int and may overflow.",
+      },
+      {
+        question: "What is the default value of a boolean instance variable?",
+        options: ["true","false","null","0"],
+        answer: 1,
+        explanation: "boolean instance fields default to false. char defaults to '\\0', and all reference types default to null.",
+      },
+      {
+        question: "Which type would you use for a single character?",
+        options: ["String","char","Character","text"],
+        answer: 1,
+        explanation: "char holds a single Unicode character in single quotes: 'A'. String holds text in double quotes: \"Hello\".",
+      },
+    ],
   },
 
   variables: {
@@ -226,6 +320,50 @@ PI = 3.14159`,
 const double PI = 3.14159;
 static int totalPlayers = 0; // inside a class`,
     related: ["data-types", "operators", "methods"],
+    quiz: [
+      {
+        question: "Which is the correct way to declare a constant in Java?",
+        options: ["const int X = 5;","static int X = 5;","final int X = 5;","let X = 5;"],
+        answer: 2,
+        explanation: "The 'final' keyword makes a variable a constant — it can only be assigned once.",
+      },
+      {
+        question: "What is the default value of an int instance variable?",
+        options: ["null","0","undefined","1"],
+        answer: 1,
+        explanation: "Numeric instance fields default to 0, booleans to false, references to null.",
+      },
+      {
+        question: "Which of these is NOT a valid variable name in Java?",
+        options: ["myVar","_count","2ndPlace","$price"],
+        answer: 2,
+        explanation: "Variable names can't start with a digit. They must start with a letter, underscore, or $.",
+      },
+      {
+        question: "What is the convention for variable names in Java?",
+        options: ["PascalCase (MyVariable)","camelCase (myVariable)","snake_case (my_variable)","UPPER_CASE (MY_VARIABLE)"],
+        answer: 1,
+        explanation: "Variables use camelCase (first word lowercase, subsequent words capitalized). Constants use UPPER_CASE.",
+      },
+      {
+        question: "What is a local variable?",
+        options: ["A variable declared at class level","A variable declared inside a method","A variable with the 'local' keyword","A private variable"],
+        answer: 1,
+        explanation: "Local variables are declared inside a method and only exist while the method runs. They must be initialized before use.",
+      },
+      {
+        question: "What happens if you use a local variable before initializing it?",
+        options: ["It defaults to 0","It defaults to null","Compile error","Runtime error"],
+        answer: 2,
+        explanation: "Java requires definite assignment — using an uninitialized local variable is a compile error.",
+      },
+      {
+        question: "What does 'var' do (Java 10+)?",
+        options: ["Declares a dynamic variable","Infers the type from the initializer","Creates a global variable","Makes the variable final"],
+        answer: 1,
+        explanation: "var lets the compiler infer the type: 'var x = 5' infers int. It's still statically typed — not dynamic.",
+      },
+    ],
   },
 
   operators: {
@@ -308,6 +446,56 @@ x++ : 5
 bool adult = a >= 18;
 std::string mood = (a > b) ? "happy" : "sad";`,
     related: ["data-types", "conditionals", "loops"],
+    quiz: [
+      {
+        question: "What does 10 % 3 evaluate to?",
+        options: ["3","1","3.33","0"],
+        answer: 1,
+        explanation: "% is the modulo operator — it returns the remainder of integer division. 10 / 3 = 3 remainder 1.",
+      },
+      {
+        question: "What is the result of 5 / 2 in Java (both ints)?",
+        options: ["2.5","2","3","2.0"],
+        answer: 1,
+        explanation: "Integer division truncates toward zero. 5 / 2 = 2 (not 2.5). Use 5.0 / 2 or (double) 5 / 2 for 2.5.",
+      },
+      {
+        question: "Which operator has short-circuit evaluation?",
+        options: ["&","|","&&","^"],
+        answer: 2,
+        explanation: "&& (and ||) are short-circuit: they don't evaluate the right side if the left side determines the result.",
+      },
+      {
+        question: "What does ++x do vs x++?",
+        options: ["Same thing","++x increments then returns; x++ returns then increments","x++ is faster","++x is only for loops"],
+        answer: 1,
+        explanation: "++x (pre-increment) returns the NEW value. x++ (post-increment) returns the OLD value, then increments.",
+      },
+      {
+        question: "What does += do?",
+        options: ["Adds and assigns","Compares","Creates a new variable","Is a syntax error"],
+        answer: 0,
+        explanation: "x += 5 is shorthand for x = x + 5. There's also -=, *=, /=, %=, etc.",
+      },
+      {
+        question: "What is the result of 'true && false'?",
+        options: ["true","false","Compile error","null"],
+        answer: 1,
+        explanation: "&& (AND) returns true only if BOTH operands are true. true && false = false.",
+      },
+      {
+        question: "Which has higher precedence: * or +?",
+        options: ["+","*","Same precedence","Depends on context"],
+        answer: 1,
+        explanation: "* binds tighter than +, so 2 + 3 * 4 = 2 + 12 = 14. Use parentheses to override: (2 + 3) * 4 = 20.",
+      },
+      {
+        question: "What does the ternary 'cond ? a : b' return if cond is true?",
+        options: ["a","b","both","neither"],
+        answer: 0,
+        explanation: "If cond is true, the ternary returns a (the first value). If false, returns b.",
+      },
+    ],
   },
 
   "input-output": {
@@ -456,6 +644,44 @@ std::getline(std::cin, name);
 char grade;
 std::cin >> grade;`,
     related: ["input-output", "printf", "strings"],
+    quiz: [
+      {
+        question: "Which method reads a whole line of text from Scanner?",
+        options: ["next()","nextLine()","readLine()","getText()"],
+        answer: 1,
+        explanation: "nextLine() reads until the next newline. next() reads only one word (up to whitespace).",
+      },
+      {
+        question: "What's a common mistake when calling nextInt() then nextLine()?",
+        options: ["Nothing, it works fine","nextLine() returns an empty string (the leftover newline)","nextInt() throws an error","nextLine() skips the input"],
+        answer: 1,
+        explanation: "nextInt() leaves the newline in the buffer. nextLine() consumes it immediately, returning empty. Fix: call an extra nextLine() to clear it.",
+      },
+      {
+        question: "How do you read a single character with Scanner?",
+        options: ["nextChar()","next().charAt(0)","readChar()","getChar()"],
+        answer: 1,
+        explanation: "Scanner has no nextChar(). Read a word with next() and take its first character: next().charAt(0).",
+      },
+      {
+        question: "Which method checks if there's another int to read?",
+        options: ["hasNext()","hasNextInt()","hasInt()","checkInt()"],
+        answer: 1,
+        explanation: "hasNextInt() returns true if the next token is an integer. Use it before calling nextInt() to avoid exceptions.",
+      },
+      {
+        question: "What does Scanner use as the default delimiter?",
+        options: ["Comma","Newline only","Whitespace (spaces, tabs, newlines)","Semicolon"],
+        answer: 2,
+        explanation: "The default delimiter is \\s+ (one or more whitespace characters). Use useDelimiter() to change it.",
+      },
+      {
+        question: "Should you close a Scanner wrapping System.in?",
+        options: ["Yes, always","No — it closes System.in for the whole program","Only in finally","It doesn't matter"],
+        answer: 1,
+        explanation: "Closing a Scanner on System.in closes System.in itself, so no more input can be read. For System.in, leave it open.",
+      },
+    ],
   },
 
   printf: {
@@ -544,6 +770,44 @@ Padded: 00042
     cpp: `#include <cstdio>
 printf("Name: %s\\nAge: %d\\nGPA: %.2f\\n", name, age, gpa);`,
     related: ["input-output", "scanner", "strings"],
+    quiz: [
+      {
+        question: "What does %d format?",
+        options: ["A decimal number (float)","An integer","A String","A character"],
+        answer: 1,
+        explanation: "%d is for integers (byte, short, int, long). %f is for decimals (float, double).",
+      },
+      {
+        question: "What does %.2f do?",
+        options: ["Formats with 2 significant figures","Formats a float with exactly 2 digits after the decimal point","Divides by 2","Rounds to the nearest 2"],
+        answer: 1,
+        explanation: "%.2f formats a decimal with 2 digits after the dot: 3.14159 → 3.14.",
+      },
+      {
+        question: "What is the difference between %n and \\n?",
+        options: ["They're identical","%n is platform-correct (\\r\\n on Windows); \\n is always just \\n","%n is faster","\\n is platform-correct"],
+        answer: 1,
+        explanation: "%n produces the platform's line separator (\\r\\n on Windows, \\n on Unix). \\n is always a single newline character.",
+      },
+      {
+        question: "What does %s format?",
+        options: ["A number","A String","A symbol","A space"],
+        answer: 1,
+        explanation: "%s formats any object as a String by calling its toString() method.",
+      },
+      {
+        question: "How do you left-align text in a 10-character field?",
+        options: ["%10s","%-10s","%s10","%<10s"],
+        answer: 1,
+        explanation: "%-10s left-aligns in a 10-character field. %10s right-aligns (default).",
+      },
+      {
+        question: "What does %05d do for the number 42?",
+        options: ["5 42","00042","42.00000","Error"],
+        answer: 1,
+        explanation: "%05d zero-pads to width 5: 42 → 00042.",
+      },
+    ],
   },
 
   strings: {
@@ -647,6 +911,56 @@ s.find("ll");
 s.replace(pos, len, "new");
 s == "hello";`,
     related: ["input-output", "printf", "arrays", "methods"],
+    quiz: [
+      {
+        question: "Are Strings in Java mutable or immutable?",
+        options: ["Mutable","Immutable","Depends on usage","Only local Strings are immutable"],
+        answer: 1,
+        explanation: "Strings are immutable — once created, they can't be changed. Methods like toUpperCase() return a NEW String.",
+      },
+      {
+        question: "What does \"Java\".length() return?",
+        options: ["3","4","5","Error"],
+        answer: 1,
+        explanation: "length() returns the number of characters. 'Java' has 4 characters.",
+      },
+      {
+        question: "What is the best way to build a string in a loop?",
+        options: ["String with +=","StringBuilder","char array","StringBuffer only"],
+        answer: 1,
+        explanation: "StringBuilder is mutable and much faster for repeated concatenation. String += creates a new String each time (O(n²)).",
+      },
+      {
+        question: "What does \"Hello\".substring(1, 3) return?",
+        options: ["He","el","ell","ell"],
+        answer: 1,
+        explanation: "substring(start, end) — start inclusive, end EXCLUSIVE. So characters at indices 1 and 2: 'el'.",
+      },
+      {
+        question: "What does \"Hello\".charAt(0) return?",
+        options: ["'H' (a char)","\"H\" (a String)","0","Error"],
+        answer: 0,
+        explanation: "charAt returns a char (single character, in single quotes), not a String.",
+      },
+      {
+        question: "How do you compare two Strings ignoring case?",
+        options: ["a == b","a.equals(b)","a.equalsIgnoreCase(b)","a.compare(b)"],
+        answer: 2,
+        explanation: "equalsIgnoreCase compares content without case: \"JAVA\".equalsIgnoreCase(\"java\") returns true.",
+      },
+      {
+        question: "What does String.join(\"-\", \"a\", \"b\", \"c\") return?",
+        options: ["a-b-c","abc","a,b,c","Error"],
+        answer: 0,
+        explanation: "String.join joins the elements with the delimiter: \"a-b-c\".",
+      },
+      {
+        question: "What is the string pool?",
+        options: ["A thread pool for strings","A JVM optimization where identical literals share one object","A garbage collection zone","A type of StringBuilder"],
+        answer: 1,
+        explanation: "The string pool stores unique string literals so 'a == b' can be true for identical literals. new String() bypasses the pool.",
+      },
+    ],
   },
 
   "math-library": {
@@ -751,6 +1065,44 @@ std::pow(2, 10);
 std::sqrt(144.0);
 std::sin(angle_rad);`,
     related: ["random", "data-types", "operators"],
+    quiz: [
+      {
+        question: "What does Math.abs(-5) return?",
+        options: ["-5","5","0","Error"],
+        answer: 1,
+        explanation: "Math.abs returns the absolute value: -5 → 5.",
+      },
+      {
+        question: "What does Math.round(3.6) return?",
+        options: ["3","4","3.5","Error"],
+        answer: 1,
+        explanation: "Math.round rounds to the nearest integer: 3.6 → 4 (rounds half up). Returns a long.",
+      },
+      {
+        question: "What unit does Math.sin() expect?",
+        options: ["Degrees","Radians","Gradians","Either"],
+        answer: 1,
+        explanation: "Math.sin expects RADIANS. Use Math.toRadians(degrees) to convert degrees to radians first.",
+      },
+      {
+        question: "What does Math.random() return?",
+        options: ["A random int","A double in [0.0, 1.0)","A double in [0.0, 1.0]","A random String"],
+        answer: 1,
+        explanation: "Math.random() returns a double >= 0.0 and < 1.0. Multiply and cast for a range: (int)(Math.random() * 6) + 1 for a dice roll.",
+      },
+      {
+        question: "What is Math.PI?",
+        options: ["3.14","3.14159","A constant (3.141592653589793)","A method"],
+        answer: 2,
+        explanation: "Math.PI is a static final double constant: 3.141592653589793.",
+      },
+      {
+        question: "What does Math.max(3, 9) return?",
+        options: ["3","9","12","27"],
+        answer: 1,
+        explanation: "Math.max returns the larger of two values: max(3, 9) = 9.",
+      },
+    ],
   },
 
   random: {
@@ -839,6 +1191,44 @@ std::mt19937 rng(42);
 std::uniform_int_distribution<int> dist(1, 6);
 int dice = dist(rng);`,
     related: ["math-library", "arrays", "loops"],
+    quiz: [
+      {
+        question: "What does new Random(42).nextInt(100) always return?",
+        options: ["A random number 0-99","The same number every time (seeded)","42","A number 1-100"],
+        answer: 1,
+        explanation: "A seeded Random (seed 42) produces the same sequence every run. Useful for testing — results are reproducible.",
+      },
+      {
+        question: "What does nextInt(6) return?",
+        options: ["1 to 6","0 to 5","0 to 6","1 to 5"],
+        answer: 1,
+        explanation: "nextInt(bound) returns 0 to bound-1. nextInt(6) gives 0-5. For a dice roll (1-6): nextInt(6) + 1.",
+      },
+      {
+        question: "Which class should you use for security-sensitive randomness (passwords)?",
+        options: ["java.util.Random","java.security.SecureRandom","Math.random()","ThreadLocalRandom"],
+        answer: 1,
+        explanation: "SecureRandom is cryptographically strong. java.util.Random is predictable and not safe for security.",
+      },
+      {
+        question: "What is ThreadLocalRandom for?",
+        options: ["Thread-safe random numbers","Faster random in multi-threaded code (no contention)","Random with a thread-local seed","A legacy class"],
+        answer: 1,
+        explanation: "ThreadLocalRandom is faster than shared Random in concurrent code because each thread has its own instance — no synchronization.",
+      },
+      {
+        question: "What does Math.random() return?",
+        options: ["int 0-1","double [0.0, 1.0)","double [0.0, 1.0]","float"],
+        answer: 1,
+        explanation: "Math.random() returns a double >= 0.0 and < 1.0. It uses a shared Random internally.",
+      },
+      {
+        question: "How do you pick a random element from an array?",
+        options: ["arr.random()","arr[(int)(Math.random() * arr.length)]","arr.get(random)","Random.pick(arr)"],
+        answer: 1,
+        explanation: "Generate a random index: (int)(Math.random() * arr.length) gives 0 to length-1.",
+      },
+    ],
   },
 
   arrays: {
@@ -938,6 +1328,50 @@ Sum: 396`,
 int len = sizeof(scores)/sizeof(scores[0]);
 std::sort(scores, scores + len);`,
     related: ["loops", "collections", "methods", "generics"],
+    quiz: [
+      {
+        question: "What is the index of the first element in an array?",
+        options: ["1","0","-1","Depends on the array"],
+        answer: 1,
+        explanation: "Java arrays are zero-indexed — the first element is at index 0.",
+      },
+      {
+        question: "How do you get the length of an array 'arr'?",
+        options: ["arr.length()","arr.length","arr.size()","arr.count"],
+        answer: 1,
+        explanation: "Arrays have a 'length' field (not a method). Strings have length() method. Collections have size() method.",
+      },
+      {
+        question: "What happens if you access arr[arr.length]?",
+        options: ["Returns null","Returns the last element","Throws ArrayIndexOutOfBoundsException","Returns undefined"],
+        answer: 2,
+        explanation: "Valid indices are 0 to length-1. Accessing arr[length] is out of bounds and throws an exception.",
+      },
+      {
+        question: "Can you change the size of an array after creating it?",
+        options: ["Yes, with resize()","No, arrays have fixed size","Yes, automatically","Only if it's an Object[]"],
+        answer: 1,
+        explanation: "Arrays have fixed size. Use ArrayList if you need a resizable array-like structure.",
+      },
+      {
+        question: "What does Arrays.sort(arr) do?",
+        options: ["Returns a new sorted array","Sorts the array in place","Throws an error","Only works on Strings"],
+        answer: 1,
+        explanation: "Arrays.sort sorts the array IN PLACE — it modifies the original. It doesn't return a new array.",
+      },
+      {
+        question: "How do you create an array with values {1, 2, 3}?",
+        options: ["new int[]{1, 2, 3}","int[] a = {1, 2, 3}","Both A and B","int a = [1, 2, 3]"],
+        answer: 2,
+        explanation: "Both 'int[] a = {1,2,3}' and 'new int[]{1,2,3}' work. The first is shorthand for the second.",
+      },
+      {
+        question: "What is the default value of elements in a new int[5]?",
+        options: ["1","0","null","undefined"],
+        answer: 1,
+        explanation: "A new int array is filled with 0s. boolean[] defaults to false, object arrays to null.",
+      },
+    ],
   },
 
   methods: {
@@ -1033,6 +1467,50 @@ after: 10`,
 double square(double n) { return n * n; }
 int sum(std::initializer_list<int> nums);`,
     related: ["classes", "objects", "constructors", "conditionals"],
+    quiz: [
+      {
+        question: "What does 'void' mean in a method signature?",
+        options: ["The method is empty","The method returns nothing","The method is private","The method takes no arguments"],
+        answer: 1,
+        explanation: "void means the method doesn't return a value. You can still use 'return;' to exit early.",
+      },
+      {
+        question: "What is method overloading?",
+        options: ["Overriding a parent method","Multiple methods with the same name but different parameters","Calling a method too many times","A method that calls itself"],
+        answer: 1,
+        explanation: "Overloading is having multiple methods with the same name but different parameter lists. Java picks the right one based on the arguments.",
+      },
+      {
+        question: "How do you pass a variable number of arguments to a method?",
+        options: ["Using an array only","Using varargs (Type...)","Using a List","It's not possible"],
+        answer: 1,
+        explanation: "Varargs (Type... name) lets you pass any number of arguments. Inside the method, it's treated as an array.",
+      },
+      {
+        question: "What is 'pass by value' in Java?",
+        options: ["Methods get a copy of the value, not the original","Methods can modify the original variable","Objects are passed by reference","Primitives are passed by reference"],
+        answer: 0,
+        explanation: "Java is ALWAYS pass by value. For objects, the reference is passed by value (a copy of the reference).",
+      },
+      {
+        question: "What is recursion?",
+        options: ["A method that calls itself","A method that calls another method","A method with many parameters","A method that returns void"],
+        answer: 0,
+        explanation: "Recursion is when a method calls itself. It needs a base case to stop, or it loops forever (StackOverflowError).",
+      },
+      {
+        question: "What does 'static' mean on a method?",
+        options: ["The method can't change","The method belongs to the class, not an instance","The method is final","The method is private"],
+        answer: 1,
+        explanation: "static methods belong to the class. Call them as ClassName.method() without creating an object.",
+      },
+      {
+        question: "What is the scope of a local variable?",
+        options: ["The entire class","The method where it's declared","The entire program","All methods in the file"],
+        answer: 1,
+        explanation: "Local variables exist only within the method (or block) where they're declared. They're destroyed when the method returns.",
+      },
+    ],
   },
 
   loops: {
@@ -1138,6 +1616,50 @@ while (cond) { ... }
 do { ... } while (cond);
 for (int x : arr) { ... }   // range-based for`,
     related: ["conditionals", "arrays", "operators"],
+    quiz: [
+      {
+        question: "How many times does 'for (int i = 0; i < 5; i++)' run?",
+        options: ["4 times","5 times","6 times","Infinite"],
+        answer: 1,
+        explanation: "i goes 0, 1, 2, 3, 4 — 5 iterations. The condition is checked before each iteration, and 5 < 5 is false.",
+      },
+      {
+        question: "What does 'continue' do in a loop?",
+        options: ["Exits the loop entirely","Skips to the next iteration","Restarts the loop from the beginning","Pauses the loop"],
+        answer: 1,
+        explanation: "continue skips the rest of the current iteration and jumps to the next one. break exits the loop entirely.",
+      },
+      {
+        question: "Which loop is guaranteed to run at least once?",
+        options: ["for","while","do-while","for-each"],
+        answer: 2,
+        explanation: "do-while checks the condition AFTER the body, so it always runs at least once. The others check before.",
+      },
+      {
+        question: "What does 'break' do?",
+        options: ["Skips one iteration","Exits the loop entirely","Restarts the loop","Pauses execution"],
+        answer: 1,
+        explanation: "break immediately exits the loop. continue skips to the next iteration.",
+      },
+      {
+        question: "Which loop is best for iterating over a List?",
+        options: ["for with index","while","enhanced for (for-each)","do-while"],
+        answer: 2,
+        explanation: "The enhanced for loop 'for (Item x : list)' is the cleanest for iterating collections when you don't need the index.",
+      },
+      {
+        question: "What causes an infinite loop?",
+        options: ["A loop with no body","A condition that's always true and never changes","Using break","Using continue"],
+        answer: 1,
+        explanation: "If the condition never becomes false (or you forget to update the loop variable), the loop runs forever.",
+      },
+      {
+        question: "How do you break out of a NESTED loop?",
+        options: ["You can't","Use a labeled break: 'break outer;'","Use return","Use exit()"],
+        answer: 1,
+        explanation: "Label the outer loop ('outer: for (...)') and use 'break outer;' to exit it from inside the inner loop.",
+      },
+    ],
   },
 
   conditionals: {
@@ -1225,6 +1747,50 @@ Day #: 3`,
     cpp: `if (score >= 90) { ... } else { ... }
 switch (day) { case 1: ...; break; default: ...; }`,
     related: ["operators", "loops", "methods"],
+    quiz: [
+      {
+        question: "What does the ternary operator 'cond ? a : b' return if cond is false?",
+        options: ["a","b","null","throws an error"],
+        answer: 1,
+        explanation: "If cond is false, the ternary returns b (the second value).",
+      },
+      {
+        question: "In a classic switch, what happens if you forget 'break'?",
+        options: ["Compile error","Execution falls through to the next case","Nothing happens","The switch is skipped"],
+        answer: 1,
+        explanation: "Without break, execution falls through to the next case — a common source of bugs. The modern arrow form (->) doesn't have this issue.",
+      },
+      {
+        question: "Which is the correct way to compare two Strings for equality?",
+        options: ["a == b","a = b","a.equals(b)","a.compare(b)"],
+        answer: 2,
+        explanation: "== compares references (memory addresses), not values. Use .equals() to compare String contents.",
+      },
+      {
+        question: "What types can a switch statement operate on?",
+        options: ["Only int","int, String, and enum","Any type","Only String"],
+        answer: 1,
+        explanation: "switch works on byte, short, int, char, String (Java 7+), and enum. Not on double, float, or objects.",
+      },
+      {
+        question: "What does the modern switch expression (Java 14+) use instead of colons?",
+        options: ["->","=>",":",">>"],
+        answer: 0,
+        explanation: "The arrow form 'case X -> value' doesn't fall through and returns a value directly. No break needed.",
+      },
+      {
+        question: "What is 'else if' for?",
+        options: ["To handle multiple conditions","To repeat code","To declare variables","To catch exceptions"],
+        answer: 0,
+        explanation: "else if chains multiple conditions — the first true branch runs. Like a multi-way switch.",
+      },
+      {
+        question: "Can a switch have multiple case labels together?",
+        options: ["No","Yes, with commas: case 1, 2, 3 ->","Only with fall-through","Only in Java 21+"],
+        answer: 1,
+        explanation: "Modern switch allows 'case 1, 2, 3 -> ...' to handle multiple values in one branch.",
+      },
+    ],
   },
 
   /* ============================================================ OOP */
@@ -1308,6 +1874,50 @@ private:
     std::string name; int score;
 };`,
     related: ["objects", "constructors", "access-modifiers", "encapsulation"],
+    quiz: [
+      {
+        question: "What keyword creates a new object?",
+        options: ["create","new","make","instance"],
+        answer: 1,
+        explanation: "The 'new' keyword allocates memory and calls the constructor: 'new ClassName(args)'.",
+      },
+      {
+        question: "What is 'this' in a class method?",
+        options: ["The class name","The current object","The parent class","A static variable"],
+        answer: 1,
+        explanation: "'this' refers to the current object — the instance whose method was called.",
+      },
+      {
+        question: "Can a class have multiple constructors?",
+        options: ["No, only one","Yes, if they have different parameters","Yes, always","Only if the class is abstract"],
+        answer: 1,
+        explanation: "Yes — this is constructor overloading. Each constructor must have a different parameter list.",
+      },
+      {
+        question: "What is a constructor?",
+        options: ["A method that returns a value","Special code that runs when an object is created","A static method","A destructor"],
+        answer: 1,
+        explanation: "A constructor initializes a new object. It has the same name as the class and no return type.",
+      },
+      {
+        question: "What does 'private' mean for a field?",
+        options: ["Only the class itself can access it","Any class can access it","Only subclasses can access it","It's a constant"],
+        answer: 0,
+        explanation: "private means only the declaring class can access the field. This is encapsulation.",
+      },
+      {
+        question: "What is a static field?",
+        options: ["A field that can't change","A field shared by all instances of the class","A private field","A final field"],
+        answer: 1,
+        explanation: "static fields belong to the class, not individual objects. All instances share the same value.",
+      },
+      {
+        question: "What happens if you don't write any constructor?",
+        options: ["Compile error","Java gives you a free no-arg constructor","The class can't be instantiated","NullPointerException"],
+        answer: 1,
+        explanation: "If you write no constructors, Java provides a default no-arg constructor that does nothing. Once you write any constructor, the default disappears.",
+      },
+    ],
   },
 
   constructors: {
@@ -1649,6 +2259,44 @@ private:
     double balance;
 };`,
     related: ["access-modifiers", "classes", "objects", "inheritance"],
+    quiz: [
+      {
+        question: "What is encapsulation?",
+        options: ["Hiding internal state behind methods","Inheriting from a parent","Overriding methods","Creating multiple objects"],
+        answer: 0,
+        explanation: "Encapsulation bundles data and behavior together and hides internals behind a public interface (private fields + getters/setters).",
+      },
+      {
+        question: "Why make fields private?",
+        options: ["To make them faster","To prevent external code from putting the object in an invalid state","To save memory","It's required by Java"],
+        answer: 1,
+        explanation: "Private fields can only be changed through controlled methods (setters), which can validate inputs and maintain invariants.",
+      },
+      {
+        question: "What is a getter?",
+        options: ["A method that gets the value of a private field","A method that creates objects","A constructor","A static method"],
+        answer: 0,
+        explanation: "A getter (accessor) reads a private field: 'public int getAge() { return age; }'.",
+      },
+      {
+        question: "What is a read-only field?",
+        options: ["A final field","A field with a getter but no setter","A private field","A static field"],
+        answer: 1,
+        explanation: "A read-only field has a getter (so outsiders can read it) but no setter (so they can't change it).",
+      },
+      {
+        question: "Why return an unmodifiable list from a getter?",
+        options: ["To save memory","To prevent callers from modifying your internal state","It's faster","It's required"],
+        answer: 1,
+        explanation: "If you return your internal List directly, callers can add/remove items, bypassing your validation. Use Collections.unmodifiableList() to prevent this.",
+      },
+      {
+        question: "What does a setter allow?",
+        options: ["Reading a field","Controlled modification of a field (with validation)","Deleting a field","Making a field static"],
+        answer: 1,
+        explanation: "A setter (mutator) lets outsiders change a field — but through YOUR method, so you can validate (e.g., reject negative ages).",
+      },
+    ],
   },
 
   inheritance: {
@@ -1740,6 +2388,50 @@ public:
     std::string sound() const override { return "Woof"; }
 };`,
     related: ["polymorphism", "objects", "classes", "abstract-classes", "interfaces"],
+    quiz: [
+      {
+        question: "Which keyword extends a class in Java?",
+        options: ["implements","extends","inherits","super"],
+        answer: 1,
+        explanation: "'extends' is used for class inheritance. 'implements' is for interfaces.",
+      },
+      {
+        question: "How many classes can a Java class extend?",
+        options: ["0","1","2","Unlimited"],
+        answer: 1,
+        explanation: "Java supports single inheritance — a class can extend at most ONE parent class. Use interfaces for multiple type inheritance.",
+      },
+      {
+        question: "What does super() do in a constructor?",
+        options: ["Calls the parent's constructor","Creates a new object","Calls a static method","Returns the parent class"],
+        answer: 0,
+        explanation: "super() calls the parent class's constructor. It must be the first statement if used.",
+      },
+      {
+        question: "What does @Override mean?",
+        options: ["Deletes the parent method","Tells the compiler you intend to override a parent method","Makes the method final","Creates a new method"],
+        answer: 1,
+        explanation: "@Override is a hint to the compiler. If you misspell the method name, the compiler catches it instead of silently creating a new method.",
+      },
+      {
+        question: "Can a subclass access a private field of its parent?",
+        options: ["Yes, always","No, never directly","Only if it's also static","Only with super"],
+        answer: 1,
+        explanation: "private members are visible only within the declaring class. Subclasses must use protected or public getters/setters.",
+      },
+      {
+        question: "What is 'final' on a class?",
+        options: ["The class can't be extended","The class has no methods","The class is private","The class is abstract"],
+        answer: 0,
+        explanation: "A final class can't be subclassed. String and Integer are final — you can't extend them.",
+      },
+      {
+        question: "What is upcasting?",
+        options: ["Converting a parent to a child","Converting a child to a parent (automatic)","Deleting an object","Making a field final"],
+        answer: 1,
+        explanation: "Upcasting (child → parent) is automatic and safe: 'Animal a = new Dog();'. Downcasting (parent → child) requires an explicit cast.",
+      },
+    ],
   },
 
   polymorphism: {
@@ -1820,6 +2512,50 @@ class Main {
 class Circle : public Shape { double area() const override { return 3.14*r*r; } };
 // Need virtual in C++; Java methods are virtual by default.`,
     related: ["inheritance", "abstract-classes", "interfaces", "objects"],
+    quiz: [
+      {
+        question: "What is polymorphism?",
+        options: ["Many forms — same call, different behavior based on object type","Multiple constructors","A class with many fields","A method that returns different types"],
+        answer: 0,
+        explanation: "Polymorphism means 'many forms' — the same method call behaves differently depending on the actual object's class at runtime.",
+      },
+      {
+        question: "Which method call uses dynamic dispatch?",
+        options: ["Static methods","Private methods","Instance methods (non-static, non-final)","Constructor calls"],
+        answer: 2,
+        explanation: "Dynamic dispatch applies to non-static, non-final instance methods — the JVM picks the override based on the actual object type at runtime.",
+      },
+      {
+        question: "What should you use to compare object values (not references)?",
+        options: ["==",".equals()","compareTo()","instanceof"],
+        answer: 1,
+        explanation: "== compares references (same object in memory). .equals() compares logical content (override it in your classes).",
+      },
+      {
+        question: "What is downcasting?",
+        options: ["Converting a child to a parent","Converting a parent to a child (explicit cast)","Making a class final","Removing a method"],
+        answer: 1,
+        explanation: "Downcasting (parent → child) requires an explicit cast: 'Dog d = (Dog) animal;'. It can fail at runtime with ClassCastException.",
+      },
+      {
+        question: "What does instanceof check?",
+        options: ["If two objects are equal","If an object is an instance of a class or its subclasses","If a class is final","If a method is static"],
+        answer: 1,
+        explanation: "instanceof checks the runtime type: 'if (animal instanceof Dog d) ...'. Use it before downcasting to avoid ClassCastException.",
+      },
+      {
+        question: "Can static methods be overridden?",
+        options: ["Yes","No, they're hidden, not overridden","Only in abstract classes","Only with @Override"],
+        answer: 1,
+        explanation: "Static methods are NOT polymorphic. If a subclass has a static method with the same signature, it HIDES the parent's — the call depends on the reference type, not the object type.",
+      },
+      {
+        question: "What is an abstract method?",
+        options: ["A method with no body — subclasses must implement it","A static method","A private method","A final method"],
+        answer: 0,
+        explanation: "An abstract method has no body — just a signature. Concrete subclasses must provide the implementation.",
+      },
+    ],
   },
 
   interfaces: {
@@ -1908,6 +2644,44 @@ Duck swims`,
 struct Swimmer { virtual void swim() = 0; virtual ~Swimmer() = default; };
 class Duck : public Animal, public Swimmer { /* ... */ };`,
     related: ["abstract-classes", "inheritance", "polymorphism", "generics"],
+    quiz: [
+      {
+        question: "What keyword implements an interface?",
+        options: ["extends","implements","inherits","uses"],
+        answer: 1,
+        explanation: "A class uses 'implements' for interfaces. 'extends' is for classes.",
+      },
+      {
+        question: "How many interfaces can a class implement?",
+        options: ["1","2","10","Unlimited"],
+        answer: 3,
+        explanation: "A class can implement any number of interfaces (comma-separated). This is how Java achieves multiple type inheritance.",
+      },
+      {
+        question: "Can an interface have method bodies (since Java 8)?",
+        options: ["No, never","Yes — default and static methods","Only private methods","Only abstract methods"],
+        answer: 1,
+        explanation: "Since Java 8, interfaces can have default methods (with body, inheritable) and static methods. Since Java 9, private helper methods too.",
+      },
+      {
+        question: "What is a default method?",
+        options: ["A method with no body","A method with a body that implementing classes inherit (can override)","A deprecated method","A private method"],
+        answer: 1,
+        explanation: "A default method has a body. Implementing classes inherit it but can override it. It lets you add methods to interfaces without breaking existing implementations.",
+      },
+      {
+        question: "Are interface fields mutable?",
+        options: ["Yes","No — they're implicitly public static final (constants)","Only if not final","Depends on the field"],
+        answer: 1,
+        explanation: "All fields in an interface are implicitly public static final — they're constants, not instance variables.",
+      },
+      {
+        question: "What is a functional interface?",
+        options: ["An interface with many methods","An interface with exactly one abstract method","An interface with no methods","A deprecated interface"],
+        answer: 1,
+        explanation: "A functional interface has exactly one abstract method. It can be implemented with a lambda expression. @FunctionalInterface annotates this.",
+      },
+    ],
   },
 
   "abstract-classes": {
@@ -2001,6 +2775,44 @@ public:
 };
 class Square : public Shape { /* ... */ };`,
     related: ["interfaces", "inheritance", "polymorphism", "classes"],
+    quiz: [
+      {
+        question: "Can you instantiate an abstract class directly?",
+        options: ["Yes","No — you must subclass it and instantiate the subclass","Only with reflection","Only in Java 21+"],
+        answer: 1,
+        explanation: "Abstract classes can't be instantiated with 'new'. You create a concrete subclass and instantiate that.",
+      },
+      {
+        question: "What is an abstract method?",
+        options: ["A method with no body — subclasses must implement it","A static method","A private method","A final method"],
+        answer: 0,
+        explanation: "An abstract method has a signature but no body. Concrete subclasses must provide the implementation.",
+      },
+      {
+        question: "Can an abstract class have constructors?",
+        options: ["No","Yes — called via super() by subclasses","Only no-arg constructors","Only private constructors"],
+        answer: 1,
+        explanation: "Abstract classes CAN have constructors. They're called by subclass constructors via super().",
+      },
+      {
+        question: "Can an abstract class have non-abstract (concrete) methods?",
+        options: ["No","Yes — it can have both abstract and concrete methods","Only abstract methods","Only static methods"],
+        answer: 1,
+        explanation: "Abstract classes can mix abstract methods (no body) and concrete methods (with body). This is a key difference from interfaces (pre-Java 8).",
+      },
+      {
+        question: "When use abstract class vs interface?",
+        options: ["Always use abstract class","Use abstract class when subclasses share state/code; interface for pure contracts","Always use interface","They're the same"],
+        answer: 1,
+        explanation: "Abstract class when you need shared fields or substantial code. Interface for a pure contract (especially with multiple inheritance needs).",
+      },
+      {
+        question: "What does a concrete subclass of an abstract class MUST do?",
+        options: ["Implement all abstract methods","Be abstract itself","Override all methods","Have no fields"],
+        answer: 0,
+        explanation: "A concrete subclass must implement ALL abstract methods inherited from the abstract class. Otherwise it must also be declared abstract.",
+      },
+    ],
   },
 
   packages: {
@@ -2192,6 +3004,50 @@ Sorted: [C++, Go, Java, Python]`,
 std::vector<std::string> langs = {"Java", "Python"};
 std::unordered_map<std::string,int> ages;`,
     related: ["arrays", "generics", "loops", "classes"],
+    quiz: [
+      {
+        question: "Which collection does NOT allow duplicates?",
+        options: ["List","Set","ArrayList","LinkedList"],
+        answer: 1,
+        explanation: "Set rejects duplicates. List and ArrayList allow duplicate elements.",
+      },
+      {
+        question: "Which collection maps keys to values?",
+        options: ["List","Set","Map","Queue"],
+        answer: 2,
+        explanation: "Map stores key-value pairs. Each key is unique and maps to exactly one value.",
+      },
+      {
+        question: "What is the average time complexity of HashMap.get()?",
+        options: ["O(n)","O(log n)","O(1)","O(n²)"],
+        answer: 2,
+        explanation: "HashMap.get() is O(1) average — it uses a hash function to find the bucket in constant time. Worst case (all collisions) is O(n).",
+      },
+      {
+        question: "Which List implementation is best for random access by index?",
+        options: ["LinkedList","ArrayList","Both are equal","Neither"],
+        answer: 1,
+        explanation: "ArrayList is backed by an array, so get(i) is O(1). LinkedList requires walking the chain, so get(i) is O(n).",
+      },
+      {
+        question: "What is the difference between List and Set?",
+        options: ["List is faster","List allows duplicates and maintains order; Set doesn't","Set is synchronized","List is for primitives"],
+        answer: 1,
+        explanation: "List is ordered and allows duplicates. Set is unordered (for HashSet) and rejects duplicates.",
+      },
+      {
+        question: "Which Map keeps keys sorted?",
+        options: ["HashMap","TreeMap","LinkedHashMap","All of them"],
+        answer: 1,
+        explanation: "TreeMap keeps keys in sorted order (natural or by Comparator). HashMap has no order; LinkedHashMap keeps insertion order.",
+      },
+      {
+        question: "What happens if you modify a collection while iterating with for-each?",
+        options: ["Nothing","ConcurrentModificationException","It works fine","The modification is ignored"],
+        answer: 1,
+        explanation: "For-each uses an iterator that detects concurrent modification and throws. Use iterator.remove() or removeIf() instead.",
+      },
+    ],
   },
 
   /* ============================================================ UTILITIES */
@@ -2291,6 +3147,50 @@ File error: nope.txt (No such file or directory)`,
 }
 // No checked exceptions in C++; no finally (use RAII instead).`,
     related: ["methods", "classes", "file-handling", "input-output"],
+    quiz: [
+      {
+        question: "What block always runs, regardless of whether an exception occurred?",
+        options: ["try","catch","finally","throw"],
+        answer: 2,
+        explanation: "finally always runs after try/catch — use it for cleanup like closing files or connections.",
+      },
+      {
+        question: "Which exception is unchecked (doesn't need to be declared)?",
+        options: ["IOException","SQLException","NullPointerException","FileNotFoundException"],
+        answer: 2,
+        explanation: "NullPointerException is a RuntimeException (unchecked). The others are checked exceptions that must be declared or caught.",
+      },
+      {
+        question: "How do you manually throw an exception?",
+        options: ["throw new Exception(\"msg\")","throws new Exception()","raise Exception()","error Exception()"],
+        answer: 0,
+        explanation: "Use 'throw new ExceptionType(\"message\");' to raise an exception manually.",
+      },
+      {
+        question: "What is a checked exception?",
+        options: ["An exception you must declare or catch","An exception that's checked at compile time","A RuntimeException","An error"],
+        answer: 0,
+        explanation: "Checked exceptions (subclasses of Exception, not RuntimeException) must be declared with 'throws' or caught. The compiler enforces this.",
+      },
+      {
+        question: "What is try-with-resources?",
+        options: ["A try that creates multiple objects","A try that auto-closes AutoCloseable resources","A try with no catch","A try with multiple catches"],
+        answer: 1,
+        explanation: "try-with-resources (Java 7+) auto-closes resources declared in the try header, even if an exception is thrown. No need for a finally block.",
+      },
+      {
+        question: "What is the difference between 'throw' and 'throws'?",
+        options: ["They're the same","throw raises an exception; throws declares it","throws raises; throw declares","throw is for checked, throws for unchecked"],
+        answer: 1,
+        explanation: "'throw new Exception()' raises an exception. 'void method() throws Exception' declares that the method might throw one.",
+      },
+      {
+        question: "What should you NEVER do in a finally block?",
+        options: ["Close resources","return a value","Print a log","Set a variable"],
+        answer: 1,
+        explanation: "Returning from finally overrides any return or exception from the try block — a classic bug. Never return from finally.",
+      },
+    ],
   },
 
   "file-handling": {
@@ -2623,6 +3523,50 @@ public class Main {
 T max(const std::vector<T>& v) { /* ... */ }
 // C++ templates are compile-time code generation; Java generics are erasure.`,
     related: ["collections", "classes", "methods", "interfaces"],
+    quiz: [
+      {
+        question: "What does List<String> mean?",
+        options: ["A list that can hold any type","A list that only holds Strings","A list of lists","A string that is a list"],
+        answer: 1,
+        explanation: "List<String> is a List that can only hold String objects. The compiler enforces this at compile time.",
+      },
+      {
+        question: "What is type erasure?",
+        options: ["Removing types at runtime","Generic type info is removed at compile time","Erasing the type of a variable","A way to delete classes"],
+        answer: 1,
+        explanation: "Type erasure means generic type parameters (<String>) are removed at compile time. At runtime, List<String> and List<Integer> are both just List.",
+      },
+      {
+        question: "What does <? extends Number> mean?",
+        options: ["Any type that extends Number (read-only)","Only Number itself","Any type at all","A type that is a parent of Number"],
+        answer: 0,
+        explanation: "? extends T is a covariant wildcard — 'T or any subclass'. It's read-only (you can't add to it).",
+      },
+      {
+        question: "Why can't you do 'new T()' in a generic class?",
+        options: ["It's illegal syntax","Type erasure — T isn't known at runtime","T is always null","It's too slow"],
+        answer: 1,
+        explanation: "Due to type erasure, T is erased to Object at runtime. The JVM doesn't know what T is, so it can't create one. Pass a Class<T> or Supplier<T> instead.",
+      },
+      {
+        question: "What does PECS stand for?",
+        options: ["Private, Encapsulated, Composition, Static","Producer Extends, Consumer Super","Public, External, Class, Subclass","Pattern, Enum, Class, Singleton"],
+        answer: 1,
+        explanation: "PECS: if a parameter PRODUCES values (you read from it), use ? extends T. If it CONSUMES values (you write to it), use ? super T.",
+      },
+      {
+        question: "Can you create an array of a generic type (new List<String>[10])?",
+        options: ["Yes","No, generic arrays are not allowed","Only with @SuppressWarnings","Only in Java 11+"],
+        answer: 1,
+        explanation: "Generic arrays are forbidden because they're not type-safe with type erasure. Use ArrayList<List<String>> instead.",
+      },
+      {
+        question: "What is a bounded type parameter?",
+        options: ["<T extends Number>","<T>","<T super Number>","<T implements Number>"],
+        answer: 0,
+        explanation: "'<T extends Bound>' restricts T to be Bound or a subtype. It gives you access to Bound's methods (e.g., Number's doubleValue()).",
+      },
+    ],
   },
 
   /* ============================================================ ADVANCED */
@@ -2721,6 +3665,50 @@ t.join();
 std::atomic<int> counter{0};
 // Or use std::async / std::future for tasks.`,
     related: ["classes", "methods", "exception-handling", "collections"],
+    quiz: [
+      {
+        question: "How do you start a thread in Java?",
+        options: ["thread.run()","thread.start()","thread.execute()","thread.begin()"],
+        answer: 1,
+        explanation: "start() creates a new thread and calls run(). Calling run() directly just runs on the current thread — no new thread is created.",
+      },
+      {
+        question: "What is a race condition?",
+        options: ["When threads run too fast","When the outcome depends on the timing of thread execution","A thread that never stops","A deadlock between threads"],
+        answer: 1,
+        explanation: "A race condition occurs when multiple threads access shared data and the final result depends on the unpredictable order of execution.",
+      },
+      {
+        question: "What does 'synchronized' do?",
+        options: ["Speeds up the code","Ensures only one thread can execute a block at a time","Creates a new thread","Stops all threads"],
+        answer: 1,
+        explanation: "synchronized provides mutual exclusion — only one thread can execute the synchronized block/method at a time on the same object.",
+      },
+      {
+        question: "What is a deadlock?",
+        options: ["When a thread dies","When two or more threads wait forever for each other","When a thread is too slow","When synchronized fails"],
+        answer: 1,
+        explanation: "Deadlock: Thread A holds lock 1 and waits for lock 2, while Thread B holds lock 2 and waits for lock 1. Neither ever proceeds.",
+      },
+      {
+        question: "What is a virtual thread (Java 21+)?",
+        options: ["A thread that doesn't exist","A lightweight thread managed by the JVM, not the OS","A thread with no stack","A deprecated feature"],
+        answer: 1,
+        explanation: "Virtual threads are ultra-lightweight (~200 bytes each vs ~1MB for platform threads). You can have millions. Great for I/O-bound concurrent work.",
+      },
+      {
+        question: "What does 'volatile' guarantee?",
+        options: ["Atomicity","Visibility — all threads see the latest value","Mutual exclusion","Thread safety"],
+        answer: 1,
+        explanation: "volatile ensures visibility: writes are immediately visible to other threads. It does NOT guarantee atomicity for compound operations (like x++).",
+      },
+      {
+        question: "What is the preferred way to run async tasks in modern Java?",
+        options: ["new Thread().start()","ExecutorService or virtual threads","synchronized","wait/notify"],
+        answer: 1,
+        explanation: "ExecutorService manages a thread pool for you. For Java 21+, virtual threads (Executors.newVirtualThreadPerTaskExecutor()) are even better for I/O-bound work.",
+      },
+    ],
   },
 
   networking: {
@@ -3632,6 +4620,50 @@ reverse(Java) = avaJ`,
 }
 // Same recursive pattern in C++; same stack limits.`,
     related: ["methods", "loops", "conditionals", "arrays", "strings"],
+    quiz: [
+      {
+        question: "What does every recursive method need to avoid infinite loops?",
+        options: ["A loop","A base case","A return type","A parameter"],
+        answer: 1,
+        explanation: "A base case (stopping condition) is essential. Without it, the recursion never stops and you get StackOverflowError.",
+      },
+      {
+        question: "What happens if recursion is too deep?",
+        options: ["Out of memory","StackOverflowError","Infinite loop","Nothing, it just runs slow"],
+        answer: 1,
+        explanation: "Each recursive call adds a frame to the call stack. Too many calls = stack overflow. The default stack is ~512KB-1MB.",
+      },
+      {
+        question: "What's the time complexity of naive Fibonacci (fib(n-1) + fib(n-2))?",
+        options: ["O(n)","O(log n)","O(2^n)","O(n²)"],
+        answer: 2,
+        explanation: "Naive Fibonacci is exponential — O(2^n) — because it recalculates the same values many times. Use memoization to make it O(n).",
+      },
+      {
+        question: "What is memoization?",
+        options: ["A type of recursion","Caching results to avoid recomputation","A memory optimization","A sorting algorithm"],
+        answer: 1,
+        explanation: "Memoization stores previously computed results. When the same input recurs, return the cached value instead of recomputing. Turns O(2^n) Fibonacci into O(n).",
+      },
+      {
+        question: "What is tail recursion?",
+        options: ["Recursion at the end of a method","The recursive call is the last operation — no work after it","Recursion with no base case","Recursion that returns void"],
+        answer: 1,
+        explanation: "Tail recursion: the recursive call is the last thing. Some languages optimize it to avoid stack growth — Java does NOT, so deep tail recursion still overflows.",
+      },
+      {
+        question: "What is an accumulator in recursion?",
+        options: ["A variable that counts calls","A parameter that carries the result so far","A type of return value","A loop variable"],
+        answer: 1,
+        explanation: "An accumulator parameter carries the partial result through recursive calls, enabling tail-recursive style: factorial(n, acc) instead of n * factorial(n-1).",
+      },
+      {
+        question: "When should you prefer iteration over recursion?",
+        options: ["Never","When the problem is naturally recursive","When the recursion depth could be large (thousands+)","When you need memoization"],
+        answer: 2,
+        explanation: "Use recursion for naturally recursive problems (trees, divide-and-conquer). Use iteration for deep or linear problems — Java doesn't optimize tail calls, so deep recursion overflows.",
+      },
+    ],
   },
 
   /* ============================================================ OOP — extras */
@@ -3842,6 +4874,44 @@ COMPLETED
 Status s = Status::InProgress;
 // C++ enums are integers, not classes. No fields/methods.`,
     related: ["classes", "conditionals", "annotations", "switch-pattern"],
+    quiz: [
+      {
+        question: "What is an enum?",
+        options: ["A special class for a fixed set of constants","A type of loop","A method return type","A collection"],
+        answer: 0,
+        explanation: "An enum defines a fixed set of named constants. Each constant is a singleton instance of the enum class.",
+      },
+      {
+        question: "Can enums have fields and methods?",
+        options: ["No","Yes — enums are full classes","Only fields","Only methods"],
+        answer: 1,
+        explanation: "Java enums are more powerful than C/C++. They can have fields, constructors, methods, and even implement interfaces.",
+      },
+      {
+        question: "How do you iterate all enum constants?",
+        options: ["for (E e : E.list())","for (E e : E.values())","for (E e : E.all())","E.forEach()"],
+        answer: 1,
+        explanation: "E.values() returns an array of all constants in declaration order.",
+      },
+      {
+        question: "Can you use an switch on an enum?",
+        options: ["No","Yes — and case labels don't need the enum prefix","Only with strings","Only in Java 21+"],
+        answer: 1,
+        explanation: "switch works on enums. Case labels use just the constant name (case MON), not the full name (case Day.MON).",
+      },
+      {
+        question: "What does Enum.valueOf(\"MON\") do?",
+        options: ["Returns the enum constant with that name","Throws an error","Creates a new enum","Returns null"],
+        answer: 0,
+        explanation: "valueOf(String) returns the enum constant with that name. Throws IllegalArgumentException if the name doesn't match any constant.",
+      },
+      {
+        question: "Should you rely on ordinal()?",
+        options: ["Yes, it's reliable","No — reordering constants breaks your code. Use explicit fields instead","Only in switch","Only for sorting"],
+        answer: 1,
+        explanation: "ordinal() returns the declaration position (0-based). If someone reorders the constants, ordinal values change, breaking any code that depends on them. Add an explicit field for stable values.",
+      },
+    ],
   },
 
   /* ============================================================ UTILITIES — extras */
@@ -4050,6 +5120,50 @@ Ana
 auto greet = []{ std::cout << "Hello!\\n"; };
 auto isEven = [](int n){ return n % 2 == 0; };`,
     related: ["streams-api", "interfaces", "methods", "optional", "generics"],
+    quiz: [
+      {
+        question: "What is a functional interface?",
+        options: ["An interface with many methods","An interface with exactly one abstract method","An interface with no methods","An interface that can't be implemented"],
+        answer: 1,
+        explanation: "A functional interface has exactly one abstract method. Lambdas can be assigned to functional interface types (like Runnable, Comparator, Function).",
+      },
+      {
+        question: "Which is a valid lambda for a Runnable?",
+        options: ["() -> System.out.println(\"hi\")","x -> x * 2","(a, b) -> a + b","String s -> s.length()"],
+        answer: 0,
+        explanation: "Runnable.run() takes no arguments and returns void. The correct lambda is '() -> ...' with no parameters.",
+      },
+      {
+        question: "What is String::length an example of?",
+        options: ["A lambda","A method reference","A constructor reference","A static import"],
+        answer: 1,
+        explanation: "String::length is a method reference — a shorthand for the lambda 's -> s.length()'.",
+      },
+      {
+        question: "What is a 'effectively final' variable?",
+        options: ["A variable declared final","A variable that's never reassigned (so lambdas can use it)","A variable in a final class","A constant"],
+        answer: 1,
+        explanation: "Lambdas can only capture local variables that are final or 'effectively final' (never reassigned). The compiler checks this.",
+      },
+      {
+        question: "What does (a, b) -> a - b do when passed to list.sort()?",
+        options: ["Sorts ascending","Sorts descending","Causes an error","Does nothing"],
+        answer: 0,
+        explanation: "list.sort((a, b) -> a - b) sorts in ascending order — the comparator returns negative if a < b, positive if a > b.",
+      },
+      {
+        question: "What is the type of '() -> 42'?",
+        options: ["int","Runnable","Supplier<Integer>","Cannot be determined without context"],
+        answer: 3,
+        explanation: "The type depends on context — it could be Supplier<Integer>, Callable<Integer>, or any functional interface with a no-arg method returning a value.",
+      },
+      {
+        question: "Can a lambda throw a checked exception?",
+        options: ["Yes, always","Only if the functional interface declares it","No, never","Only with try-catch inside"],
+        answer: 1,
+        explanation: "A lambda can only throw checked exceptions that the functional interface's method declares. Otherwise, catch it inside the lambda.",
+      },
+    ],
   },
 
   "streams-api": {
@@ -4179,6 +5293,50 @@ By length: {3=[Ana, Bob], 2=[Cy], 4=[Dave]}`,
 auto evens = nums | std::views::filter([](int n){ return n%2==0; });
 int sum = std::accumulate(nums.begin(), nums.end(), 0);`,
     related: ["lambda-expressions", "collections", "optional", "generics", "methods"],
+    quiz: [
+      {
+        question: "What triggers a stream pipeline to actually execute?",
+        options: ["An intermediate operation","A terminal operation","Creating the stream","Calling stream()"],
+        answer: 1,
+        explanation: "Streams are lazy — nothing runs until a terminal operation (like collect, forEach, count) is called. Intermediate ops (filter, map) are deferred.",
+      },
+      {
+        question: "Can a stream be reused after a terminal operation?",
+        options: ["Yes, unlimited times","No, it's consumed","Yes, once","Only if it's parallel"],
+        answer: 1,
+        explanation: "Streams are single-use. After a terminal operation, the stream is consumed and can't be used again. Generate a new stream from the source.",
+      },
+      {
+        question: "What does .toList() return (Java 16+)?",
+        options: ["A mutable ArrayList","An unmodifiable List","A Stream","An array"],
+        answer: 1,
+        explanation: "Stream.toList() (Java 16+) returns an unmodifiable List. Use .collect(Collectors.toList()) if you need a mutable list.",
+      },
+      {
+        question: "What does .map() do?",
+        options: ["Filters elements","Transforms each element to a new value","Sorts the stream","Counts elements"],
+        answer: 1,
+        explanation: "map applies a function to each element, producing a new stream of the transformed values. It doesn't modify the original.",
+      },
+      {
+        question: "What is the difference between map and flatMap?",
+        options: ["They're the same","map transforms 1-to-1; flatMap transforms 1-to-many and flattens","map is for primitives; flatMap for objects","flatMap is faster"],
+        answer: 1,
+        explanation: "map produces one output per input. flatMap produces a STREAM per input and flattens all the streams into one. Useful for nested collections.",
+      },
+      {
+        question: "What does Collectors.groupingBy do?",
+        options: ["Counts elements","Groups elements by a key into a Map","Sorts elements","Removes duplicates"],
+        answer: 1,
+        explanation: "groupingBy(classifier) groups elements into a Map where keys are the classifier output and values are lists of matching elements.",
+      },
+      {
+        question: "What is a parallel stream?",
+        options: ["A stream that runs faster","A stream that uses multiple threads for processing","A stream with parallel() called on it","A stream that can be reused"],
+        answer: 1,
+        explanation: "parallelStream() or .parallel() splits the work across multiple threads. Good for CPU-intensive operations on large datasets, but adds overhead.",
+      },
+    ],
   },
 
   records: {
@@ -4267,6 +5425,44 @@ struct Point {
     bool operator==(const Point& o) const = default;
 };`,
     related: ["classes", "objects", "encapsulation", "constructors", "lambda-expressions"],
+    quiz: [
+      {
+        question: "What does a record auto-generate?",
+        options: ["Nothing","Constructor, accessors, equals, hashCode, toString","Only getters","Only toString"],
+        answer: 1,
+        explanation: "Records auto-generate: a canonical constructor, accessor methods (x(), not getX()), equals(), hashCode(), and toString().",
+      },
+      {
+        question: "How do you access a record field 'name'?",
+        options: ["record.getName()","record.name()","record.name","record.get('name')"],
+        answer: 1,
+        explanation: "Record accessors use the field name as a method: record.name(). This is different from JavaBean getX() convention.",
+      },
+      {
+        question: "Are record fields mutable?",
+        options: ["Yes","No — records are immutable (fields are final)","Only if you add setters","Depends on the type"],
+        answer: 1,
+        explanation: "Record fields are implicitly final. Records are immutable — you create a new record with 'new' rather than modifying one.",
+      },
+      {
+        question: "Can a record extend a class?",
+        options: ["Yes","No — records are implicitly final and can't extend","Only abstract classes","Only in Java 21+"],
+        answer: 1,
+        explanation: "Records are implicitly final and can't extend any class. They CAN implement interfaces.",
+      },
+      {
+        question: "What is a compact constructor?",
+        options: ["A constructor with no parameters","A constructor without parens — used for validation in records","A private constructor","A static factory"],
+        answer: 1,
+        explanation: "A compact constructor (public RecordName { ... }) has no parameter list. It's used for validation — assignments happen automatically after the block.",
+      },
+      {
+        question: "Which Java version introduced records?",
+        options: ["Java 8","Java 11","Java 16 (standard)","Java 21"],
+        answer: 2,
+        explanation: "Records were a preview in Java 14-15 and became standard in Java 16.",
+      },
+    ],
   },
 
   optional: {
@@ -4376,6 +5572,44 @@ Required: Ana`,
 std::optional<std::string> findName(std::string key);
 auto name = findName("a").value_or("Unknown");`,
     related: ["lambda-expressions", "streams-api", "exception-handling", "generics"],
+    quiz: [
+      {
+        question: "What is Optional for?",
+        options: ["A replacement for null","A container that may or may not hold a value — makes absence explicit","A type of List","A deprecated class"],
+        answer: 1,
+        explanation: "Optional<T> explicitly represents 'might be empty.' Methods return Optional instead of null so callers handle absence deliberately.",
+      },
+      {
+        question: "What does Optional.of(null) do?",
+        options: ["Returns empty Optional","Throws NullPointerException","Returns Optional containing null","Works fine"],
+        answer: 1,
+        explanation: "Optional.of(null) throws NPE. Use Optional.ofNullable(null) for possibly-null values — it returns Optional.empty().",
+      },
+      {
+        question: "What does opt.orElse(default) do?",
+        options: ["Returns default always","Returns the value if present, else default","Sets the value to default","Throws if empty"],
+        answer: 1,
+        explanation: "orElse(fallback) returns the value if present, otherwise the fallback. Use orElseGet(Supplier) for expensive fallbacks (lazy).",
+      },
+      {
+        question: "What should you avoid with Optional?",
+        options: ["Using it as a return type","Using it as a field type or parameter","Using orElse()","Using isPresent()"],
+        answer: 1,
+        explanation: "Optional is designed for return types only. Don't use it for fields (not serializable) or parameters (overhead). Just return it.",
+      },
+      {
+        question: "What does opt.get() do if empty?",
+        options: ["Returns null","Throws NoSuchElementException","Returns a default","Hangs forever"],
+        answer: 1,
+        explanation: "get() throws NoSuchElementException if empty. Avoid get() — use orElse, orElseThrow, or ifPresent instead.",
+      },
+      {
+        question: "What does opt.map(String::length) return?",
+        options: ["An int","An Optional<Integer>","A String","Throws if empty"],
+        answer: 1,
+        explanation: "map transforms the value if present, returning a new Optional<Integer>. If empty, returns Optional.empty().",
+      },
+    ],
   },
 
   /* ============================================================ BOOK COMPANION */
@@ -5358,6 +6592,44 @@ fruits[0];
 fruits.size();
 fruits.erase(fruits.begin() + 1);`,
     related: ["collections","linkedlist","arrays","iterator-iterable","comparable-comparator"],
+    quiz: [
+      {
+        question: "What is the time complexity of ArrayList.get(i)?",
+        options: ["O(n)","O(log n)","O(1)","O(n²)"],
+        answer: 2,
+        explanation: "ArrayList is backed by an array, so get(i) is O(1) — direct index access.",
+      },
+      {
+        question: "What is the time complexity of ArrayList.add(0, e) (insert at front)?",
+        options: ["O(1)","O(log n)","O(n) — all elements shift","O(n²)"],
+        answer: 2,
+        explanation: "Inserting at the front shifts all existing elements, so it's O(n). Use ArrayDeque if you need fast front operations.",
+      },
+      {
+        question: "Is ArrayList synchronized (thread-safe)?",
+        options: ["Yes","No — use CopyOnWriteArrayList or Collections.synchronizedList","Only in Java 21+","Only for reads"],
+        answer: 1,
+        explanation: "ArrayList is NOT thread-safe. For concurrent access, use CopyOnWriteArrayList or wrap with Collections.synchronizedList().",
+      },
+      {
+        question: "What happens if you modify an ArrayList while iterating with for-each?",
+        options: ["Nothing","ConcurrentModificationException","It works fine","The modification is silently ignored"],
+        answer: 1,
+        explanation: "For-each uses an iterator that detects concurrent modification. Use iterator.remove() or list.removeIf() to modify during iteration.",
+      },
+      {
+        question: "Does ArrayList allow null elements?",
+        options: ["No","Yes","Only one null","Only for Object types"],
+        answer: 1,
+        explanation: "ArrayList allows null elements (any number). HashMap allows one null key and multiple null values.",
+      },
+      {
+        question: "What is the default initial capacity of ArrayList?",
+        options: ["0","10","16","100"],
+        answer: 1,
+        explanation: "The default capacity is 10. It grows by ~50% when full. You can specify a capacity in the constructor to avoid resizing.",
+      },
+    ],
   },
 
   /* COLLECTIONS */
@@ -5589,6 +6861,44 @@ ages.erase("Ana");
 ages.size();
 // std::map is the sorted (red-black tree) version.`,
     related: ["collections","treemap","hashset","object-class","concurrent-collections"],
+    quiz: [
+      {
+        question: "What is the average time complexity of HashMap.put()?",
+        options: ["O(n)","O(log n)","O(1)","O(n²)"],
+        answer: 2,
+        explanation: "HashMap.put is O(1) average — it hashes the key to find the bucket. Worst case (all collisions) is O(n), or O(log n) since Java 8 (tree fallback).",
+      },
+      {
+        question: "What happens if you put a key that already exists?",
+        options: ["Throws an error","The old value is replaced","Both values are kept","The new value is ignored"],
+        answer: 1,
+        explanation: "put() replaces the old value and returns it. Use putIfAbsent() to only add if the key is missing.",
+      },
+      {
+        question: "How many null keys does HashMap allow?",
+        options: ["0","1","2","Unlimited"],
+        answer: 1,
+        explanation: "HashMap allows exactly one null key. TreeMap and ConcurrentHashMap do not allow null keys.",
+      },
+      {
+        question: "What must a HashMap key have?",
+        options: ["Nothing special","Proper equals() and hashCode() implementations","A toString() method","A compareTo() method"],
+        answer: 1,
+        explanation: "Keys must properly implement equals() and hashCode(). The contract: equal objects must have equal hash codes. Violating this breaks HashMap.",
+      },
+      {
+        question: "Does HashMap maintain insertion order?",
+        options: ["Yes","No — use LinkedHashMap for insertion order","Yes, but only for strings","Only in parallel mode"],
+        answer: 1,
+        explanation: "HashMap has no order. LinkedHashMap maintains insertion order. TreeMap maintains sorted key order.",
+      },
+      {
+        question: "What does map.get(key) return if the key isn't found?",
+        options: ["Throws an error","Returns null","Returns 0","Returns an empty string"],
+        answer: 1,
+        explanation: "get() returns null for missing keys. Use getOrDefault(key, default) to distinguish 'absent' from 'value is null'.",
+      },
+    ],
   },
 
   /* COLLECTIONS */
@@ -7721,6 +9031,44 @@ std::mutex m;
     count++;
 }  // automatically unlocks`,
     related: ["multithreading","volatile","locks","atomic-variables","concurrent-collections"],
+    quiz: [
+      {
+        question: "What does 'synchronized' ensure?",
+        options: ["Speed","Mutual exclusion — only one thread at a time","Memory allocation","Garbage collection"],
+        answer: 1,
+        explanation: "synchronized provides mutual exclusion. Only one thread can execute the block/method at a time on the same object.",
+      },
+      {
+        question: "What does a synchronized method lock on?",
+        options: ["The method","The class","this (the current object)","Nothing"],
+        answer: 2,
+        explanation: "A synchronized instance method locks on 'this'. A synchronized static method locks on the Class object.",
+      },
+      {
+        question: "Can you call wait() without holding the lock?",
+        options: ["Yes","No — throws IllegalMonitorStateException","Only in static methods","Only with notify()"],
+        answer: 1,
+        explanation: "wait() and notify() require holding the object's monitor (inside synchronized). Calling them outside throws IllegalMonitorStateException.",
+      },
+      {
+        question: "Should you synchronize on a non-final field?",
+        options: ["Yes, it's fine","No — if the field is reassigned, threads lock on different objects","Only for primitives","Only in static methods"],
+        answer: 1,
+        explanation: "If you synchronize on a non-final field and it's reassigned, different threads lock on different objects, breaking the protection. Always lock on a final field.",
+      },
+      {
+        question: "What is a better alternative to synchronized for simple counters?",
+        options: ["There isn't one","AtomicInteger — lock-free and faster","volatile","Nothing"],
+        answer: 1,
+        explanation: "AtomicInteger uses CAS (Compare-And-Swap) for lock-free thread-safe counting. It's faster than synchronized for simple operations.",
+      },
+      {
+        question: "What does synchronized(this) lock?",
+        options: ["The method","The current object","The class","The thread"],
+        answer: 1,
+        explanation: "synchronized(this) locks the current object — other threads calling synchronized methods on the same object block.",
+      },
+    ],
   },
 
   /* CONCURRENCY */
@@ -8069,6 +9417,44 @@ auto f = std::async(std::launch::async, []{ return 42; });
 int result = f.get();
 // For pools: Boost.Asio thread_pool, or TBB, or write your own.`,
     related: ["multithreading","completable-future","virtual-threads","locks","atomic-variables"],
+    quiz: [
+      {
+        question: "Why use ExecutorService over new Thread().start()?",
+        options: ["It's faster for one task","Thread pools reuse threads, avoiding creation overhead and limiting concurrency","It's required by Java","Threads can't be started otherwise"],
+        answer: 1,
+        explanation: "Creating threads is expensive (~1MB each). ExecutorService reuses threads from a pool, improving performance and limiting how many run at once.",
+      },
+      {
+        question: "What does submit() return?",
+        options: ["void","A Future","The result directly","A Thread"],
+        answer: 1,
+        explanation: "submit(Callable) returns a Future<V>. Call future.get() to retrieve the result (blocks until done).",
+      },
+      {
+        question: "What must you do when done with an ExecutorService?",
+        options: ["Nothing","Call shutdown() — otherwise the JVM won't exit","Call close()","Call terminate()"],
+        answer: 1,
+        explanation: "shutdown() stops accepting new tasks and lets running ones finish. Without it, pool threads keep the JVM alive. Use shutdownNow() to force-stop.",
+      },
+      {
+        question: "What does future.get() do if the task isn't done?",
+        options: ["Returns null","Blocks until the result is available","Throws immediately","Returns a placeholder"],
+        answer: 1,
+        explanation: "get() blocks until the task completes. Use get(timeout, unit) to avoid waiting forever.",
+      },
+      {
+        question: "What is Executors.newFixedThreadPool(4)?",
+        options: ["4 tasks only","A pool with exactly 4 threads — extra tasks queue up","4 threads per CPU","A pool that grows to 4 then shrinks"],
+        answer: 1,
+        explanation: "Fixed thread pool has exactly n threads. If all are busy, new tasks wait in a queue. Good for predictable workloads.",
+      },
+      {
+        question: "What is newVirtualThreadPerTaskExecutor (Java 21+)?",
+        options: ["A pool of 4 threads","One virtual thread per task — massive concurrency for I/O-bound work","A deprecated method","A single thread"],
+        answer: 1,
+        explanation: "Each submitted task runs on its own virtual thread. Since virtual threads are cheap (~200 bytes), you can have millions. Ideal for I/O-bound work.",
+      },
+    ],
   },
 
   /* CONCURRENCY */
@@ -8769,6 +10155,44 @@ After modification: changed`,
 // dynamic_cast<Derived*>(basePtr) — safe downcast
 // No full reflection like Java. Libraries like Qt add reflection via MOC.`,
     related: ["annotations","classes","objects","inheritance","design-patterns"],
+    quiz: [
+      {
+        question: "What is reflection?",
+        options: ["A type of mirror","Inspecting and modifying classes at runtime","A design pattern","A type of loop"],
+        answer: 1,
+        explanation: "Reflection lets a program examine and modify its own classes, methods, and fields at runtime — even private ones.",
+      },
+      {
+        question: "How do you get a Class object for String?",
+        options: ["String.class","\"hi\".getClass()","Class.forName(\"java.lang.String\")","All of the above"],
+        answer: 3,
+        explanation: "All three work: .class at compile time, getClass() on an instance, or Class.forName() by name (loads the class if needed).",
+      },
+      {
+        question: "How do you access a private field with reflection?",
+        options: ["You can't","field.setAccessible(true) then field.get(obj)","field.makePublic()","field.unlock()"],
+        answer: 1,
+        explanation: "setAccessible(true) bypasses access control. This is powerful for frameworks and testing but breaks encapsulation — use sparingly.",
+      },
+      {
+        question: "Who uses reflection heavily?",
+        options: ["Beginners","Frameworks (Spring, Hibernate, JUnit)","Only system code","Nobody"],
+        answer: 1,
+        explanation: "Frameworks use reflection to scan for annotations, inject dependencies, and discover classes at runtime. Application code rarely needs it.",
+      },
+      {
+        question: "What is a downside of reflection?",
+        options: ["It's faster","It's slower than direct calls and breaks type safety","It's deprecated","It doesn't work with generics"],
+        answer: 1,
+        explanation: "Reflection is 10-100x slower than direct calls, loses compile-time type checking, and breaks when internals change. Use it only when you genuinely need runtime discovery.",
+      },
+      {
+        question: "How do you create an instance via reflection?",
+        options: ["clazz.newInstance()","clazz.getConstructor().newInstance()","clazz.create()","new clazz()"],
+        answer: 1,
+        explanation: "clazz.getDeclaredConstructor().newInstance() creates a new instance. The older clazz.newInstance() is deprecated since Java 9.",
+      },
+    ],
   },
 
   /* ADVANCED */
@@ -9191,6 +10615,44 @@ java.lang.ArithmeticException: / by zero
 // spdlog is the most popular modern choice:
 // spdlog::info("User {} logged in", username);`,
     related: ["exception-handling","input-output","file-handling","debugging","build-tools"],
+    quiz: [
+      {
+        question: "Why use a logger instead of System.out.println?",
+        options: ["Loggers are faster","Loggers support levels, formatting, and routing (file, console, network)","println is deprecated","Loggers are required"],
+        answer: 1,
+        explanation: "Loggers support levels (DEBUG, INFO, WARN, ERROR), formatting, and output to multiple destinations. You can turn levels on/off without recompiling.",
+      },
+      {
+        question: "What is the correct order of logging levels (most to least severe)?",
+        options: ["DEBUG, INFO, WARN, ERROR","ERROR, WARN, INFO, DEBUG","INFO, DEBUG, ERROR, WARN","WARN, ERROR, INFO, DEBUG"],
+        answer: 1,
+        explanation: "ERROR > WARN > INFO > DEBUG. Setting level to WARN shows only WARN and ERROR; DEBUG shows everything.",
+      },
+      {
+        question: "Why use parameterized logging: log.info(\"User {} logged in\", name)?",
+        options: ["It's faster","Avoids string concatenation when the level is off","It's required","It's more secure"],
+        answer: 1,
+        explanation: "If INFO is disabled, 'User ' + name + ' logged in' still builds the string (wasteful). The {} form only interpolates if the level is on.",
+      },
+      {
+        question: "What should you NOT log?",
+        options: ["Errors","Passwords and sensitive data","Info messages","Debug info"],
+        answer: 1,
+        explanation: "Never log passwords, tokens, PII (personally identifiable information). Sanitize or mask sensitive data before logging.",
+      },
+      {
+        question: "What is SLF4J?",
+        options: ["A logging implementation","A logging facade (API) that routes to any backend","A Java version","A logging level"],
+        answer: 1,
+        explanation: "SLF4J is a facade — your code calls SLF4J, which routes to any backend (Logback, Log4j2, java.util.logging). You can swap backends without changing code.",
+      },
+      {
+        question: "Where should you log exceptions?",
+        options: ["In catch blocks — log.error(\"Failed\", e)","Only in finally","Don't log exceptions","Only at the top level"],
+        answer: 0,
+        explanation: "Log exceptions with the exception object: log.error(\"Failed\", e). This includes the stack trace. Don't just log e.getMessage() — you lose the trace.",
+      },
+    ],
   },
 
   /* ADVANCED */
@@ -9499,6 +10961,44 @@ class Calculator {
 // TEST(Calculator, Add) { EXPECT_EQ(5, calc.add(2, 3)); }
 // Run with: ./test_binary or CTest`,
     related: ["methods","exception-handling","annotations","build-tools","debugging"],
+    quiz: [
+      {
+        question: "What annotation marks a test method in JUnit 5?",
+        options: ["@Test","@TestMethod","@Run","@TestCase"],
+        answer: 0,
+        explanation: "@Test marks a method as a test. JUnit discovers and runs all @Test methods automatically.",
+      },
+      {
+        question: "What does assertEquals(5, result) do?",
+        options: ["Sets result to 5","Checks that result equals 5 — fails if not","Asserts 5 is a number","Nothing"],
+        answer: 1,
+        explanation: "assertEquals(expected, actual) passes if they're equal. If not, the test fails with a message showing both values.",
+      },
+      {
+        question: "What does @BeforeEach do?",
+        options: ["Runs once before all tests","Runs before EACH test method (setup)","Runs after each test","Marks a test as first"],
+        answer: 1,
+        explanation: "@BeforeEach runs before every test — use it to set up fresh state (e.g., new empty list). @BeforeAll runs once before all tests.",
+      },
+      {
+        question: "How do you test that a method throws an exception?",
+        options: ["try/catch with fail()","assertThrows(Exception.class, () -> ...)","Throws annotation","You can't"],
+        answer: 1,
+        explanation: "assertThrows checks that the lambda throws the expected exception. The old try/catch/fail pattern is verbose — prefer assertThrows.",
+      },
+      {
+        question: "What is @ParameterizedTest?",
+        options: ["A test with many assertions","Runs the same test with multiple inputs","A test that takes parameters","A deprecated feature"],
+        answer: 1,
+        explanation: "@ParameterizedTest runs the test method multiple times with different inputs (from @CsvSource, @ValueSource, etc.). Avoids writing many similar tests.",
+      },
+      {
+        question: "What should a good test name communicate?",
+        options: ["Nothing","What the test is checking (the behavior)","The date","The author"],
+        answer: 1,
+        explanation: "Test names should describe behavior: 'twoPlusThreeEqualsFive' or 'emptyListThrowsOnGet'. When a test fails, the name tells you what broke.",
+      },
+    ],
   },
 
   /* ADVANCED */
@@ -10189,6 +11689,44 @@ Size: 5`,
 };
 // Same recursive traversals. C++ requires manual delete or smart pointers.`,
     related: ["bst","heaps","recursion","collections","graphs"],
+    quiz: [
+      {
+        question: "What is the maximum number of children a binary tree node can have?",
+        options: ["1","2","3","Unlimited"],
+        answer: 1,
+        explanation: "A binary tree node has at most 2 children: left and right. This is what makes it 'binary.'",
+      },
+      {
+        question: "Which traversal visits left, then root, then right?",
+        options: ["Pre-order","In-order","Post-order","Level-order"],
+        answer: 1,
+        explanation: "In-order: left → root → right. For a BST, this yields values in sorted order.",
+      },
+      {
+        question: "Which traversal visits root, then left, then right?",
+        options: ["Pre-order","In-order","Post-order","Level-order"],
+        answer: 0,
+        explanation: "Pre-order: root → left → right. Useful for copying a tree or writing prefix expressions.",
+      },
+      {
+        question: "Which traversal uses a queue (BFS)?",
+        options: ["In-order","Pre-order","Post-order","Level-order"],
+        answer: 3,
+        explanation: "Level-order (BFS) uses a queue to visit nodes level by level. The other three use recursion (or a stack) — DFS.",
+      },
+      {
+        question: "What is a leaf node?",
+        options: ["The root","A node with no children","A node with one child","A node with two children"],
+        answer: 1,
+        explanation: "A leaf is a node with no children. The height of a tree is the longest path from root to a leaf.",
+      },
+      {
+        question: "What is the height of an empty tree?",
+        options: ["0","1","-1","undefined"],
+        answer: 2,
+        explanation: "Convention varies, but commonly: empty tree = -1, single node = 0. This makes height = 1 + max(left, right) work cleanly.",
+      },
+    ],
   },
 
   /* DATA STRUCTURES */
@@ -10332,6 +11870,44 @@ s.count(5);    // 1 if present
 s.lower_bound(3);  // ceiling
 s.upper_bound(3);  // higher`,
     related: ["binary-trees","treemap","treeset","heaps","collections"],
+    quiz: [
+      {
+        question: "What property must a BST have?",
+        options: ["Left subtree values < node < right subtree values","The tree is balanced","All nodes have two children","The tree is sorted by height"],
+        answer: 0,
+        explanation: "For every node: all values in the left subtree are smaller, all in the right are larger. This enables O(log n) search.",
+      },
+      {
+        question: "What is the average time complexity of BST search (balanced)?",
+        options: ["O(n)","O(log n)","O(1)","O(n²)"],
+        answer: 1,
+        explanation: "A balanced BST halves the search space at each step: O(log n). An unbalanced BST (like a linked list) degrades to O(n).",
+      },
+      {
+        question: "What happens if you insert sorted data into a naive BST?",
+        options: ["It stays balanced","It becomes a linked list (O(n) operations)","It throws an error","Nothing special"],
+        answer: 1,
+        explanation: "Inserting 1, 2, 3, 4, 5 in order makes each go to the right, creating a degenerate tree (linked list). Use a self-balancing tree (AVL, red-black) or shuffle first.",
+      },
+      {
+        question: "Which traversal of a BST yields sorted order?",
+        options: ["Pre-order","In-order","Post-order","Level-order"],
+        answer: 1,
+        explanation: "In-order (left → root → right) visits BST nodes in ascending sorted order.",
+      },
+      {
+        question: "What is the worst-case for an unbalanced BST?",
+        options: ["O(1)","O(log n)","O(n) — degenerates to a linked list","O(n²)"],
+        answer: 2,
+        explanation: "If all nodes are on one side, the BST is a linked list. Search, insert, and delete become O(n) instead of O(log n).",
+      },
+      {
+        question: "Which Java collection uses a balanced BST internally?",
+        options: ["HashMap","TreeMap (red-black tree)","ArrayList","HashSet"],
+        answer: 1,
+        explanation: "TreeMap and TreeSet use a red-black tree (self-balancing BST) internally, keeping operations O(log n).",
+      },
+    ],
   },
 
   /* DATA STRUCTURES */
@@ -10938,6 +12514,44 @@ std::sort(vec.begin(), vec.end());           // introsort (quicksort + heapsort)
 // std::stable_sort preserves order of equal elements
 // C++ also has std::partial_sort, std::nth_element for special cases.`,
     related: ["searching-algorithms","big-o-notation","arrays","collections","comparable-comparator","heaps"],
+    quiz: [
+      {
+        question: "What is the time complexity of bubble sort?",
+        options: ["O(n)","O(n log n)","O(n²)","O(1)"],
+        answer: 2,
+        explanation: "Bubble sort has two nested loops, each up to n: O(n²). It's simple but slow for large arrays.",
+      },
+      {
+        question: "Which sort is O(n log n) on average?",
+        options: ["Bubble sort","Selection sort","Quick sort","Insertion sort"],
+        answer: 2,
+        explanation: "Quick sort averages O(n log n) but worst case is O(n²) (rare with good pivot). Merge sort and heap sort are also O(n log n).",
+      },
+      {
+        question: "Which sort is stable (preserves order of equal elements)?",
+        options: ["Quick sort","Heap sort","Merge sort","Selection sort"],
+        answer: 2,
+        explanation: "Merge sort is stable — equal elements keep their relative order. Quick sort and heap sort are not stable.",
+      },
+      {
+        question: "What is the space complexity of merge sort?",
+        options: ["O(1)","O(log n)","O(n) — needs a temp array","O(n²)"],
+        answer: 2,
+        explanation: "Merge sort needs O(n) extra space for the temporary array during merging. Quick sort is O(log n) (stack only).",
+      },
+      {
+        question: "What does Arrays.sort() use for primitives?",
+        options: ["Bubble sort","Merge sort","Dual-pivot quicksort","Heap sort"],
+        answer: 2,
+        explanation: "Arrays.sort uses dual-pivot quicksort for primitives (not stable) and TimSort (stable merge sort) for objects.",
+      },
+      {
+        question: "Why is insertion sort sometimes preferred for small arrays?",
+        options: ["It's faster for small n (low constant factors)","It's O(1)","It's stable","It's in-place"],
+        answer: 0,
+        explanation: "For small n (under ~50), insertion sort's simple inner loop is faster than quicksort's overhead. Many sort implementations switch to insertion sort for small subarrays.",
+      },
+    ],
   },
 
   /* ALGORITHMS */
@@ -11072,6 +12686,44 @@ Elements in [5, 12): 5`,
 // std::lower_bound: first position where 8 could be inserted
 // std::upper_bound: first position after 8`,
     related: ["sorting-algorithms","big-o-notation","arrays","collections","treeset","treemap"],
+    quiz: [
+      {
+        question: "What is the time complexity of linear search?",
+        options: ["O(1)","O(log n)","O(n)","O(n²)"],
+        answer: 2,
+        explanation: "Linear search checks each element one by one: O(n). Works on unsorted data.",
+      },
+      {
+        question: "What does binary search require?",
+        options: ["Nothing","The array must be sorted","The array must be small","The array must have unique elements"],
+        answer: 1,
+        explanation: "Binary search only works on SORTED arrays. It halves the search space each step, giving O(log n).",
+      },
+      {
+        question: "What is the time complexity of binary search?",
+        options: ["O(n)","O(log n)","O(1)","O(n²)"],
+        answer: 1,
+        explanation: "Binary search halves the search space each step: O(log n). For 1 million items, ~20 comparisons.",
+      },
+      {
+        question: "What does Arrays.binarySearch return if the element is not found?",
+        options: ["-1","0","A negative number: (-(insertion point) - 1)","null"],
+        answer: 2,
+        explanation: "It returns (-(insertion point) - 1), where insertion point is where the element would be inserted. So -1 means 'would go at index 0'.",
+      },
+      {
+        question: "What is the safe way to compute mid in binary search?",
+        options: ["(lo + hi) / 2","lo + (hi - lo) / 2","(lo + hi) >> 1","mid = lo + hi"],
+        answer: 1,
+        explanation: "(lo + hi) can overflow for large indices. lo + (hi - lo) / 2 avoids overflow.",
+      },
+      {
+        question: "Which is faster for searching a sorted list: linear or binary?",
+        options: ["Linear","Binary","Same","Depends on the data type"],
+        answer: 1,
+        explanation: "Binary search is O(log n) vs linear O(n). For 1 million items: ~20 vs up to 1 million comparisons.",
+      },
+    ],
   },
 
   /* ALGORITHMS */
@@ -11206,6 +12858,50 @@ O(n²) for n=1000: 2,800,000 ns (just counting)`,
 // std::binary_search — O(log n)
 // std::lower_bound — O(log n)`,
     related: ["sorting-algorithms","searching-algorithms","recursion","arrays","collections","hashmap"],
+    quiz: [
+      {
+        question: "Which is the fastest (most efficient) time complexity?",
+        options: ["O(1)","O(n)","O(n²)","O(2^n)"],
+        answer: 0,
+        explanation: "O(1) is constant time — the same regardless of input size. O(n) is linear, O(n²) is quadratic, O(2^n) is exponential (very slow).",
+      },
+      {
+        question: "Binary search has what time complexity?",
+        options: ["O(n)","O(log n)","O(n²)","O(1)"],
+        answer: 1,
+        explanation: "Binary search halves the search space each step, giving O(log n). For 1 million items, that's ~20 comparisons instead of 1 million.",
+      },
+      {
+        question: "Which grows faster as n increases?",
+        options: ["O(n)","O(n log n)","O(n²)","O(log n)"],
+        answer: 2,
+        explanation: "O(n²) grows fastest of these. Order from slowest to fastest: O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2^n).",
+      },
+      {
+        question: "What is the time complexity of accessing an array element by index?",
+        options: ["O(n)","O(log n)","O(1)","O(n²)"],
+        answer: 2,
+        explanation: "Array access by index is O(1) — constant time, regardless of array size. The address is computed directly.",
+      },
+      {
+        question: "What is the time complexity of a nested loop over n items?",
+        options: ["O(n)","O(n²)","O(log n)","O(2^n)"],
+        answer: 1,
+        explanation: "Two nested loops over n items is O(n²). Triple nested is O(n³). This is why bubble sort is slow for large arrays.",
+      },
+      {
+        question: "What does O(1) space complexity mean?",
+        options: ["The algorithm uses no memory","The algorithm uses constant extra space, regardless of input size","The algorithm is O(1) time","The algorithm runs once"],
+        answer: 1,
+        explanation: "O(1) space means the algorithm uses a fixed amount of extra memory, no matter how large the input. It doesn't mean zero memory.",
+      },
+      {
+        question: "Which sorting algorithm is O(n log n)?",
+        options: ["Bubble sort","Insertion sort","Merge sort","Selection sort"],
+        answer: 2,
+        explanation: "Merge sort is O(n log n) — it divides the array in half (log n) and merges (n). Quick sort and heap sort are also O(n log n) average.",
+      },
+    ],
   },
 
   /* ALGORITHMS */
@@ -11348,6 +13044,44 @@ int fib(int n) {
     return dp[n];
 }`,
     related: ["recursion","big-o-notation","arrays","collections","sorting-algorithms"],
+    quiz: [
+      {
+        question: "What two properties must a problem have for DP to apply?",
+        options: ["Recursion and loops","Optimal substructure and overlapping subproblems","Sorting and searching","Trees and graphs"],
+        answer: 1,
+        explanation: "DP requires: (1) optimal substructure (optimal solution contains optimal sub-solutions) and (2) overlapping subproblems (same subproblems recur).",
+      },
+      {
+        question: "What is memoization?",
+        options: ["A type of loop","Caching results to avoid recomputation","A sorting algorithm","A type of recursion"],
+        answer: 1,
+        explanation: "Memoization caches results of expensive function calls. When the same input recurs, return the cached value. Turns O(2^n) Fibonacci into O(n).",
+      },
+      {
+        question: "What is the difference between top-down and bottom-up DP?",
+        options: ["They're the same","Top-down is recursive with caching; bottom-up is iterative, building from base cases","Top-down is faster","Bottom-up uses more memory"],
+        answer: 1,
+        explanation: "Top-down (memoization): recurse, cache results. Bottom-up (tabulation): iteratively fill a table from base cases. Same result, bottom-up is usually faster (no recursion overhead).",
+      },
+      {
+        question: "What is the time complexity of memoized Fibonacci?",
+        options: ["O(2^n)","O(n²)","O(n)","O(log n)"],
+        answer: 2,
+        explanation: "Memoized Fibonacci computes each value once and caches it: O(n). Without memoization, it's O(2^n).",
+      },
+      {
+        question: "What is the space optimization in DP?",
+        options: ["Using less memory by keeping only the last few states","Using recursion","Using parallel streams","There's no such thing"],
+        answer: 0,
+        explanation: "Many DP problems only need the last 1-2 states (e.g., Fibonacci needs dp[i-1] and dp[i-2]). Replace the O(n) array with 2 variables: O(1) space.",
+      },
+      {
+        question: "What is a classic DP problem?",
+        options: ["Sorting an array","Coin change (minimum coins to make a sum)","Binary search","Tree traversal"],
+        answer: 1,
+        explanation: "Coin change is a classic DP: dp[i] = min(dp[i], dp[i - coin] + 1) for each coin. Other classics: knapsack, longest common subsequence, edit distance.",
+      },
+    ],
   },
 
   /* BEST PRACTICES */
@@ -11475,6 +13209,44 @@ class SmtpEmailService implements EmailService { public void sendOrderConfirmati
 // class StripeGateway : public PaymentGateway { ... };
 // C++ emphasizes RAII and value semantics, but SOLID principles are language-agnostic.`,
     related: ["classes","interfaces","encapsulation","inheritance","polymorphism","design-patterns","clean-code"],
+    quiz: [
+      {
+        question: "What does the 'S' in SOLID stand for?",
+        options: ["Static","Single Responsibility","Synchronized","Simple"],
+        answer: 1,
+        explanation: "Single Responsibility Principle: a class should have one reason to change — one job.",
+      },
+      {
+        question: "What does Open/Closed mean?",
+        options: ["Open source, closed platform","Open for extension, closed for modification","Open for modification, closed for extension","Always open"],
+        answer: 1,
+        explanation: "You should be able to add new behavior (via new classes/interfaces) without changing existing code.",
+      },
+      {
+        question: "What is the Liskov Substitution Principle?",
+        options: ["Subclasses must be substitutable for their parent","Subclasses must be shorter","Subclasses must be final","Subclasses must have fewer methods"],
+        answer: 0,
+        explanation: "If you replace a parent with a subclass, the program must still work correctly. A Penguin shouldn't extend Bird if it can't fly.",
+      },
+      {
+        question: "What does Interface Segregation mean?",
+        options: ["Split large interfaces into smaller, focused ones","Use only one interface","Interfaces should be private","Interfaces should have many methods"],
+        answer: 0,
+        explanation: "Don't force classes to implement methods they don't need. Many small interfaces beat one fat interface (Workable, Eatable, Sleepable vs one Worker).",
+      },
+      {
+        question: "What is Dependency Inversion?",
+        options: ["Dependencies should be inverted","Depend on abstractions (interfaces), not concretions (classes)","Invert the call stack","Use fewer dependencies"],
+        answer: 1,
+        explanation: "High-level modules should depend on abstractions (interfaces), not concrete classes. This enables swapping implementations and testing.",
+      },
+      {
+        question: "Which SOLID principle does a 'God class' violate?",
+        options: ["O","L","I","S (Single Responsibility)"],
+        answer: 3,
+        explanation: "A God class that does everything (DB, email, business logic) violates Single Responsibility — it has many reasons to change.",
+      },
+    ],
   },
 
   /* BEST PRACTICES */
@@ -11636,6 +13408,44 @@ Stripe: $99.99`,
 // - Observer: std::function callbacks or signal-slot libraries (Boost.Signals2, Qt signals)
 // - Strategy: std::function or templates`,
     related: ["solid-principles","classes","interfaces","inheritance","polymorphism","encapsulation","singleton-pattern","clean-code"],
+    quiz: [
+      {
+        question: "What is the Singleton pattern?",
+        options: ["A pattern for sorting","Ensures a class has exactly one instance","A pattern for creating many objects","A type of loop"],
+        answer: 1,
+        explanation: "Singleton ensures one instance. The enum approach ('enum X { INSTANCE; }') is the simplest, thread-safe way.",
+      },
+      {
+        question: "What is the Builder pattern for?",
+        options: ["Building strings","Constructing complex objects step by step (many optional params)","Building houses","Building arrays"],
+        answer: 1,
+        explanation: "Builder constructs objects with many optional parameters fluently: new Pizza.Builder().size(\"L\").cheese().build(). Avoids telescoping constructors.",
+      },
+      {
+        question: "What is the Observer pattern?",
+        options: ["Watching files","Publish-subscribe: notify multiple objects when something changes","A type of iterator","A sorting pattern"],
+        answer: 1,
+        explanation: "Observer (pub-sub): subscribers register with a subject; when the subject changes, it notifies all subscribers. Used in event listeners, reactive streams.",
+      },
+      {
+        question: "What is the Strategy pattern?",
+        options: ["A pattern for winning","Swap algorithms at runtime (e.g., Comparator)","A type of loop","A database pattern"],
+        answer: 1,
+        explanation: "Strategy defines a family of algorithms, encapsulates each, and makes them interchangeable. Comparator is a strategy — you pass different sort strategies.",
+      },
+      {
+        question: "What is the Factory pattern?",
+        options: ["A place that makes things","A method that creates objects without specifying the exact class","A type of constructor","A destructor pattern"],
+        answer: 1,
+        explanation: "Factory creates objects without exposing the instantiation logic. The caller asks for a type and gets an instance, not knowing the concrete class.",
+      },
+      {
+        question: "What is the Adapter pattern?",
+        options: ["Adapts to new Java versions","Makes incompatible interfaces work together (like a travel plug adapter)","Adapts code for testing","A type of wrapper"],
+        answer: 1,
+        explanation: "Adapter converts one interface to another. Like a travel plug adapter: your device has one plug, the wall has another, the adapter bridges them.",
+      },
+    ],
   },
 
   /* BEST PRACTICES */
