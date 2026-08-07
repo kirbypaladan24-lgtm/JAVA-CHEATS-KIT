@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-mode="full">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,18 @@
   <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png" />
   <link rel="shortcut icon" href="assets/icons/favicon.ico" />
+
+  <!-- Prevent theme + mode flash: read prefs from localStorage before paint -->
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("jc.theme") || "dark";
+        var mode  = localStorage.getItem("jc.mode")  || "full";
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.setAttribute("data-mode",  mode);
+      } catch (e) {}
+    })();
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -51,13 +63,13 @@
       <button id="recentToggle" class="icon-btn" aria-label="Recently viewed" title="Recently viewed">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
       </button>
-      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light theme">
+      <button id="modeToggle" class="mode-toggle" aria-label="Toggle view mode" title="Toggle Simple / Full mode">
+        <span class="mode-track"><span class="mode-thumb"></span></span>
+        <span class="mode-label">FULL</span>
+      </button>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
         <span class="toggle-track"><span class="toggle-thumb"></span></span>
         <span class="toggle-label">DARK</span>
-      </button>
-      <button id="modeToggle" class="mode-toggle" aria-label="Toggle explanation mode" title="Toggle Easy/Pro explanation">
-        <span class="toggle-track"><span class="toggle-thumb"></span></span>
-        <span class="mode-label">EASY</span>
       </button>
     </div>
   </header>
