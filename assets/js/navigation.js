@@ -1,28 +1,39 @@
 /* ===================================================================
    Java Cheats — navigation.js
    Builds sidebar from cheats data, handles sidebar clicks,
-   prev/next topic, scroll spy on sidebar, keyboard nav.
+   prev/next topic, keyboard nav, breadcrumbs.
+   Depends on: cheats (cheats.js), App (app.js — must be loaded first),
+               escapeHtml (defined globally in app.js).
    =================================================================== */
 
 const Navigation = (() => {
-  const CAT_ORDER = ["Home", "Basics", "OOP", "Collections", "Utilities", "Modern Java", "Concurrency", "Data Structures", "Algorithms", "Best Practices", "Advanced", "Reference"];
+  const CAT_ORDER = [
+    "Home", "Basics", "OOP", "Collections", "Utilities",
+    "Modern Java", "Concurrency", "Data Structures",
+    "Algorithms", "Best Practices", "Advanced", "Reference",
+  ];
   const CAT_ICON = {
-    Home: "JC",
-    Basics: "{}",
-    OOP: "OO",
-    Collections: "[]",
-    Utilities: "ut",
-    Advanced: ">>",
+    Home:              "JC",
+    Basics:            "{}",
+    OOP:               "OO",
+    Collections:       "[]",
+    Utilities:         "ut",
+    "Modern Java":     "MJ",
+    Concurrency:       ">>",
+    "Data Structures": "DS",
+    Algorithms:        "Ax",
+    "Best Practices":  "BP",
+    Advanced:          "Av",
+    Reference:         "Rf",
   };
 
-  let orderedKeys = []; // flat list of topic keys in sidebar order (home first)
-  let activeKey = "home";
+  let orderedKeys = [];
+  let activeKey   = "home";
 
   // ---------- Build sidebar ----------
   function build() {
-    // Build category → [keys] mapping, in declared order
     const byCat = {};
-    Object.keys(cheats).forEach((key) => {
+    Object.keys(cheats).forEach(key => {
       const cat = cheats[key].category;
       (byCat[cat] = byCat[cat] || []).push(key);
     });
@@ -30,8 +41,9 @@ const Navigation = (() => {
     const nav = document.getElementById("sidebarNav");
     nav.innerHTML = "";
 
-    CAT_ORDER.forEach((cat) => {
+    CAT_ORDER.forEach(cat => {
       if (!byCat[cat]) return;
+
       const block = document.createElement("div");
       block.className = "cat-block";
 
@@ -40,10 +52,10 @@ const Navigation = (() => {
       title.textContent = cat;
       block.appendChild(title);
 
-      byCat[cat].forEach((key) => {
+      byCat[cat].forEach(key => {
         orderedKeys.push(key);
         const item = document.createElement("button");
-        item.className = "cat-item";
+        item.className    = "cat-item";
         item.dataset.topic = key;
         item.innerHTML =
           `<span>${escapeHtml(cheats[key].title)}</span>` +
@@ -58,23 +70,20 @@ const Navigation = (() => {
       nav.appendChild(block);
     });
 
-    // Sync fav stars
     refreshFavStars();
   }
 
-  // ---------- Active highlight ----------
+  // ---------- Active highlight + breadcrumb ----------
   function setActive(key) {
     activeKey = key;
-    document.querySelectorAll(".cat-item").forEach((el) => {
+    document.querySelectorAll(".cat-item").forEach(el => {
       el.classList.toggle("active", el.dataset.topic === key);
     });
-    // scroll the active item into view inside the sidebar
     const active = document.querySelector(".cat-item.active");
     if (active) active.scrollIntoView({ block: "nearest", behavior: "smooth" });
 
-    // breadcrumb — on home show just "Home", otherwise "Home › Category › Title"
     const bc = document.getElementById("breadcrumb");
-    const t = cheats[key];
+    const t  = cheats[key];
     if (key === "home" || !t) {
       bc.innerHTML = `<span class="cur">Home</span>`;
     } else {
@@ -85,29 +94,27 @@ const Navigation = (() => {
         `<span class="sep">›</span>` +
         `<span class="cur">${escapeHtml(t.title)}</span>`;
     }
-    bc.querySelectorAll("a[data-topic]").forEach((a) =>
-      a.addEventListener("click", (e) => {
+
+    bc.querySelectorAll("a[data-topic]").forEach(a =>
+      a.addEventListener("click", e => { e.preventDefault(); App.loadTopic(a.dataset.topic); })
+    );
+    bc.querySelectorAll("a[data-topic-cat]").forEach(a =>
+      a.addEventListener("click", e => {
         e.preventDefault();
-        App.loadTopic(a.dataset.topic);
+        const firstKey = orderedKeys.find(k => cheats[k].category === a.dataset.topicCat && k !== "home");
+        if (firstKey) App.loadTopic(firstKey);
       })
     );
-    bc.querySelectorAll("a[data-topic-cat]").forEach((a) => {
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        const targetCat = a.dataset.topicCat;
-        const firstKey = orderedKeys.find((k) => cheats[k].category === targetCat && k !== "home");
-        if (firstKey) App.loadTopic(firstKey);
-      });
-    });
   }
 
   // ---------- Prev / Next ----------
   function renderPrevNext(key) {
-    const idx = orderedKeys.indexOf(key);
+    const idx  = orderedKeys.indexOf(key);
     const prev = idx > 0 ? orderedKeys[idx - 1] : null;
     const next = idx >= 0 && idx < orderedKeys.length - 1 ? orderedKeys[idx + 1] : null;
-    const box = document.getElementById("prevNext");
-    let html = "";
+    const box  = document.getElementById("prevNext");
+    let html   = "";
+
     if (prev) {
       html +=
         `<a href="#" class="prev" data-topic="${prev}">` +
@@ -123,24 +130,21 @@ const Navigation = (() => {
         `<div class="pn-title">${escapeHtml(cheats[next].title)}</div></a>`;
     }
     box.innerHTML = html;
-    box.querySelectorAll("a[data-topic]").forEach((a) =>
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        App.loadTopic(a.dataset.topic);
-      })
+    box.querySelectorAll("a[data-topic]").forEach(a =>
+      a.addEventListener("click", e => { e.preventDefault(); App.loadTopic(a.dataset.topic); })
     );
   }
 
-  // ---------- Favorites star sync in sidebar ----------
+  // ---------- Favorites star sync ----------
   function refreshFavStars() {
     const favs = Store.getFavs();
-    document.querySelectorAll(".cat-item").forEach((el) => {
+    document.querySelectorAll(".cat-item").forEach(el => {
       el.classList.toggle("is-fav", favs.includes(el.dataset.topic));
     });
   }
 
   // ---------- Mobile sidebar ----------
-  function openMobileSidebar() {
+  function openMobileSidebar()  {
     document.getElementById("sidebar").classList.add("open");
     document.getElementById("sidebarOverlay").hidden = false;
   }
@@ -149,76 +153,50 @@ const Navigation = (() => {
     document.getElementById("sidebarOverlay").hidden = true;
   }
   function toggleSidebar() {
-    const sb = document.getElementById("sidebar");
-    if (sb.classList.contains("open")) closeMobileSidebar();
-    else openMobileSidebar();
+    document.getElementById("sidebar").classList.contains("open")
+      ? closeMobileSidebar()
+      : openMobileSidebar();
   }
 
   // ---------- Keyboard nav ----------
   function onKey(e) {
-    const tag = (e.target.tagName || "").toLowerCase();
+    const tag     = (e.target.tagName || "").toLowerCase();
     const isInput = tag === "input" || tag === "textarea";
 
-    // "/" focuses search
     if (e.key === "/" && !isInput) {
       e.preventDefault();
       document.getElementById("searchInput").focus();
       return;
     }
-
-    // Escape closes search/drawer/mobile sidebar
     if (e.key === "Escape") {
       Search.close();
       closeMobileSidebar();
       App.closeDrawer();
       return;
     }
-
-    // Ctrl/Cmd+B toggles sidebar (works even on desktop to collapse)
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
       e.preventDefault();
       toggleSidebar();
       return;
     }
-
     if (isInput) return;
 
-    // ↑ / ↓ navigate between topics
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
-      const idx = orderedKeys.indexOf(activeKey);
+      const idx  = orderedKeys.indexOf(activeKey);
       if (idx < 0) return;
-      const next = e.key === "ArrowDown"
-        ? orderedKeys[idx + 1]
-        : orderedKeys[idx - 1];
-      if (next) App.loadTopic(next);
-      return;
-    }
-
-    // ← / → prev / next
-    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-      // ignore if user is in a horizontally scrollable code block
-      const srcEl = e.target;
-      if (srcEl && srcEl.classList && srcEl.classList.contains("code-body")) return;
-      e.preventDefault();
-      const idx = orderedKeys.indexOf(activeKey);
-      const dest = e.key === "ArrowRight"
-        ? orderedKeys[idx + 1]
-        : orderedKeys[idx - 1];
+      const dest = e.key === "ArrowDown" ? orderedKeys[idx + 1] : orderedKeys[idx - 1];
       if (dest) App.loadTopic(dest);
       return;
     }
-
-    // Enter on a focused cat-item is automatic (button), no handler needed
-  }
-
-  // ---------- Helpers ----------
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      if (e.target?.classList?.contains("code-body")) return;
+      e.preventDefault();
+      const idx  = orderedKeys.indexOf(activeKey);
+      const dest = e.key === "ArrowRight" ? orderedKeys[idx + 1] : orderedKeys[idx - 1];
+      if (dest) App.loadTopic(dest);
+      return;
+    }
   }
 
   function init() {
