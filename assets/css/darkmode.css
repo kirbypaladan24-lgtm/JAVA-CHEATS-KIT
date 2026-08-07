@@ -178,3 +178,21 @@
 [data-theme="dark"] ::-webkit-scrollbar-track { background: #1a1c2c; border-left-color: #000; }
 [data-theme="dark"] ::-webkit-scrollbar-thumb { background: var(--accent); border-color: #000; }
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: var(--accent-soft); }
+
+/* ---------- Dark mode — mode toggle ---------- */
+[data-theme="dark"] .mode-toggle {
+  background: #29366f; border-color: #000; color: #f4f4f4;
+}
+[data-theme="dark"] .mode-track { background: #0f0f1b; border-color: #000; }
+[data-theme="dark"] .mode-thumb { background: var(--accent); }
+[data-theme="dark"] [data-mode="simple"] .mode-thumb { background: var(--green); }
+
+/* ---------- Dark mode — simple overview section ---------- */
+[data-theme="dark"] .simple-overview {
+  background: #29366f; border-color: #000;
+}
+
+/* ---------- Dark mode — mode nudge ---------- */
+[data-theme="dark"] .mode-nudge {
+  background: #29366f; border-color: #000; color: #94b0c2;
+}
